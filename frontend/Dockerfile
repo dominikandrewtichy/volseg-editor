@@ -6,7 +6,7 @@ COPY package*.json /app/
 
 RUN npm ci
 
-ADD . /app
+COPY . /app
 
 EXPOSE 5173
 

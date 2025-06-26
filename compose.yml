@@ -82,6 +82,8 @@ services:
     restart: always
     networks:
       - cellim-network
+    volumes:
+      - minio_data:/data
 
   volseg:
     container_name: cellim-viewer-volseg
@@ -118,3 +120,4 @@ networks:
 volumes:
   shared_data:
   db_data:
+  minio_data:
