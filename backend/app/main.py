@@ -12,7 +12,8 @@ from app.database.session_manager import get_session_manager
 
 # for SDK
 def generate_unique_id_function(route: APIRoute):
-    return f"{route.tags[0]}-{route.name}"
+    prefix = route.tags[0] if route.tags else "other"
+    return f"{prefix}-{route.name}"
 
 
 @asynccontextmanager

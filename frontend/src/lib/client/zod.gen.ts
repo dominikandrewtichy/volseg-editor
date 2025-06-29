@@ -111,7 +111,7 @@ export const zVolsegEntryResponse = z.object({
 });
 
 export const zVolsegUploadEntry = z.object({
-  is_public: z.union([z.boolean(), z.null()]).optional(),
+  is_public: z.boolean(),
   cvsx_file: z.string(),
 });
 

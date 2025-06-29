@@ -115,10 +115,7 @@ export type VolsegEntryResponse = {
 };
 
 export type VolsegUploadEntry = {
-  is_public?: boolean | null;
-  /**
-   * CVSX file
-   */
+  is_public: boolean;
   cvsx_file: Blob | File;
 };
 

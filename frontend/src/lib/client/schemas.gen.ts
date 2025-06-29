@@ -548,15 +548,7 @@ export const VolsegEntryResponseSchema = {
 export const VolsegUploadEntrySchema = {
   properties: {
     is_public: {
-      anyOf: [
-        {
-          type: "boolean",
-        },
-        {
-          type: "null",
-        },
-      ],
-      default: false,
+      type: "boolean",
     },
     cvsx_file: {
       type: "string",
@@ -565,5 +557,5 @@ export const VolsegUploadEntrySchema = {
   },
   additionalProperties: false,
   type: "object",
-  required: ["cvsx_file"],
+  required: ["is_public", "cvsx_file"],
 } as const;

@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { VolsegUploadEntry, zVolsegUploadEntry } from "@/lib/client";
+import { zVolsegUploadEntry } from "@/lib/client";
 import { volsegEntriesUploadEntryMutation } from "@/lib/client/@tanstack/react-query.gen";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -18,36 +18,43 @@ import { AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 
 export default function VolsegUploadForm() {
-  const [files, setFiles] = useState<{
-    cvsx_file?: File;
-  }>({});
+  const [cvsxFile, setCvsxFile] = useState<File | null>(null);
 
-  const form = useForm<VolsegUploadEntry>({
-    resolver: zodResolver(zVolsegUploadEntry),
-    defaultValues: {},
+  const formSchema = zVolsegUploadEntry.omit({ cvsx_file: true });
+  type FormData = z.infer<typeof formSchema>;
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      is_public: false,
+    },
   });
 
   const mutation = useMutation({
     ...volsegEntriesUploadEntryMutation(),
     onSuccess: () => {
       toast.success(`Data uploaded successfully`);
+      form.reset();
+      setCvsxFile(null);
     },
     onError: () => {
       toast.success(`Error`);
     },
   });
 
-  const handleSubmit = (data: VolsegUploadEntry) => {
+  const handleSubmit = (data: FormData) => {
+    if (!cvsxFile) {
+      // toast.error("Please select a CVSX file.");
+      return;
+    }
+
     mutation.mutate({
       body: {
-        db_name: data.db_name,
-        entry_id: data.entry_id,
         is_public: data.is_public,
-        annotations: files.annotations!,
-        metadata: files.metadata!,
-        data: files.data!,
+        cvsx_file: cvsxFile,
       },
     });
   };
@@ -60,88 +67,56 @@ export default function VolsegUploadForm() {
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="db_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>DB Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="emdb" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="entry_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Entry ID</FormLabel>
-                <FormControl>
-                  <Input placeholder="emd-1832" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="is_public"
             render={({ field }) => (
               <FormItem className="flex items-center">
                 <FormControl>
                   <Checkbox
-                    checked={!!field.value}
+                    checked={field.value ?? false}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
                 <FormLabel className="mb-0">Make Public</FormLabel>
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          {(["annotations", "metadata", "data"] as const).map((fieldName) => (
-            <FormField
-              key={fieldName}
-              control={form.control}
-              name={fieldName}
-              render={() => (
-                <FormItem>
-                  <FormLabel className="capitalize">{fieldName}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          setFiles((prev) => ({
-                            ...prev,
-                            [fieldName]: file,
-                          }));
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
+          <FormItem>
+            <FormLabel>CVSX File</FormLabel>
+            <FormControl>
+              <Input
+                type="file"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  setCvsxFile(file || null);
+                }}
+              />
+            </FormControl>
+            {!cvsxFile && form.formState.isSubmitted && (
+              <p className="text-destructive text-sm font-medium">
+                CVSX file is required.
+              </p>
+            )}
+          </FormItem>
 
           {mutation.error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
-                {mutation.error.detail ? (
-                  Array.isArray(mutation.error.detail) ? (
-                    mutation.error.detail.map((error, index) => (
-                      <div key={index}>{error.msg}</div>
-                    ))
+                {/* Improved error display */}
+                {mutation.error instanceof Error ? (
+                  mutation.error.message
+                ) : typeof mutation.error === "object" &&
+                  mutation.error !== null &&
+                  "detail" in mutation.error ? (
+                  Array.isArray((mutation.error as { detail: any }).detail) ? (
+                    ((mutation.error as { detail: any }).detail as any[]).map(
+                      (error, index) => <div key={index}>{error.msg}</div>,
+                    )
                   ) : (
-                    <div>{mutation.error.detail}</div>
+                    <div>{(mutation.error as { detail: any }).detail}</div>
                   )
                 ) : (
                   <div>An unknown error occurred</div>

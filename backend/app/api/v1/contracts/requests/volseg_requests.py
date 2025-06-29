@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class VolsegUploadEntry(BaseModel):
-    is_public: bool | None = Form(default=False)
-    cvsx_file: UploadFile = File(description="CVSX file")
+    is_public: bool = Form()
+    cvsx_file: UploadFile = File()
 
     model_config = {"extra": "forbid"}
