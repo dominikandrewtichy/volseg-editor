@@ -45,6 +45,6 @@ async def list_volseg_entries_for_user(
     current_user: RequireUserDep,
     volseg_service: VolsegServiceDep,
 ):
-    return await volseg_service.list_entries(
+    return await volseg_service.list_user_entries(
         user=current_user,
     )

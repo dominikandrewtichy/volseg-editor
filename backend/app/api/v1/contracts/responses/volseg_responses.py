@@ -4,8 +4,7 @@ from app.api.v1.contracts.responses.common import DebugModelName, Timestamp, Uui
 
 
 class VolsegEntryResponse(Timestamp, Uuid, DebugModelName, BaseModel):
-    db_name: str = Field(min_length=1, max_length=255, examples=["emdb"])
-    entry_id: str = Field(min_length=1, max_length=255, examples=["emd-1832"])
     is_public: bool = Field()
+    cvsx_filepath: str | None = Field(max_length=2083)
 
     model_config = ConfigDict(from_attributes=True)

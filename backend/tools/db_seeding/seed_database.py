@@ -76,14 +76,10 @@ async def seed_database(num_users=3, num_entries=10, num_views=5, clear=False):
             users.append(user)
 
         emd_1832 = VolsegEntry(
-            db_name="emdb",
-            entry_id="emd-1832",
             is_public=True,
             user=test_user,
         )
         custom_tubhiswt = VolsegEntry(
-            db_name="emdb",
-            entry_id="custom-tubhiswt",
             is_public=True,
             user=test_user,
         )

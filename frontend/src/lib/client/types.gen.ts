@@ -43,6 +43,7 @@ export type ShareLinkResponse = {
   id: string;
   created_at: string;
   updated_at: string;
+  entry_id: string;
   is_editable: boolean;
   is_active: boolean;
 };
@@ -94,7 +95,7 @@ export type ViewResponse = {
   name: string;
   description: string | null;
   thumbnail_url: string | null;
-  snapshot_url: string;
+  snapshot_url: string | null;
   is_thumbnail: boolean;
 };
 
@@ -109,27 +110,16 @@ export type VolsegEntryResponse = {
   id: string;
   created_at: string;
   updated_at: string;
-  db_name: string;
-  entry_id: string;
   is_public: boolean;
+  cvsx_filepath: string | null;
 };
 
 export type VolsegUploadEntry = {
-  db_name: string;
-  entry_id: string;
   is_public?: boolean | null;
   /**
-   * Entry annotations
+   * CVSX file
    */
-  annotations: Blob | File;
-  /**
-   * Entry metadata
-   */
-  metadata: Blob | File;
-  /**
-   * Entry data (zip)
-   */
-  data: Blob | File;
+  cvsx_file: Blob | File;
 };
 
 export type EntriesListPublicEntriesData = {

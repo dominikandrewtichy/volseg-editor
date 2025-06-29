@@ -66,5 +66,5 @@ async def delete_view(
 ):
     return await volseg_service.delete(
         user=current_user,
-        volseg_entry_id=volseg_entry_id,
+        id=volseg_entry_id,
     )

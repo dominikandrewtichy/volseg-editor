@@ -21,9 +21,7 @@ import { toast } from "sonner";
 
 export default function VolsegUploadForm() {
   const [files, setFiles] = useState<{
-    annotations?: File;
-    metadata?: File;
-    data?: File;
+    cvsx_file?: File;
   }>({});
 
   const form = useForm<VolsegUploadEntry>({

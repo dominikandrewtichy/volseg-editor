@@ -51,6 +51,7 @@ export const zShareLinkResponse = z.object({
   id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
+  entry_id: z.string().uuid(),
   is_editable: z.boolean(),
   is_active: z.boolean(),
 });
@@ -90,7 +91,7 @@ export const zViewResponse = z.object({
   name: z.string().max(255),
   description: z.union([z.string(), z.null()]),
   thumbnail_url: z.union([z.string().max(2083), z.null()]),
-  snapshot_url: z.string().max(2083),
+  snapshot_url: z.union([z.string().max(2083), z.null()]),
   is_thumbnail: z.boolean(),
 });
 
@@ -105,18 +106,13 @@ export const zVolsegEntryResponse = z.object({
   id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
-  db_name: z.string().min(1).max(255),
-  entry_id: z.string().min(1).max(255),
   is_public: z.boolean(),
+  cvsx_filepath: z.union([z.string().max(2083), z.null()]),
 });
 
 export const zVolsegUploadEntry = z.object({
-  db_name: z.string().min(1).max(255),
-  entry_id: z.string().min(1).max(255),
   is_public: z.union([z.boolean(), z.null()]).optional(),
-  // annotations: z.string(),
-  // metadata: z.string(),
-  // data: z.string(),
+  cvsx_file: z.string(),
 });
 
 export const zEntriesListPublicEntriesResponse =

@@ -1,4 +1,4 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy import select
@@ -22,42 +22,28 @@ class VolsegService:
         self.session = session
         self.storage = storage
 
-    async def create(self, user: User, request: VolsegUploadEntry) -> VolsegEntryResponse:
-        result = await self.session.execute(
-            select(VolsegEntry).where(
-                (VolsegEntry.user_id == user.id)
-                & (VolsegEntry.db_name == request.db_name)
-                & (VolsegEntry.entry_id == request.entry_id)
-            )
-        )
-        volseg_entries: list[VolsegEntry] = result.scalars().all()
+    async def create(
+        self,
+        user: User,
+        request: VolsegUploadEntry,
+    ) -> VolsegEntryResponse:
+        entry_id = uuid4()
 
-        # Check if it already exists
-        if len(volseg_entries) != 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Volseg entry with dbname '{request.db_name}' and entryId '{request.entry_id}' already exists.",
-            )
-
-        # Store all files
-        base_path = f"/volseg_entries/emdb/{request.entry_id}"
-        await self.storage.save(
-            file_path=f"{base_path}/{request.annotations.filename}",
-            file_data=request.annotations.file,
+        base_path = self._get_base_file_path(
+            user_id=user.id,
+            entry_id=entry_id,
         )
+        file_path = f"{base_path}/{request.cvsx_file.filename}"
+        file_data = request.cvsx_file.file
         await self.storage.save(
-            file_path=f"{base_path}/{request.metadata.filename}",
-            file_data=request.metadata.file,
-        )
-        await self.storage.save(
-            file_path=f"{base_path}/{request.data.filename}",
-            file_data=request.data.file,
+            file_path=file_path,
+            file_data=file_data,
         )
 
         volseg_entry = VolsegEntry(
-            db_name=request.db_name,
-            entry_id=request.entry_id,
+            id=entry_id,
             is_public=request.is_public,
+            cvsx_filepath=file_path,
             user=user,
         )
 
@@ -73,7 +59,6 @@ class VolsegService:
     ) -> VolsegEntryResponse:
         volseg_entry: VolsegEntry = await self._get_volseg_entry_by_id(volseg_entry_id)
 
-        # Check permissions
         self._check_permissions(volseg_entry, user)
 
         return VolsegEntryResponse.model_validate(volseg_entry)
@@ -85,29 +70,40 @@ class VolsegService:
         entries: list[VolsegEntry] = result.scalars().all()
         return [VolsegEntryResponse.model_validate(entry) for entry in entries]
 
-    async def list_entries(self, user: User) -> list[VolsegEntryResponse]:
+    async def list_user_entries(self, user: User) -> list[VolsegEntryResponse]:
         result = await self.session.execute(
             select(VolsegEntry).where(VolsegEntry.user_id == user.id),
         )
         volseg_entries: list[VolsegEntry] = result.scalars().all()
         return [VolsegEntryResponse.model_validate(entry) for entry in volseg_entries]
 
-    async def delete(self, user: User, volseg_entry_id: UUID) -> UUID:
-        # Get view
-        volseg_entry: VolsegEntry = await self._get_volseg_entry_by_id(volseg_entry_id)
+    async def delete(
+        self,
+        user: User,
+        id: UUID,
+    ) -> UUID:
+        volseg_entry: VolsegEntry = await self._get_volseg_entry_by_id(id)
 
-        # Check permissions
         self._check_permissions(volseg_entry, user)
 
-        # Delete files
-        file_path = f"/volseg_entries/emdb/{volseg_entry.entry_id}"
-        await self.storage.delete_directory(file_path)
+        base_path = self._get_base_file_path(
+            user_id=user.id,
+            entry_id=volseg_entry.id,
+        )
+        await self.storage.delete_directory(prefix=base_path)
 
         # Delete view
         await self.session.delete(volseg_entry)
         await self.session.commit()
 
         return volseg_entry.id
+
+    def _get_base_file_path(
+        self,
+        user_id: str,
+        entry_id: str,
+    ) -> str:
+        return f"/users/{user_id}/entries/{entry_id}"
 
     async def _get_volseg_entry_by_id(self, id: UUID) -> VolsegEntry:
         volseg_entry: VolsegEntry | None = await self.session.get(VolsegEntry, id)

@@ -213,6 +213,10 @@ export const ShareLinkResponseSchema = {
       format: "date-time",
       examples: ["2025-04-24 09:46:15.895023+00:00"],
     },
+    entry_id: {
+      type: "string",
+      format: "uuid",
+    },
     is_editable: {
       type: "boolean",
     },
@@ -221,7 +225,14 @@ export const ShareLinkResponseSchema = {
     },
   },
   type: "object",
-  required: ["id", "created_at", "updated_at", "is_editable", "is_active"],
+  required: [
+    "id",
+    "created_at",
+    "updated_at",
+    "entry_id",
+    "is_editable",
+    "is_active",
+  ],
 } as const;
 
 export const ShareLinkUpdateRequestSchema = {
@@ -424,8 +435,15 @@ export const ViewResponseSchema = {
       ],
     },
     snapshot_url: {
-      type: "string",
-      maxLength: 2083,
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 2083,
+        },
+        {
+          type: "null",
+        },
+      ],
     },
     is_thumbnail: {
       type: "boolean",
@@ -508,47 +526,27 @@ export const VolsegEntryResponseSchema = {
       format: "date-time",
       examples: ["2025-04-24 09:46:15.895023+00:00"],
     },
-    db_name: {
-      type: "string",
-      maxLength: 255,
-      minLength: 1,
-      examples: ["emdb"],
-    },
-    entry_id: {
-      type: "string",
-      maxLength: 255,
-      minLength: 1,
-      examples: ["emd-1832"],
-    },
     is_public: {
       type: "boolean",
     },
+    cvsx_filepath: {
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 2083,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
   },
   type: "object",
-  required: [
-    "id",
-    "created_at",
-    "updated_at",
-    "db_name",
-    "entry_id",
-    "is_public",
-  ],
+  required: ["id", "created_at", "updated_at", "is_public", "cvsx_filepath"],
 } as const;
 
 export const VolsegUploadEntrySchema = {
   properties: {
-    db_name: {
-      type: "string",
-      maxLength: 255,
-      minLength: 1,
-      examples: ["emdb"],
-    },
-    entry_id: {
-      type: "string",
-      maxLength: 255,
-      minLength: 1,
-      examples: ["emd-1832"],
-    },
     is_public: {
       anyOf: [
         {
@@ -560,20 +558,12 @@ export const VolsegUploadEntrySchema = {
       ],
       default: false,
     },
-    annotations: {
-      type: "string",
-      format: "binary",
-    },
-    metadata: {
-      type: "string",
-      format: "binary",
-    },
-    data: {
+    cvsx_file: {
       type: "string",
       format: "binary",
     },
   },
   additionalProperties: false,
   type: "object",
-  required: ["db_name", "entry_id", "annotations", "metadata", "data"],
+  required: ["cvsx_file"],
 } as const;

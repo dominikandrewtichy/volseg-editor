@@ -44,7 +44,7 @@ services:
     networks:
       - cellim-network
     volumes:
-      - shared_data:/app/temp/volseg_entries
+      - volseg_entries:/app/volseg_entries
     depends_on:
       - db
 
@@ -85,18 +85,6 @@ services:
     volumes:
       - minio_data:/data
 
-  volseg:
-    container_name: cellim-viewer-volseg
-    image: volseg:latest
-    command: /bin/bash -c "cd server/cellstar_server/ && uvicorn main:app --host 0.0.0.0 --port 7000 --reload"
-    ports:
-      - "7000:7000"
-    restart: always
-    networks:
-      - cellim-network
-    volumes:
-      - shared_data:/app/server/cellstar_server/preprocessor/temp/test_db
-
   nginx:
     container_name: cellim-viewer-nginx
     image: nginx:latest
@@ -111,13 +99,12 @@ services:
     depends_on:
     - api
     - frontend
-    - volseg
 
 networks:
   cellim-network:
     driver: bridge
 
 volumes:
-  shared_data:
   db_data:
   minio_data:
+  volseg_entries:

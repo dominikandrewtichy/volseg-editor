@@ -54,6 +54,6 @@ class LocalStorage:
 def get_local_storage():
     settings = get_settings()
     storage = LocalStorage(
-        root_path=settings.FILE_STORAGE_BASE_PATH,
+        root_path=settings.FILES_PATH_VOLSEG_ENTRIES,
     )
     return storage
