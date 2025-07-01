@@ -31,7 +31,7 @@ import {
   volsegEntriesUploadEntry,
   volsegEntriesDeleteView,
   volsegEntriesGetEntryById,
-  volsegEntriesGetViewThumbnailImage,
+  volsegEntriesGetCvsxFile,
 } from "../sdk.gen";
 import {
   queryOptions,
@@ -93,7 +93,7 @@ import type {
   VolsegEntriesDeleteViewError,
   VolsegEntriesDeleteViewResponse,
   VolsegEntriesGetEntryByIdData,
-  VolsegEntriesGetViewThumbnailImageData,
+  VolsegEntriesGetCvsxFileData,
 } from "../types.gen";
 import { client as _heyApiClient } from "../client.gen";
 
@@ -1014,16 +1014,16 @@ export const volsegEntriesGetEntryByIdOptions = (
   });
 };
 
-export const volsegEntriesGetViewThumbnailImageQueryKey = (
-  options: Options<VolsegEntriesGetViewThumbnailImageData>,
-) => createQueryKey("volsegEntriesGetViewThumbnailImage", options);
+export const volsegEntriesGetCvsxFileQueryKey = (
+  options: Options<VolsegEntriesGetCvsxFileData>,
+) => createQueryKey("volsegEntriesGetCvsxFile", options);
 
-export const volsegEntriesGetViewThumbnailImageOptions = (
-  options: Options<VolsegEntriesGetViewThumbnailImageData>,
+export const volsegEntriesGetCvsxFileOptions = (
+  options: Options<VolsegEntriesGetCvsxFileData>,
 ) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
-      const { data } = await volsegEntriesGetViewThumbnailImage({
+      const { data } = await volsegEntriesGetCvsxFile({
         ...options,
         ...queryKey[0],
         signal,
@@ -1031,6 +1031,6 @@ export const volsegEntriesGetViewThumbnailImageOptions = (
       });
       return data;
     },
-    queryKey: volsegEntriesGetViewThumbnailImageQueryKey(options),
+    queryKey: volsegEntriesGetCvsxFileQueryKey(options),
   });
 };

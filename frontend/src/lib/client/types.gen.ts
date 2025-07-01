@@ -872,7 +872,7 @@ export type VolsegEntriesGetEntryByIdResponses = {
 export type VolsegEntriesGetEntryByIdResponse =
   VolsegEntriesGetEntryByIdResponses[keyof VolsegEntriesGetEntryByIdResponses];
 
-export type VolsegEntriesGetViewThumbnailImageData = {
+export type VolsegEntriesGetCvsxFileData = {
   body?: never;
   path: {
     volseg_entry_id: string;
@@ -881,17 +881,17 @@ export type VolsegEntriesGetViewThumbnailImageData = {
   url: "/api/v1/volseg/{volseg_entry_id}/file";
 };
 
-export type VolsegEntriesGetViewThumbnailImageErrors = {
+export type VolsegEntriesGetCvsxFileErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type VolsegEntriesGetViewThumbnailImageError =
-  VolsegEntriesGetViewThumbnailImageErrors[keyof VolsegEntriesGetViewThumbnailImageErrors];
+export type VolsegEntriesGetCvsxFileError =
+  VolsegEntriesGetCvsxFileErrors[keyof VolsegEntriesGetCvsxFileErrors];
 
-export type VolsegEntriesGetViewThumbnailImageResponses = {
+export type VolsegEntriesGetCvsxFileResponses = {
   /**
    * Successful Response
    */

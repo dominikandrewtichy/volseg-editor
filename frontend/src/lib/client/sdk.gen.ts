@@ -82,8 +82,8 @@ import type {
   VolsegEntriesGetEntryByIdData,
   VolsegEntriesGetEntryByIdResponse,
   VolsegEntriesGetEntryByIdError,
-  VolsegEntriesGetViewThumbnailImageData,
-  VolsegEntriesGetViewThumbnailImageError,
+  VolsegEntriesGetCvsxFileData,
+  VolsegEntriesGetCvsxFileError,
 } from "./types.gen";
 import {
   zEntriesListPublicEntriesResponse,
@@ -708,16 +708,14 @@ export const volsegEntriesGetEntryById = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Get View Thumbnail Image
+ * Get Cvsx File
  */
-export const volsegEntriesGetViewThumbnailImage = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<VolsegEntriesGetViewThumbnailImageData, ThrowOnError>,
+export const volsegEntriesGetCvsxFile = <ThrowOnError extends boolean = false>(
+  options: Options<VolsegEntriesGetCvsxFileData, ThrowOnError>,
 ) => {
   return (options.client ?? _heyApiClient).get<
     unknown,
-    VolsegEntriesGetViewThumbnailImageError,
+    VolsegEntriesGetCvsxFileError,
     ThrowOnError
   >({
     url: "/api/v1/volseg/{volseg_entry_id}/file",
