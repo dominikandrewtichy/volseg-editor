@@ -31,6 +31,7 @@ import {
   volsegEntriesUploadEntry,
   volsegEntriesDeleteView,
   volsegEntriesGetEntryById,
+  volsegEntriesGetViewThumbnailImage,
 } from "../sdk.gen";
 import {
   queryOptions,
@@ -92,6 +93,7 @@ import type {
   VolsegEntriesDeleteViewError,
   VolsegEntriesDeleteViewResponse,
   VolsegEntriesGetEntryByIdData,
+  VolsegEntriesGetViewThumbnailImageData,
 } from "../types.gen";
 import { client as _heyApiClient } from "../client.gen";
 
@@ -1009,5 +1011,26 @@ export const volsegEntriesGetEntryByIdOptions = (
       return data;
     },
     queryKey: volsegEntriesGetEntryByIdQueryKey(options),
+  });
+};
+
+export const volsegEntriesGetViewThumbnailImageQueryKey = (
+  options: Options<VolsegEntriesGetViewThumbnailImageData>,
+) => createQueryKey("volsegEntriesGetViewThumbnailImage", options);
+
+export const volsegEntriesGetViewThumbnailImageOptions = (
+  options: Options<VolsegEntriesGetViewThumbnailImageData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await volsegEntriesGetViewThumbnailImage({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: volsegEntriesGetViewThumbnailImageQueryKey(options),
   });
 };

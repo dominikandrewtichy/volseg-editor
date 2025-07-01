@@ -2,6 +2,12 @@
 
 import { z } from "zod";
 
+export const zBodyVolsegEntriesUploadEntry = z.object({
+  name: z.string().max(255),
+  is_public: z.boolean(),
+  cvsx_file: z.string(),
+});
+
 export const zEntryCreateRequest = z.object({
   volseg_entry_id: z.string().uuid(),
   name: z.string().min(1).max(255),
@@ -106,13 +112,9 @@ export const zVolsegEntryResponse = z.object({
   id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
+  name: z.string().max(255),
   is_public: z.boolean(),
   cvsx_filepath: z.union([z.string().max(2083), z.null()]),
-});
-
-export const zVolsegUploadEntry = z.object({
-  is_public: z.boolean(),
-  cvsx_file: z.string(),
 });
 
 export const zEntriesListPublicEntriesResponse =

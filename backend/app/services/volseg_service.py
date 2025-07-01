@@ -1,31 +1,32 @@
 from uuid import UUID, uuid4
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Response, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.contracts.requests.volseg_requests import VolsegUploadEntry
 from app.api.v1.contracts.responses.volseg_responses import VolsegEntryResponse
 from app.database.models.user_model import User
 from app.database.models.volseg_entry_model import VolsegEntry
 from app.database.session_manager import get_async_session
 from app.services.files.local_storage import LocalStorage, get_local_storage
-from app.services.files.minio_storage import MinioStorage
 
 
 class VolsegService:
     def __init__(
         self,
         session: AsyncSession,
-        storage: MinioStorage,
+        storage: LocalStorage,
     ):
         self.session = session
         self.storage = storage
 
     async def create(
         self,
+        *,
         user: User,
-        request: VolsegUploadEntry,
+        name: str,
+        is_public: bool,
+        cvsx_file: UploadFile,
     ) -> VolsegEntryResponse:
         entry_id = uuid4()
 
@@ -33,8 +34,8 @@ class VolsegService:
             user_id=user.id,
             entry_id=entry_id,
         )
-        file_path = f"{base_path}/{request.cvsx_file.filename}"
-        file_data = request.cvsx_file.file
+        file_path = f"{base_path}/{cvsx_file.filename}"
+        file_data = cvsx_file.file
         await self.storage.save(
             file_path=file_path,
             file_data=file_data,
@@ -42,7 +43,8 @@ class VolsegService:
 
         volseg_entry = VolsegEntry(
             id=entry_id,
-            is_public=request.is_public,
+            name=name,
+            is_public=is_public,
             cvsx_filepath=file_path,
             user=user,
         )
@@ -76,6 +78,42 @@ class VolsegService:
         )
         volseg_entries: list[VolsegEntry] = result.scalars().all()
         return [VolsegEntryResponse.model_validate(entry) for entry in volseg_entries]
+
+    async def get_file(
+        self,
+        *,
+        id: UUID,
+        user: User,
+    ) -> UUID:
+        volseg_entry: VolsegEntry = await self._get_volseg_entry_by_id(id)
+
+        self._check_permissions(volseg_entry, user)
+
+        if not volseg_entry.cvsx_filepath:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Missing file for volseg entry",
+            )
+
+        try:
+            file = await self.storage.load(
+                file_path=volseg_entry.cvsx_filepath,
+            )
+        except FileNotFoundError:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="File not found",
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"{e}",
+            )
+
+        return Response(
+            content=file,
+            media_type="application/zip",
+        )
 
     async def delete(
         self,

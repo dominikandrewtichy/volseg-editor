@@ -1,4 +1,4 @@
-// import { LoadVolseg } from "molstar/lib/commonjs/extensions/volumes-and-segmentations";
+import { loadCVSXFromAnything } from "@/volseg/src/extensions/cvsx-extension";
 import { PluginStateSnapshotManager } from "molstar/lib/commonjs/mol-plugin-state/manager/snapshots";
 import { PluginUIContext } from "molstar/lib/commonjs/mol-plugin-ui/context";
 import {
@@ -6,9 +6,10 @@ import {
   PluginUISpec,
 } from "molstar/lib/commonjs/mol-plugin-ui/spec";
 import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
-import { BehaviorSubject, combineLatest } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { BaseReactiveModel } from "./base-model";
-import { LoadVolseg } from "@/volseg/src/extensions/volumes-and-segmentations";
+import { CVSXSpec } from "@/volseg/src/extensions/cvsx-extension/behaviour";
+import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
 
 type InitializationState = "pending" | "initializing" | "success" | "error";
 
@@ -28,6 +29,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
     const defaultSpec = DefaultPluginUISpec();
     const spec: PluginUISpec = {
       ...defaultSpec,
+      behaviors: [PluginSpec.Behavior(CVSXSpec), ...defaultSpec.behaviors],
       layout: {
         initial: {
           isExpanded: this.state.isExpanded.value,
@@ -75,6 +77,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
   }
 
   async clear(): Promise<void> {
+    console.log("clearing");
     await this.plugin.clear();
   }
 
@@ -127,17 +130,13 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
     this.state.isLoading.next(true);
 
-    this.plugin.runTask(
-      this.plugin.state.data.applyAction(LoadVolseg, {
-        serverUrl: `${import.meta.env.VITE_VOLSEG_API_URL}/v1`,
-        source: {
-          name: "emdb",
-          params: {
-            entryId: entryId,
-          },
-        },
-      }),
-    );
+    const url = `${import.meta.env.VITE_API_URL}/api/v1/volseg/${entryId}/file`;
+    const data = await this.plugin.builders.data.download({
+      url: url,
+      isBinary: true,
+      label: "CVSX data",
+    });
+    await loadCVSXFromAnything(this.plugin, data);
 
     this.state.isLoading.next(false);
   }

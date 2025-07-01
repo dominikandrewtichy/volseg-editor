@@ -1,9 +1,10 @@
-from fastapi import File, Form, UploadFile
-from pydantic import BaseModel
+from fastapi import UploadFile
+from pydantic import BaseModel, Field
 
 
 class VolsegUploadEntry(BaseModel):
-    is_public: bool = Form()
-    cvsx_file: UploadFile = File()
+    name: str = Field(max_length=255)
+    is_public: bool = Field()
+    cvsx_file: UploadFile = Field()
 
     model_config = {"extra": "forbid"}

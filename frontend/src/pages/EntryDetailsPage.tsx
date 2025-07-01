@@ -20,10 +20,7 @@ import {
 } from "@/lib/client/@tanstack/react-query.gen";
 import { formatDate } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  AlertCircle,
-  CalendarIcon
-} from "lucide-react";
+import { AlertCircle, CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -47,7 +44,6 @@ export function EntryDetailsPage({
 
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
-  const [expanded, setExpanded] = useState(false);
 
   const entryQuery = useQuery({
     ...entriesGetEntryByIdOptions({
@@ -68,16 +64,17 @@ export function EntryDetailsPage({
   const volsegMutation = useQuery({
     ...volsegEntriesGetEntryByIdOptions({
       path: {
-        volseg_entry_id: entryQuery.data?.volseg_entry_id,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+        volseg_entry_id: entryQuery.data?.volseg_entry_id!,
       },
     }),
-    enabled: !!entryQuery.data,
+    enabled: !!entryQuery.data?.volseg_entry_id,
   });
 
   const shareLinkQuery = useQuery({
     ...entriesGetEntryShareLinkOptions({
       path: {
-        entry_id: entryId,
+        entry_id: entryId!,
       },
     }),
   });
@@ -89,7 +86,7 @@ export function EntryDetailsPage({
       queryClient.invalidateQueries({
         queryKey: entriesGetEntryByIdQueryKey({
           path: {
-            entry_id: entryId,
+            entry_id: entryId!,
           },
         }),
       });
@@ -100,20 +97,15 @@ export function EntryDetailsPage({
     },
   });
 
-  async function loadVolseg() {
-    const entryId = volsegMutation.data?.entry_id;
-    if (!entryId) return;
-    await viewer.clear();
-    await viewer.loadVolseg(entryId);
-  }
-
-  // Clear viewer when unmounting
   useEffect(() => {
+    async function loadVolseg() {
+      const entryId = volsegMutation.data?.id;
+      if (!entryId) return;
+      await viewer.clear();
+      await viewer.loadVolseg(entryId);
+    }
     loadVolseg();
-    return () => {
-      viewer.clear();
-    };
-  }, [viewer, volsegMutation.data?.entry_id]);
+  }, [volsegMutation.data?.id, viewer]);
 
   if (entryQuery.isLoading) {
     return (
@@ -138,7 +130,7 @@ export function EntryDetailsPage({
   function onSave() {
     entryMutation.mutate({
       path: {
-        entry_id: entryId,
+        entry_id: entryId!,
       },
       body: {
         name: name,
@@ -251,7 +243,7 @@ export function EntryDetailsPage({
       <div className="flex flex-1 overflow-hidden gap-x-3">
         <aside className="overflow-hidden flex flex-col h-[80vh]">
           <ViewsSidebar
-            entryId={entryId}
+            entryId={entryId!}
             isEditable={!!canEdit}
             onSaveView={() => setShowSaveDialog(true)}
           />

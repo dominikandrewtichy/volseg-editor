@@ -10,6 +10,7 @@ from app.database.models.mixins import TimestampMixin, UuidMixin
 class VolsegEntry(Base, UuidMixin, TimestampMixin):
     __tablename__ = "volseg_entries"
 
+    name: Mapped[str] = mapped_column(String(255))
     is_public: Mapped[bool] = mapped_column(default=False)
     cvsx_filepath: Mapped[str | None] = mapped_column(String(2083), default=None)
 

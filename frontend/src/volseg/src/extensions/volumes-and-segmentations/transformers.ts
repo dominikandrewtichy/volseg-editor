@@ -22,27 +22,29 @@ import {
 
 import {
   RawMeshSegmentData,
-  VolsegEntry,
   VolsegEntryData,
   createVolsegEntryParams,
 } from "./entry-root";
 import {
+  VOLSEG_STATE_FROM_ENTRY_TRANSFORMER_NAME,
   VolsegState,
   VolsegStateParams,
-  VOLSEG_STATE_FROM_ENTRY_TRANSFORMER_NAME,
 } from "./entry-state";
-import {
-  VolsegGlobalState,
-  VolsegGlobalStateData,
-  VolsegGlobalStateParams,
-} from "./global-state";
+import { VolsegGlobalStateData, VolsegGlobalStateParams } from "./global-state";
 import { CreateTransformer } from "./helpers";
 import {
   VolsegGeometricSegmentation,
   VolsegShapePrimitivesData,
 } from "./shape_primitives";
 import { ShapePrimitiveData } from "./volseg-api/data";
-import { StateObject } from "molstar/lib/mol-state";
+
+class VolsegEntry extends PluginStateObject.CreateBehavior<VolsegEntryData>({
+  name: "Vol & Seg Entry",
+}) {}
+
+class VolsegGlobalState extends PluginStateObject.CreateBehavior<VolsegGlobalStateData>(
+  { name: "Vol & Seg Global State" },
+) {}
 
 export const ProjectDataParams = {
   timeframeIndex: ParamDefinition.Numeric(0, { step: 1 }),

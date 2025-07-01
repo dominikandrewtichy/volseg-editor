@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zVolsegUploadEntry } from "@/lib/client";
+import { zBodyVolsegEntriesUploadEntry } from "@/lib/client";
 import { volsegEntriesUploadEntryMutation } from "@/lib/client/@tanstack/react-query.gen";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -23,14 +23,11 @@ import { z } from "zod";
 export default function VolsegUploadForm() {
   const [cvsxFile, setCvsxFile] = useState<File | null>(null);
 
-  const formSchema = zVolsegUploadEntry.omit({ cvsx_file: true });
+  const formSchema = zBodyVolsegEntriesUploadEntry.omit({ cvsx_file: true });
   type FormData = z.infer<typeof formSchema>;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      is_public: false,
-    },
   });
 
   const mutation = useMutation({
@@ -53,7 +50,7 @@ export default function VolsegUploadForm() {
 
     mutation.mutate({
       body: {
-        is_public: data.is_public,
+        ...data,
         cvsx_file: cvsxFile,
       },
     });
@@ -67,16 +64,13 @@ export default function VolsegUploadForm() {
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="is_public"
+            name="name"
             render={({ field }) => (
-              <FormItem className="flex items-center">
+              <FormItem>
+                <FormLabel>Entry name</FormLabel>
                 <FormControl>
-                  <Checkbox
-                    checked={field.value ?? false}
-                    onCheckedChange={field.onChange}
-                  />
+                  <Input placeholder="Entry name" {...field} />
                 </FormControl>
-                <FormLabel className="mb-0">Make Public</FormLabel>
                 <FormMessage />
               </FormItem>
             )}
@@ -99,6 +93,23 @@ export default function VolsegUploadForm() {
               </p>
             )}
           </FormItem>
+
+          <FormField
+            control={form.control}
+            name="is_public"
+            render={({ field }) => (
+              <FormItem className="flex items-center">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value ?? false}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="mb-0">Make Public</FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           {mutation.error && (
             <Alert variant="destructive">

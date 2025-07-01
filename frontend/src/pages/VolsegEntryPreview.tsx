@@ -20,20 +20,13 @@ export function VolsegEntryPreview() {
     }),
   });
 
-  async function loadVolseg() {
-    const entryId = volsegEntryQuery.data?.entry_id;
-    if (!entryId) return;
-    await viewer.clear();
-    await viewer.loadVolseg(entryId);
-  }
-
-  // Clear viewer when unmounting
   useEffect(() => {
+    async function loadVolseg() {
+      await viewer.clear();
+      await viewer.loadVolseg(entryId);
+    }
     loadVolseg();
-    return () => {
-      viewer.clear();
-    };
-  }, [viewer, volsegEntryQuery.data?.entry_id]);
+  }, [entryId, viewer]);
 
   if (volsegEntryQuery.isLoading) {
     return (
@@ -50,7 +43,7 @@ export function VolsegEntryPreview() {
           <div className="md:col-span-2">
             <div className="flex justify-between items-start mb-4">
               <h1 className="text-3xl font-bold">
-                {volsegEntryQuery.data?.entry_id}
+                {volsegEntryQuery.data.name}
               </h1>
               <VisibilityBadge isPublic={volsegEntryQuery.data.is_public} />
             </div>

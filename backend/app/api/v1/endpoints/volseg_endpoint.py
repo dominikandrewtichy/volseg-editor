@@ -1,9 +1,8 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, File, Path, status
+from fastapi import APIRouter, File, Form, Path, Response, UploadFile, status
 
-from app.api.v1.contracts.requests.volseg_requests import VolsegUploadEntry
 from app.api.v1.contracts.responses.volseg_responses import VolsegEntryResponse
 from app.api.v1.deps import OptionalUserDep, RequireUserDep, VolsegServiceDep
 from app.api.v1.tags import Tags
@@ -17,13 +16,17 @@ router = APIRouter(prefix="/volseg", tags=[Tags.volseg])
     response_model=VolsegEntryResponse,
 )
 async def upload_entry(
-    request: Annotated[VolsegUploadEntry, File()],
+    name: Annotated[str, Form(max_length=255)],
+    is_public: Annotated[bool, Form()],
+    cvsx_file: Annotated[UploadFile, File()],
     current_user: RequireUserDep,
-    volseg_service: VolsegServiceDep,
+    service: VolsegServiceDep,
 ):
-    return await volseg_service.create(
+    return await service.create(
+        name=name,
+        is_public=is_public,
+        cvsx_file=cvsx_file,
         user=current_user,
-        request=request,
     )
 
 
@@ -35,9 +38,9 @@ async def upload_entry(
 async def get_entry_by_id(
     volseg_entry_id: Annotated[UUID, Path(title="Volseg Entry ID")],
     current_user: OptionalUserDep,
-    volseg_service: VolsegServiceDep,
+    service: VolsegServiceDep,
 ):
-    return await volseg_service.get_entry_by_id(
+    return await service.get_entry_by_id(
         user=current_user,
         volseg_entry_id=volseg_entry_id,
     )
@@ -49,9 +52,25 @@ async def get_entry_by_id(
     response_model=list[VolsegEntryResponse],
 )
 async def list_public_entries(
-    volseg_service: VolsegServiceDep,
+    service: VolsegServiceDep,
 ):
-    return await volseg_service.list_public_entries()
+    return await service.list_public_entries()
+
+
+@router.get(
+    "/{volseg_entry_id}/file",
+    status_code=status.HTTP_200_OK,
+    response_class=Response,
+)
+async def get_cvsx_file(
+    volseg_entry_id: Annotated[UUID, Path(title="Entry ID")],
+    current_user: OptionalUserDep,
+    service: VolsegServiceDep,
+):
+    return await service.get_file(
+        id=volseg_entry_id,
+        user=current_user,
+    )
 
 
 @router.delete(
@@ -62,9 +81,9 @@ async def list_public_entries(
 async def delete_view(
     volseg_entry_id: Annotated[UUID, Path(title="Volseg Entry ID")],
     current_user: RequireUserDep,
-    volseg_service: VolsegServiceDep,
+    service: VolsegServiceDep,
 ):
-    return await volseg_service.delete(
+    return await service.delete(
         user=current_user,
         id=volseg_entry_id,
     )

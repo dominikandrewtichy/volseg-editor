@@ -103,7 +103,7 @@ export function EntryCreatePage() {
                     <SelectContent>
                       {combinedVolsegs.map((volseg) => (
                         <SelectItem key={volseg.id} value={volseg.id}>
-                          [{volseg.scope}] {volseg.db_name} {volseg.entry_id}
+                          [{volseg.scope}] {volseg.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

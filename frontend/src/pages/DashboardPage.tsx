@@ -131,7 +131,7 @@ export function DashboardPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {entry.entry_id || "Untitled Volseg Entry"}
+                      {entry.name || "Untitled Volseg Entry"}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {new Date(entry.created_at).toLocaleString(undefined, {

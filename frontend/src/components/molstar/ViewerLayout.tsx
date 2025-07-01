@@ -25,7 +25,7 @@ export function ViewerLayout({ viewer }: { viewer: MolstarViewerModel }) {
         inset: isExpanded ? 0 : "auto",
         width: "100%",
         height: "100%",
-        zIndex: isExpanded ? 10 : "auto",
+        zIndex: isExpanded ? 51 : "auto",
       }}
     >
       <div

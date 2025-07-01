@@ -82,6 +82,8 @@ import type {
   VolsegEntriesGetEntryByIdData,
   VolsegEntriesGetEntryByIdResponse,
   VolsegEntriesGetEntryByIdError,
+  VolsegEntriesGetViewThumbnailImageData,
+  VolsegEntriesGetViewThumbnailImageError,
 } from "./types.gen";
 import {
   zEntriesListPublicEntriesResponse,
@@ -701,6 +703,24 @@ export const volsegEntriesGetEntryById = <ThrowOnError extends boolean = false>(
       return await zVolsegEntriesGetEntryByIdResponse.parseAsync(data);
     },
     url: "/api/v1/volseg/{volseg_entry_id}",
+    ...options,
+  });
+};
+
+/**
+ * Get View Thumbnail Image
+ */
+export const volsegEntriesGetViewThumbnailImage = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<VolsegEntriesGetViewThumbnailImageData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).get<
+    unknown,
+    VolsegEntriesGetViewThumbnailImageError,
+    ThrowOnError
+  >({
+    url: "/api/v1/volseg/{volseg_entry_id}/file",
     ...options,
   });
 };

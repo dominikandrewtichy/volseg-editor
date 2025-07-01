@@ -37,7 +37,7 @@ export async function loadCVSXFromAnything(
   await plugin
     .build()
     .to(data)
-    .apply(VolsegGlobalStateFromFile, {}, { state: { isGhost: true } })
+    .apply(VolsegGlobalStateFromFile, {}, { state: { isGhost: false } })
     .commit();
 
   const entryNode = await plugin
@@ -48,7 +48,7 @@ export async function loadCVSXFromAnything(
   await plugin
     .build()
     .to(entryNode)
-    .apply(VolsegStateFromEntry, {}, { state: { isGhost: true } })
+    .apply(VolsegStateFromEntry, {}, { state: { isGhost: false } })
     .commit();
 
   if (entryNode.data) {
