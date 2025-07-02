@@ -48,9 +48,10 @@ class Settings(BaseSettings):
 
     # JWT
     JWT_ALGORITHM: str = "HS256"
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
-    ACCESS_TOKEN_COOKIE: str = "access_token"
+    JWT_ACCESS_TOKEN_COOKIE: str = "access_token"
+    JWT_REFRESH_TOKEN_COOKIE: str = "refresh_token"
 
     # MINIO
     MINIO_HOST: str = os.getenv("MINIO_HOST")
@@ -66,7 +67,7 @@ class Settings(BaseSettings):
     OIDC_CLIENT_SECRET: str = os.getenv("OIDC_CLIENT_SECRET")
     OIDC_ISSUER_URL: str = os.getenv("OIDC_ISSUER_URL")
     OIDC_REDIRECT_URI: str = os.getenv("OIDC_REDIRECT_URI")
-    OIDC_SCOPES: list[str] = ["openid", "profile", "email"]
+    OIDC_SCOPES: list[str] = ["openid", "profile", "email", "offline_access"]
     OIDC_AUTHORIZATION_URL: str = f"{OIDC_ISSUER_URL}/authorize"
     OIDC_TOKEN_URL: str = f"{OIDC_ISSUER_URL}/token"
     OIDC_USERINFO_URL: str = f"{OIDC_ISSUER_URL}/userinfo"

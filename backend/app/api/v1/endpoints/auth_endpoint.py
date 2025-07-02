@@ -89,7 +89,7 @@ async def oidc_callback(
     pretty(response_data)
 
     access_token = response_data.get("access_token")
-    id_token = response_data.get("id_token")
+    refresh_token = response_data.get("refresh_token")
 
     # Get user information
     async with httpx.AsyncClient() as client:
@@ -124,13 +124,20 @@ async def oidc_callback(
 
     print(user.id)
 
-    # Create and set JWT token
+    # Create and set JWT tokens
     jwt_token = create_access_token(data={"sub": str(user.id)})
     redirect_path = request.session.get("redirect_after_login") or "/dashboard"
     redirect_response = RedirectResponse(url=f"http://localhost:5173{redirect_path}")
     redirect_response.set_cookie(
-        key=get_settings().ACCESS_TOKEN_COOKIE,
+        key=get_settings().JWT_ACCESS_TOKEN_COOKIE,
         value=jwt_token,
+        httponly=True,
+        secure=False,
+        samesite="Lax",
+    )
+    redirect_response.set_cookie(
+        key=get_settings().JWT_REFRESH_TOKEN_COOKIE,
+        value=refresh_token,
         httponly=True,
         secure=False,
         samesite="Lax",
@@ -146,7 +153,7 @@ async def oidc_callback(
 )
 async def logout(response: Response):
     response.delete_cookie(
-        key=get_settings().ACCESS_TOKEN_COOKIE,
+        key=get_settings().JWT_ACCESS_TOKEN_COOKIE,
         httponly=True,
         secure=False,
         samesite="lax",
@@ -173,7 +180,7 @@ async def get_users_token(
     request: Request,
 ):
     return request.cookies.get(
-        get_settings().ACCESS_TOKEN_COOKIE,
+        get_settings().JWT_ACCESS_TOKEN_COOKIE,
     )
 
 

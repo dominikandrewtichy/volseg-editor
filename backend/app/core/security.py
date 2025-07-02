@@ -3,6 +3,7 @@ from functools import lru_cache
 from typing import Any, Literal
 from uuid import UUID
 
+import httpx
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from jwt import DecodeError, ExpiredSignatureError, MissingRequiredClaimError, decode, encode
@@ -60,6 +61,33 @@ def create_access_token(data: dict[str, str], expires_delta: timedelta = None) -
     )
 
 
+async def refresh_access_token(refresh_token: str) -> dict | None:
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            get_settings().OIDC_TOKEN_URL,
+            data={
+                "grant_type": "refresh_token",
+                "refresh_token": refresh_token,
+                "client_id": get_settings().OIDC_CLIENT_ID,
+                "client_secret": get_settings().OIDC_CLIENT_SECRET,
+            },
+        )
+        token_data = response.json()
+
+    if response.status_code != status.HTTP_200_OK:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not refresh token",
+        )
+
+    token_data = response.json()
+
+    if "access_token" not in token_data:
+        return None
+
+    return token_data
+
+
 def decode_token(token: str) -> dict[str, Any]:
     return decode(
         jwt=token,
@@ -79,7 +107,7 @@ def get_admin_user_token():
 
 
 def get_token_from_request(request: Request) -> str | None:
-    return request.cookies.get(get_settings().ACCESS_TOKEN_COOKIE)
+    return request.cookies.get(get_settings().JWT_ACCESS_TOKEN_COOKIE)
 
 
 def get_required_user(
