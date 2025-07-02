@@ -8,14 +8,16 @@ from app.api.v1.contracts.responses.volseg_responses import VolsegEntryResponse
 from app.database.models.user_model import User
 from app.database.models.volseg_entry_model import VolsegEntry
 from app.database.session_manager import get_async_session
+from app.services.files.base_storage import BaseStorage
 from app.services.files.local_storage import LocalStorage
+from app.services.files.minio_storage import MinioStorage, get_minio_storage
 
 
 class VolsegService:
     def __init__(
         self,
         session: AsyncSession,
-        storage: LocalStorage,
+        storage: BaseStorage,
     ):
         self.session = session
         self.storage = storage
@@ -167,10 +169,8 @@ class VolsegService:
 
 async def get_volseg_service(
     session: AsyncSession = Depends(get_async_session),
+    storage: BaseStorage = Depends(get_minio_storage),
 ) -> VolsegService:
-    storage = LocalStorage(
-        root_path="volseg-entries",
-    )
     return VolsegService(
         session=session,
         storage=storage,

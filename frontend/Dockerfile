@@ -1,12 +1,18 @@
 FROM node:22-alpine
 
+
 WORKDIR /app
 
-COPY package*.json /app/
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
+COPY package*.json /app/
 RUN npm ci
 
-COPY . /app
+COPY . .
+
+RUN chown -R appuser:appgroup /app
+
+USER appuser
 
 EXPOSE 5173
 

@@ -43,8 +43,6 @@ services:
     restart: always
     networks:
       - cellim-network
-    volumes:
-      - volseg_entries:/app/volseg_entries
     depends_on:
       - db
 
@@ -85,20 +83,30 @@ services:
     volumes:
       - minio_data:/data
 
-  nginx:
-    container_name: cellim-viewer-nginx
-    image: nginx:latest
-    volumes:
-      - ./deployment/nginx/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - "6080:80"
-      - "6443:443"
-    restart: always
-    networks:
-      - cellim-network
-    depends_on:
-    - api
-    - frontend
+  # nginx:
+  #   container_name: cellim-viewer-nginx
+  #   image: nginx:latest
+  #   volumes:
+  #     - ./deployment/nginx/nginx.conf:/etc/nginx/nginx.conf
+  #   ports:
+  #     - "6080:80"
+  #     - "6443:443"
+  #   restart: always
+  #   networks:
+  #     - cellim-network
+  #   depends_on:
+  #   - api
+  #   - frontend
+
+  # fix-perms:
+  #   image: busybox
+  #   volumes:
+  #     - volseg_entries:/app/volseg-entries
+  #   command: ["sh", "-c", "chown -R 1000:1000 /app/volseg-entries"]
+  #   user: root
+  #   entrypoint: ""
+  #   networks:
+  #     - cellim-network
 
 networks:
   cellim-network:
@@ -107,4 +115,4 @@ networks:
 volumes:
   db_data:
   minio_data:
-  volseg_entries:
+  # volseg_entries:
