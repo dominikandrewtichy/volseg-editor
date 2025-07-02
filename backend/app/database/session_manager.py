@@ -62,12 +62,13 @@ class DatabaseSessionManager:
 
 
 @lru_cache
-def get_session_manager():
+def get_session_manager(url: str = get_settings().POSTGRES_URL):
     return DatabaseSessionManager(
-        get_settings().POSTGRES_URL, {"echo": get_settings().MODE != ModeEnum.production}
+        url,
+        {"echo": get_settings().MODE != ModeEnum.production},
     )
 
 
-async def get_async_session():
-    async with get_session_manager().session() as session:
+async def get_async_session(url: str = get_settings().POSTGRES_URL):
+    async with get_session_manager(url).session() as session:
         yield session
