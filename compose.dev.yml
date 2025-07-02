@@ -30,7 +30,9 @@ services:
 
   api:
     container_name: cellim-viewer-api
-    build: ./backend/
+    build:
+      context: ./backend
+      dockerfile: docker/dockerfile.dev
     ports:
       - "8000:8000"
     develop:
@@ -48,7 +50,9 @@ services:
 
   frontend:
     container_name: cellim-viewer-frontend
-    build: ./frontend/
+    build:
+      context: ./frontend
+      dockerfile: docker/dockerfile.dev
     ports:
       - "5173:5173"
     develop:
