@@ -86,6 +86,26 @@ services:
     depends_on:
       - db
 
+  # db-init:
+  #   container_name: cellim-viewer-db-init-dev
+  #   build:
+  #     context: ./backend
+  #     dockerfile: docker/dockerfile.dev
+  #   env_file:
+  #     - ./backend/.env
+  #   command: >
+  #     sh -c "
+  #       echo 'Waiting for DB...' &&
+  #       until pg_isready -h db -U postgres; do sleep 1; done &&
+  #       sh scripts/migrate.sh upgrade head &&
+  #       python -m app.database.seed.py
+  #     "
+  #   restart: "no"
+  #   networks:
+  #     - cellim-network
+  #   depends_on:
+  #     - db
+
   # nginx:
   #   container_name: cellim-viewer-nginx
   #   image: nginx:latest
