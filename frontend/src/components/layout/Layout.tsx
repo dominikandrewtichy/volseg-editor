@@ -13,7 +13,9 @@ export function MainLayout({
 
       <Header />
 
-      <main className="container mx-auto flex-grow px-4 py-8">{children}</main>
+      <main className="container mx-auto flex-grow px-2 sm:px-4 py-8">
+        {children}
+      </main>
 
       <Footer />
     </div>
