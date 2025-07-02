@@ -11,8 +11,9 @@ from app.database.models.volseg_entry_model import VolsegEntry
 class User(Base, UuidMixin, TimestampMixin):
     __tablename__ = "users"
 
-    openid: Mapped[UUID]
-    email: Mapped[str]
+    openid: Mapped[str]
+    name: Mapped[str | None]
+    email: Mapped[str | None]
 
     role_id: Mapped[UUID] = mapped_column(ForeignKey("roles.id"))
 

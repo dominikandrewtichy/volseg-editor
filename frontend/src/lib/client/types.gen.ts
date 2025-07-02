@@ -681,6 +681,33 @@ export type AuthLoginUserResponses = {
   200: unknown;
 };
 
+export type AuthOidcCallbackData = {
+  body?: never;
+  path?: never;
+  query: {
+    code: string;
+    state: string;
+  };
+  url: "/api/v1/auth/callback";
+};
+
+export type AuthOidcCallbackErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type AuthOidcCallbackError =
+  AuthOidcCallbackErrors[keyof AuthOidcCallbackErrors];
+
+export type AuthOidcCallbackResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
 export type AuthLogoutData = {
   body?: never;
   path?: never;

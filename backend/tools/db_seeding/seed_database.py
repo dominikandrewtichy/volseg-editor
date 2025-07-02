@@ -49,13 +49,15 @@ async def seed_database(num_users=3, num_entries=10, num_views=5, clear=False):
         users = []
         test_user = User(
             id=get_regular_user_id(),
-            openid=fake.uuid4(),
+            openid=f"{fake.uuid4()}@einfra.cesnet.cz",
+            name="test-user",
             email="user@email.com",
             role=user_role,
         )
         admin_user = User(
             id=get_admin_user_id(),
-            openid=fake.uuid4(),
+            openid=f"{fake.uuid4()}@einfra.cesnet.cz",
+            name="admin",
             email="admin@email.com",
             role=admin_role,
         )
@@ -68,7 +70,8 @@ async def seed_database(num_users=3, num_entries=10, num_views=5, clear=False):
         for _ in range(num_users):
             user = User(
                 id=fake.uuid4(),
-                openid=fake.uuid4(),
+                openid=f"{fake.uuid4()}@einfra.cesnet.cz",
+                name=fake.name(),
                 email=fake.email(),
                 role=user_role,
             )

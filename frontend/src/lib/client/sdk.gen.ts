@@ -62,6 +62,8 @@ import type {
   ShareLinksUpdateShareLinkResponse,
   ShareLinksUpdateShareLinkError,
   AuthLoginUserData,
+  AuthOidcCallbackData,
+  AuthOidcCallbackError,
   AuthLogoutData,
   AuthReadUsersMeData,
   AuthReadUsersMeResponse,
@@ -520,12 +522,26 @@ export const shareLinksUpdateShareLink = <ThrowOnError extends boolean = false>(
 export const authLoginUser = <ThrowOnError extends boolean = false>(
   options?: Options<AuthLoginUserData, ThrowOnError>,
 ) => {
-  return (options?.client ?? _heyApiClient).post<
+  return (options?.client ?? _heyApiClient).get<unknown, unknown, ThrowOnError>(
+    {
+      url: "/api/v1/auth/login",
+      ...options,
+    },
+  );
+};
+
+/**
+ * Oidc Callback
+ */
+export const authOidcCallback = <ThrowOnError extends boolean = false>(
+  options: Options<AuthOidcCallbackData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).get<
     unknown,
-    unknown,
+    AuthOidcCallbackError,
     ThrowOnError
   >({
-    url: "/api/v1/auth/login",
+    url: "/api/v1/auth/callback",
     ...options,
   });
 };

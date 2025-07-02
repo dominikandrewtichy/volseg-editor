@@ -61,6 +61,16 @@ class Settings(BaseSettings):
     MINIO_BUCKET: str = os.getenv("MINIO_BUCKET")
     MINIO_SECURE: bool = os.getenv("MINIO_SECURE")
 
+    # OIDC
+    OIDC_CLIENT_ID: str = os.getenv("OIDC_CLIENT_ID")
+    OIDC_CLIENT_SECRET: str = os.getenv("OIDC_CLIENT_SECRET")
+    OIDC_ISSUER_URL: str = os.getenv("OIDC_ISSUER_URL")
+    OIDC_REDIRECT_URI: str = os.getenv("OIDC_REDIRECT_URI")
+    OIDC_SCOPES: list[str] = ["openid", "profile", "email"]
+    OIDC_AUTHORIZATION_URL: str = f"{OIDC_ISSUER_URL}/authorize"
+    OIDC_TOKEN_URL: str = f"{OIDC_ISSUER_URL}/token"
+    OIDC_USERINFO_URL: str = f"{OIDC_ISSUER_URL}/userinfo"
+
     # POSTGRES
     POSTGRES_DIALECT: str = "postgresql"
     POSTGRES_DBAPI: str = "asyncpg"

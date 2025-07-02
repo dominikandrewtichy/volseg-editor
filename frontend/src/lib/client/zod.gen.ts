@@ -76,7 +76,7 @@ export const zUserResponse = z.object({
   id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
-  openid: z.string().uuid(),
+  openid: z.string(),
   email: z.string(),
 });
 

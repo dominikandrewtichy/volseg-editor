@@ -14,7 +14,7 @@ interface AuthProviderProps {
 type AuthProviderState = {
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: () => Promise<boolean>;
+  login: (redirectPath: string) => Promise<boolean>;
   logout: () => Promise<void>;
 };
 
@@ -41,10 +41,8 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
     checkAuthentication();
   }, []);
 
-  const login = async () => {
-    const success = await AuthService.login();
-    setIsAuthenticated(success);
-    return success;
+  const login = (redirectPath = "/") => {
+    AuthService.login(redirectPath);
   };
 
   const logout = async () => {

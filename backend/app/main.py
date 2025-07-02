@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.api.v1.api import v1_api_router
 from app.api.v1.tags import v1_api_tags_metadata
@@ -47,4 +48,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key="your_super_secret_key",
 )

@@ -1,19 +1,12 @@
-import {
-  authGetUsersToken,
-  authLoginUser,
-  authLogout,
-  authVerifyAuth,
-} from "./client";
+import { authGetUsersToken, authLogout, authVerifyAuth } from "./client";
 
 export const AuthService = {
-  async login() {
-    try {
-      const response = await authLoginUser();
-      return response.response.ok;
-    } catch (error) {
-      console.error("Login error:", error);
-      return false;
-    }
+  login(redirectPath = "/") {
+    const loginUrl = new URL(
+      `${import.meta.env.VITE_API_URL}/api/v1/auth/login`,
+    );
+    loginUrl.searchParams.set("redirect", redirectPath);
+    window.location.href = loginUrl.toString();
   },
 
   async logout() {

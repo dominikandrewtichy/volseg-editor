@@ -315,7 +315,6 @@ export const UserResponseSchema = {
     },
     openid: {
       type: "string",
-      format: "uuid",
     },
     email: {
       type: "string",

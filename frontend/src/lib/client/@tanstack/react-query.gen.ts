@@ -22,6 +22,7 @@ import {
   shareLinksGetShareLink,
   shareLinksUpdateShareLink,
   authLoginUser,
+  authOidcCallback,
   authLogout,
   authReadUsersMe,
   authGetUsersToken,
@@ -79,6 +80,7 @@ import type {
   ShareLinksUpdateShareLinkError,
   ShareLinksUpdateShareLinkResponse,
   AuthLoginUserData,
+  AuthOidcCallbackData,
   AuthLogoutData,
   AuthReadUsersMeData,
   AuthGetUsersTokenData,
@@ -741,24 +743,25 @@ export const authLoginUserOptions = (options?: Options<AuthLoginUserData>) => {
   });
 };
 
-export const authLoginUserMutation = (
-  options?: Partial<Options<AuthLoginUserData>>,
-): UseMutationOptions<unknown, DefaultError, Options<AuthLoginUserData>> => {
-  const mutationOptions: UseMutationOptions<
-    unknown,
-    DefaultError,
-    Options<AuthLoginUserData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await authLoginUser({
+export const authOidcCallbackQueryKey = (
+  options: Options<AuthOidcCallbackData>,
+) => createQueryKey("authOidcCallback", options);
+
+export const authOidcCallbackOptions = (
+  options: Options<AuthOidcCallbackData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await authOidcCallback({
         ...options,
-        ...localOptions,
+        ...queryKey[0],
+        signal,
         throwOnError: true,
       });
       return data;
     },
-  };
-  return mutationOptions;
+    queryKey: authOidcCallbackQueryKey(options),
+  });
 };
 
 export const authLogoutQueryKey = (options?: Options<AuthLogoutData>) =>
