@@ -5,7 +5,7 @@ from datetime import datetime
 from faker.providers import BaseProvider
 
 
-class CellimProvider(BaseProvider):
+class CellimFakerProvider(BaseProvider):
     """
     Custom provider for CELLIM domain-specific fake data.
     """

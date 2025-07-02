@@ -1,29 +1,26 @@
+import asyncio
 import random
-import sys
 from datetime import timedelta
-from pathlib import Path
 
 from faker import Faker
 from faker.providers import internet
 from sqlalchemy import text
 
-from app.database.models.volseg_entry_model import VolsegEntry
-
-sys.path.append(str(Path(__file__).parent.parent.parent))
-
 from app.core.security import get_admin_user_id, get_regular_user_id
+from app.core.settings import get_settings
 from app.database.models import Entry, ShareLink, User, View
 from app.database.models.role_model import Role, RoleEnum
+from app.database.models.volseg_entry_model import VolsegEntry
+from app.database.seed.faker_provider import CellimFakerProvider
 from app.database.session_manager import get_session_manager
-from tools.db_seeding.faker_provider import CellimProvider
 
 fake = Faker()
 fake.add_provider(internet)
-fake.add_provider(CellimProvider)
+fake.add_provider(CellimFakerProvider)
 
 
-async def seed_database(num_users=3, num_entries=10, num_views=5, clear=False):
-    async with get_session_manager().session() as session:
+async def seed_data(num_users=3, num_entries=10, num_views=5, clear=False):
+    async with get_session_manager(url=get_settings().POSTGRES_URL_LOCAL).session() as session:
         if clear:
             print("Clearing existing data...")
             await session.execute(text("DELETE FROM views"))
@@ -137,3 +134,7 @@ async def seed_database(num_users=3, num_entries=10, num_views=5, clear=False):
         print(f"✅ Created {entry_count.scalar_one()} entries")
         print(f"✅ Created {view_count.scalar_one()} views")
         print(f"✅ Created {link_count.scalar_one()} share_links")
+
+
+if __name__ == "__main__":
+    asyncio.run(seed_data())
