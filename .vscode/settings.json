@@ -9,8 +9,8 @@
         "editor.codeActionsOnSave": {
             "source.fixAll.ruff": "explicit",
             "source.organizeImports.ruff": "explicit",
-            "source.removeUnusedImports": "never",
-            "source.unusedImports": "never"
+            "source.removeUnusedImports": "explicit",
+            "source.unusedImports": "explicit",
         },
     },
     "[typescript]": {
