@@ -14,6 +14,8 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { InfoIcon } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import einfraLogo from "/public/einfra_logo.svg";
+import lifeScienceLogo from "/public/lifescience_logo.png";
 
 type LoginProviderKey = "einfra" | "lifescience";
 
@@ -29,14 +31,14 @@ const loginProviders: Partial<
 > = {
   einfra: {
     name: "e-INFRA CZ AAI",
-    logoSrc: "/public/einfra_logo.svg",
-    description: "Czech e-Infrastructure authentication",
+    logoSrc: einfraLogo,
+    description: "",
   },
-  // lifescience: {
-  //   name: "Life Science Login",
-  //   logoSrc: "/public/lifescience_logo.png",
-  //   description: "Life sciences research authentication",
-  // },
+  lifescience: {
+    name: "Life Science Login",
+    logoSrc: lifeScienceLogo,
+    description: "",
+  },
 };
 
 const LogoImage = ({
