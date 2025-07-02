@@ -1,0 +1,32 @@
+# backend/Dockerfile
+
+FROM python:3.13.2-slim-bookworm
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y build-essential curl && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd --gid 1000 appuser && \
+    useradd --uid 1000 --gid appuser --create-home appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy lock and project files first to install dependencies
+COPY pyproject.toml uv.lock ./
+
+# Install UV and dependencies
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+RUN uv venv && uv pip install --upgrade pip && uv sync --frozen
+
+# Copy application code
+COPY . .
+
+# Set ownership
+RUN chown -R appuser:appuser /app
+
+USER appuser
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Run FastAPI with uvicorn in production
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
