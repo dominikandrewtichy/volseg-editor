@@ -48,7 +48,7 @@ class Settings(BaseSettings):
 
     # JWT
     JWT_ALGORITHM: str = "HS256"
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
     JWT_ACCESS_TOKEN_COOKIE: str = "access_token"
     JWT_REFRESH_TOKEN_COOKIE: str = "refresh_token"

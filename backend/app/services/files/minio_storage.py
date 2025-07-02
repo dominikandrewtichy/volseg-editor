@@ -5,9 +5,10 @@ from minio import Minio
 from minio.error import S3Error
 
 from app.core.settings import get_settings
+from app.services.files.base_storage import BaseStorage
 
 
-class MinioStorage:
+class MinioStorage(BaseStorage):
     def __init__(
         self,
         endpoint: str,
@@ -18,27 +19,21 @@ class MinioStorage:
     ):
         self.client = Minio(endpoint, access_key=access_key, secret_key=secret_key, secure=secure)
         self.bucket = bucket
-
-        # Create bucket if it doesn't exist
         if not self.client.bucket_exists(bucket):
             self.client.make_bucket(bucket)
 
     async def save(self, file_path: str, file_data: BinaryIO) -> str:
         try:
-            # Get file size
-            file_data.seek(0, 2)  # Seek to the end
-            file_size = file_data.tell()  # Get current position (file size)
-            file_data.seek(0)  # Reset to beginning
-
-            # Upload file
+            file_data.seek(0, 2)
+            file_size = file_data.tell()
+            file_data.seek(0)
             self.client.put_object(
                 self.bucket,
                 file_path,
                 file_data,
                 file_size,
-                content_type="application/octet-stream",  # Default content type
+                content_type="application/octet-stream",
             )
-
             return file_path
         except S3Error as e:
             raise Exception(f"Error saving file to MinIO: {str(e)}")
@@ -82,7 +77,13 @@ class MinioStorage:
         ]
 
     async def exists(self, file_path: str) -> bool:
-        pass
+        try:
+            self.client.stat_object(self.bucket, file_path)
+            return True
+        except S3Error as e:
+            if "NoSuchKey" in str(e):
+                return False
+            raise Exception(f"Error checking file existence on MinIO: {str(e)}")
 
 
 @lru_cache

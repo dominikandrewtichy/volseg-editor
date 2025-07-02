@@ -14,14 +14,14 @@ from app.database.models.user_model import User
 from app.database.models.view_model import View
 from app.database.session_manager import get_async_session
 from app.services.entry_service import EntryService, get_entry_service
-from app.services.files.minio_storage import MinioStorage, get_minio_storage
+from app.services.files.local_storage import LocalStorage
 
 
 class ViewService:
     def __init__(
         self,
         session: AsyncSession,
-        storage: MinioStorage,
+        storage: LocalStorage,
         entry_service: EntryService,
     ):
         self.session = session
@@ -292,8 +292,10 @@ class ViewService:
 async def get_view_service(
     session: AsyncSession = Depends(get_async_session),
     entry_service: EntryService = Depends(get_entry_service),
-    storage: MinioStorage = Depends(get_minio_storage),
 ) -> ViewService:
+    storage = LocalStorage(
+        root_path="views",
+    )
     return ViewService(
         session=session,
         entry_service=entry_service,
