@@ -11,7 +11,7 @@ export function LandingPage() {
 
   const navigate = useNavigate();
   const search_term = searchParams.get("search_term") || "";
-  const page = parseInt(searchParams.get("page") || "1");
+  // const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("per_page") || "12");
 
   const { data, isLoading, error } = useQuery({

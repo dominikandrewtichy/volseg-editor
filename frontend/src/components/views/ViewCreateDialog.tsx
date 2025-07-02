@@ -10,11 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMolstar } from "@/contexts/MolstarProvider";
-import {
-  EntryDetailsResponse,
-  ViewCreateRequest,
-  zViewCreateRequest,
-} from "@/lib/client";
+import { EntryResponse, ViewCreateRequest } from "@/lib/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -36,12 +32,22 @@ import { toast } from "sonner";
 import { PluginState } from "molstar/lib/mol-plugin/state";
 import { Checkbox } from "../ui/checkbox";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 interface ViewCreateDialogProps {
-  entry: EntryDetailsResponse;
+  entry: EntryResponse;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const zViewCreateRequest = z.object({
+  name: z.string().min(1).max(255),
+  description: z.union([z.string().max(255), z.null()]).optional(),
+  snapshot_json: z.custom<Blob | File>().or(z.null()).optional(),
+  thumbnail_image: z.custom<Blob | File>().or(z.null()).optional(),
+  is_thumbnail: z.boolean(),
+});
 
 export function ViewCreateDialog({
   entry,
@@ -59,6 +65,11 @@ export function ViewCreateDialog({
 
   const form = useForm<ViewCreateRequest>({
     resolver: zodResolver(zViewCreateRequest),
+    defaultValues: {
+      name: "",
+      description: "",
+      is_thumbnail: false,
+    },
   });
 
   const createViewMutation = useMutation({
@@ -124,7 +135,7 @@ export function ViewCreateDialog({
 
       reset();
     }
-  }, [open, viewer]);
+  }, [form, open, viewer]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -17,18 +17,20 @@ import { Navigate, useLocation } from "react-router-dom";
 
 type LoginProviderKey = "einfra" | "lifescience";
 
-const loginProviders: Record<
-  LoginProviderKey,
-  {
-    name: string;
-    logoSrc: string;
-    description: string;
-  }
+const loginProviders: Partial<
+  Record<
+    LoginProviderKey,
+    {
+      name: string;
+      logoSrc: string;
+      description: string;
+    }
+  >
 > = {
   einfra: {
     name: "e-INFRA CZ AAI",
     logoSrc: "/public/einfra_logo.svg",
-    // description: "Czech e-Infrastructure authentication",
+    description: "Czech e-Infrastructure authentication",
   },
   // lifescience: {
   //   name: "Life Science Login",

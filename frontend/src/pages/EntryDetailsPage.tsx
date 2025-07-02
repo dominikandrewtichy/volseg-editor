@@ -27,7 +27,7 @@ import { toast } from "sonner";
 
 interface EntryDetailsPageProps {
   entryId?: string;
-  isEditable: boolean;
+  isEditable?: boolean;
 }
 
 export function EntryDetailsPage({
@@ -93,7 +93,7 @@ export function EntryDetailsPage({
       setIsEditing(false);
     },
     onError: (error) => {
-      toast.error("Failed to create view: " + error.detail[0].msg);
+      toast.error("Failed to create view: " + error.detail![0]!.msg);
     },
   });
 
@@ -266,7 +266,7 @@ export function EntryDetailsPage({
       <ShareLinkDialog
         open={showShareDialog}
         setOpen={setShowShareDialog}
-        shareLinkId={shareLinkQuery.data?.id}
+        shareLinkId={shareLinkQuery.data?.id ?? "NONE"}
       />
     </div>
   );

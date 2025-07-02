@@ -25,8 +25,8 @@ export function EntryPreview({ entry }: { entry: EntryResponse }) {
       <div className="aspect-video bg-secondary overflow-hidden flex items-center justify-center">
         {entryThumbnail && viewsQuery.data && entryThumbnail.length > 0 ? (
           <img
-            src={`${import.meta.env.VITE_API_URL}/api/v1/entries/${entry.id}/views/${viewsQuery.data[0].id}/thumbnail`}
-            alt={`${entryThumbnail[0].name} thumbnail`}
+            src={`${import.meta.env.VITE_API_URL}/api/v1/entries/${entry.id}/views/${viewsQuery.data[0]!.id}/thumbnail`}
+            alt={`${entryThumbnail[0]!.name} thumbnail`}
             className="w-full h-full object-cover"
           />
         ) : (

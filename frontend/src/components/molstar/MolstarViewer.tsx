@@ -2,13 +2,11 @@ import { useMolstar } from "@/contexts/MolstarProvider";
 import { useBehavior } from "@/hooks/useBehavior";
 import { useEffect } from "react";
 import { ViewerLayout } from "./ViewerLayout";
-import { LoaderCircleIcon } from "lucide-react";
 
 export function MolstarViewer() {
   const { viewer } = useMolstar();
 
   const isInitialized = useBehavior(viewer.state.isInitialized);
-  const isLoading = useBehavior(viewer.state.isLoading);
 
   useEffect(() => {
     viewer.init();

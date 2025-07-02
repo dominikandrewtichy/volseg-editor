@@ -47,9 +47,9 @@ export class MolstarViewerModel extends BaseReactiveModel {
       this.state.showControls.next(this.plugin.layout.state.showControls);
       this.state.isExpanded.next(this.plugin.layout.state.isExpanded);
     });
-    this.subscribe(this.plugin.events.log, (message) => {
-      // console.log(message);
-    });
+    // this.subscribe(this.plugin.events.log, (message) => {
+    //   console.log(message);
+    // });
     // this.subscribe(
     //   combineLatest([
     //     this.plugin.behaviors.state.isUpdating,

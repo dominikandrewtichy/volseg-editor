@@ -99,7 +99,7 @@ export function PaginationControls({
             {getPageNumbers().map((page) => (
               <PaginationItem key={page}>
                 <PaginationLink
-                  to="#"
+                  href="#"
                   isActive={page === currentPage}
                   onClick={(e) => {
                     e.preventDefault();

@@ -14,14 +14,14 @@ interface AuthProviderProps {
 type AuthProviderState = {
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (redirectPath: string) => Promise<boolean>;
+  login: (redirectPath: string | undefined) => void;
   logout: () => Promise<void>;
 };
 
 const initialState: AuthProviderState = {
   isAuthenticated: false,
   isLoading: false,
-  login: async () => false,
+  login: () => void undefined,
   logout: async () => undefined,
 };
 
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
     checkAuthentication();
   }, []);
 
-  const login = (redirectPath = "/") => {
+  const login = (redirectPath: string | undefined = "/") => {
     AuthService.login(redirectPath);
   };
 
