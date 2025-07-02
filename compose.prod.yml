@@ -1,59 +1,60 @@
 services:
   db:
+    container_name: cellim-viewer-db-prod
     image: postgres:17.4-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cellim_viewer
-    volumes:
-      - db_data:/var/lib/postgresql/data
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
     networks:
       - cellim-network
-    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
   api:
+    container_name: cellim-viewer-api-dev
     build:
       context: ./backend
       dockerfile: docker/dockerfile.prod
     ports:
       - "8000:8000"
+    restart: unless-stopped
     networks:
       - cellim-network
     depends_on:
       - db
-    restart: unless-stopped
 
   frontend:
+    container_name: cellim-viewer-frontend-prod
     build:
       context: ./frontend
       dockerfile: docker/dockerfile.prod
     ports:
-      - "80:80"
+      - "5173:80"
+    restart: unless-stopped
     networks:
       - cellim-network
     depends_on:
       - api
-    restart: unless-stopped
 
   minio:
+    container_name: cellim-viewer-minio-prod
     image: minio/minio:latest
     ports:
       - "9000:9000"
       - "9001:9001"
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+    env_file:
+      - ./backend/.env
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
-    volumes:
-      - minio_data:/data
+    restart: unless-stopped
     networks:
       - cellim-network
-    restart: unless-stopped
+    volumes:
+      - minio_data:/data
 
 networks:
   cellim-network:

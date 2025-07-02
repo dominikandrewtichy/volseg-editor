@@ -1,35 +1,19 @@
 services:
   db:
-    container_name: cellim-viewer-db
+    container_name: cellim-viewer-db-dev
     image: postgres:17.4-alpine
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cellim_viewer
+    env_file:
+      - ./backend/.env
     restart: always
     networks:
       - cellim-network
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  adminer:
-    container_name: cellim-viewer-adminer
-    image: adminer:latest
-    environment:
-      ADMINER_DEFAULT_SERVER: db
-      ADMINER_DESIGN: dracula
-    ports:
-      - "8080:8080"
-    restart: always
-    networks:
-      - cellim-network
-    depends_on:
-      - db
-
   api:
-    container_name: cellim-viewer-api
+    container_name: cellim-viewer-api-dev
     build:
       context: ./backend
       dockerfile: docker/dockerfile.dev
@@ -49,7 +33,7 @@ services:
       - db
 
   frontend:
-    container_name: cellim-viewer-frontend
+    container_name: cellim-viewer-frontend-dev
     build:
       context: ./frontend
       dockerfile: docker/dockerfile.dev
@@ -65,16 +49,17 @@ services:
     restart: always
     networks:
       - cellim-network
+    depends_on:
+      - api
 
   minio:
-    container_name: cellim-viewer-minio
+    container_name: cellim-viewer-minio-dev
     image: minio/minio:latest
     ports:
       - "9000:9000"
       - "9001:9001"
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+    env_file:
+      - ./backend/.env
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -86,6 +71,20 @@ services:
       - cellim-network
     volumes:
       - minio_data:/data
+
+  adminer:
+    container_name: cellim-viewer-adminer-dev
+    image: adminer:latest
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: dracula
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - cellim-network
+    depends_on:
+      - db
 
   # nginx:
   #   container_name: cellim-viewer-nginx

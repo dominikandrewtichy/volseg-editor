@@ -6,7 +6,6 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;
-  readonly VITE_VOLSEG_API_URL: string;
 }
 
 interface ImportMeta {
