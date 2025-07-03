@@ -1,9 +1,15 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-type Theme = "dark" | "light" | "system";
+export type Theme = "dark" | "light" | "system";
 
 type ThemeProviderProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   defaultTheme?: Theme;
   storageKey?: string;
 };
@@ -33,31 +39,38 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
-    const applyTheme = () => {
+    function getSystemTheme() {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    function applyTheme() {
       root.classList.remove("light", "dark");
 
       if (theme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-          .matches
-          ? "dark"
-          : "light";
-
+        const systemTheme = getSystemTheme();
         root.classList.add(systemTheme);
       } else {
         root.classList.add(theme);
       }
-    };
+    }
 
-    const loadMolstarTheme = () => {
+    function loadMolstarTheme() {
       const existingLink = document.getElementById("molstar-theme");
       if (existingLink) existingLink.remove();
 
       const link = document.createElement("link");
       link.id = "molstar-theme";
       link.rel = "stylesheet";
-      link.href = `/styles/molstar-${theme}-theme.css`;
+      if (theme === "system") {
+        const systemTheme = getSystemTheme();
+        link.href = `/styles/molstar-${systemTheme}-theme.css`;
+      } else {
+        link.href = `/styles/molstar-${theme}-theme.css`;
+      }
       document.head.appendChild(link);
-    };
+    }
 
     applyTheme();
     loadMolstarTheme();

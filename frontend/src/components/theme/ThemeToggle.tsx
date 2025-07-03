@@ -1,4 +1,4 @@
-import { Moon, Sun } from "lucide-react";
+import { DotIcon, Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -7,10 +7,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useTheme } from "@/contexts/ThemeProvider";
+import { Theme, useTheme } from "@/contexts/ThemeProvider";
+import { cn } from "@/lib/utils";
 
 export function ThemeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  const themes: { id: Theme; label: string }[] = [
+    { id: "light", label: "Light" },
+    { id: "dark", label: "Dark" },
+    { id: "system", label: "System" },
+  ];
 
   return (
     <DropdownMenu>
@@ -22,15 +29,16 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
+        {themes.map(({ id, label }) => (
+          <DropdownMenuItem
+            key={id}
+            onClick={() => setTheme(id)}
+            className="flex justify-between items-center"
+          >
+            <span className={cn(theme === id ? "font-bold" : "")}>{label}</span>
+            {theme === id && <DotIcon />}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
