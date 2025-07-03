@@ -82,16 +82,15 @@ class Settings(BaseSettings):
     POSTGRES_URL: str = f"{POSTGRES_DIALECT}+{POSTGRES_DBAPI}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
     POSTGRES_URL_LOCAL: str = f"{POSTGRES_DIALECT}+{POSTGRES_DBAPI}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost/{POSTGRES_DB}"
 
-    # LOCAL STORAGE
-    FILES_BASH_PATH: str = "./temp"
-    FILES_PATH_VOLSEG_ENTRIES: str = f"{FILES_BASH_PATH}/volseg_entries"
-
     model_config = SettingsConfigDict(
         env_file=".env.example",
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
     )
+
+    # SESSION
+    COOKIE_SESSION_SECRET: str = os.getenv("COOKIE_SESSION_SECRET")
 
 
 @lru_cache

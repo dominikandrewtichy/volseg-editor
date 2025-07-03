@@ -58,8 +58,4 @@ class LocalStorage(BaseStorage):
 
 @lru_cache
 def get_local_storage():
-    settings = get_settings()
-    storage = LocalStorage(
-        root_path=settings.FILES_PATH_VOLSEG_ENTRIES,
-    )
-    return storage
+    return LocalStorage()

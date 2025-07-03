@@ -51,5 +51,5 @@ app.add_middleware(
 )
 app.add_middleware(
     SessionMiddleware,
-    secret_key="your_super_secret_key",
+    secret_key=get_settings().COOKIE_SESSION_SECRET,
 )
