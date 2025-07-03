@@ -23,12 +23,8 @@
             script: |
               test ! -d ${{ env.REPO_DIR }} && git clone -b main --depth 1 ${{ env.REPO_URL }} ${{ env.REPO_DIR }}
               cd ${{ env.REPO_DIR }}
-              git reset --hard origin/main
               git pull
+              git reset --hard origin/main
               docker compose -f compose.prod.yml up --build --detach
-              cd backend
-              cat .env.example > .env
-              uv sync
-              source .venv/bin/activate
               docker exec -it cellim-viewer-api-prod sh app/database/scripts/migrate.sh upgrade head
               docker exec -it cellim-viewer-api-prod python -m app.database.seed.seed_prod

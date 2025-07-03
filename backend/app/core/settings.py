@@ -19,17 +19,10 @@ class Settings(BaseSettings):
     # API
     API_V1_PREFIX: str = "/api/v1"
 
-    # SERVER URLS
-    API_SERVER_URL: str = os.getenv("API_SERVER_URL")
-    WEB_SERVER_URL: str = os.getenv("WEB_SERVER_URL")
-
     # APP INFO
     APP_NAME: str = "CELLIM Viewer API"
     APP_SUMMARY: str = "API managing CELLIM data entries"
     APP_VERSION: str = "0.0.0"
-    APP_HOST: str = "localhost"
-    APP_PORT: str = "8000"
-    APP_URL: str = f"http://{APP_HOST}:{APP_PORT}"
     APP_CONTACT: dict[str, str] = {
         "name": "CELLIM Viewer developers",
         "url": "https://github.com/MergunFrimen/cellim-viewer",
@@ -41,12 +34,14 @@ class Settings(BaseSettings):
     }
     OPENAPI_URL: str = f"{API_V1_PREFIX}/openapi.json"
 
+    # SERVER URLS
+    API_SERVER_URL: str = os.getenv("API_SERVER_URL")
+    WEB_SERVER_URL: str = os.getenv("WEB_SERVER_URL")
+
     # CORS
     CORS_ORIGINS: list[str] = [
-        APP_URL,  # for OpenAPI docs
-        "http://localhost:5173",  # for frontend
-        "http://78.128.235.41:5173",  # prod frontend
-        "http://localhost:6006",  # for storybook
+        API_SERVER_URL,  # for OpenAPI docs
+        WEB_SERVER_URL,  # for frontend
     ]
 
     # JWT
