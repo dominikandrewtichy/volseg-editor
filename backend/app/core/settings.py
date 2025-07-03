@@ -2,7 +2,10 @@ import os
 from enum import Enum
 from functools import lru_cache
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+load_dotenv()
 
 
 class ModeEnum(str, Enum):
