@@ -1,28 +1,28 @@
-name: Openstack deploy
+  name: Openstack deploy
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  on:
+    push:
+      branches:
+        - main
+    workflow_dispatch:
 
-jobs:
-  deploy:
-    env:
-      REPO_URL: git@github.com:${{ github.repository }}
-      REPO_DIR: cellim-viewer
-    name: Build and deploy app
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🔑 Remote SSH & Run deploy script
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            test ! -d ${{ env.REPO_DIR }} && git clone -b main --depth 1 ${{ env.REPO_URL }} ${{ env.REPO_DIR }}
-            cd ${{ env.REPO_DIR }}
-            git reset --hard origin/main
-            git pull
-            docker compose -f compose.prod.yml up --build
+  jobs:
+    deploy:
+      env:
+        REPO_URL: git@github.com:${{ github.repository }}
+        REPO_DIR: cellim-viewer
+      name: Build and deploy app
+      runs-on: ubuntu-latest
+      steps:
+        - name: 🔑 Remote SSH & Run deploy script
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.DEPLOY_HOST }}
+            username: ${{ secrets.DEPLOY_USERNAME }}
+            key: ${{ secrets.DEPLOY_KEY }}
+            script: |
+              test ! -d ${{ env.REPO_DIR }} && git clone -b main --depth 1 ${{ env.REPO_URL }} ${{ env.REPO_DIR }}
+              cd ${{ env.REPO_DIR }}
+              git reset --hard origin/main
+              git pull
+              docker compose -f compose.prod.yml up --build

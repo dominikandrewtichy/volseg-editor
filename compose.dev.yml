@@ -5,7 +5,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - ./backend/.env
+      - ./backend/.env.example
     restart: always
     networks:
       - cellim-network
@@ -59,7 +59,7 @@ services:
       - "9000:9000"
       - "9001:9001"
     env_file:
-      - ./backend/.env
+      - ./backend/.env.example
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -92,7 +92,7 @@ services:
   #     context: ./backend
   #     dockerfile: docker/dockerfile.dev
   #   env_file:
-  #     - ./backend/.env
+  #     - ./backend/.env.example
   #   command: >
   #     sh -c "
   #       echo 'Waiting for DB...' &&
