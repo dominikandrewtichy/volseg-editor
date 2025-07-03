@@ -2,6 +2,8 @@ services:
   db:
     container_name: cellim-viewer-db-prod
     image: postgres:17.4-alpine
+    ports:
+      - "5432:5432"
     env_file:
       - ./backend/.env
     restart: unless-stopped
@@ -11,7 +13,7 @@ services:
       - db_data:/var/lib/postgresql/data
 
   api:
-    container_name: cellim-viewer-api-dev
+    container_name: cellim-viewer-api-prod
     build:
       context: ./backend
       dockerfile: docker/dockerfile.prod
