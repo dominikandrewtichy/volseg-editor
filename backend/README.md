@@ -86,5 +86,5 @@ docker exec -it cellim-viewer-api-dev uv run tools/db_cli.py seed
 
 Prod seed
 ```shell
-python -m app.database.seed
+python -m app.database.seed.seed_prod
 ```
