@@ -46,4 +46,4 @@ USER appuser
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Run the FastAPI application by default
-CMD ["dotenvx", "run",  "--env-file=.env.development", "--", "fastapi", "dev", "--host", "0.0.0.0"]
+CMD ["dotenvx", "run",  "--env-file=.env.example", "--", "fastapi", "dev", "--host", "0.0.0.0"]
