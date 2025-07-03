@@ -69,12 +69,12 @@ uvx pre-commit install
 
 Add new migration
 ```shell
-bash scripts/migrate.sh revision --autogenerate -m "message"
+sh app/database/scripts/migrate.sh revision --autogenerate -m "message"
 ```
 
 Apply migrations
 ```shell
-sh scripts/migrate.sh upgrade head
+sh app/database/scripts/migrate.sh upgrade head
 ```
 
 ### Seeding
