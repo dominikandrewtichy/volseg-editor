@@ -25,4 +25,4 @@
               cd ${{ env.REPO_DIR }}
               git reset --hard origin/main
               git pull
-              docker compose -f compose.prod.yml up --build
+              docker compose -f compose.prod.yml up --build --detach
