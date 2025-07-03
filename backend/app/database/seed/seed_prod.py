@@ -11,7 +11,7 @@ from app.database.session_manager import get_session_manager
 
 
 async def seed_data():
-    async with get_session_manager(url=get_settings().POSTGRES_URL_LOCAL).session() as session:
+    async with get_session_manager(url=get_settings().POSTGRES_URL).session() as session:
         # Create roles
         await get_or_create_role(session, "user")
         await get_or_create_role(session, "admin")

@@ -30,5 +30,5 @@
               cat .env.example > .env
               uv sync
               source .venv/bin/activate
-              sh app/database/scripts/migrate.sh upgrade head
-              python -m app.database.seed.seed_prod
+              docker exec -it cellim-viewer-api-prod sh app/database/scripts/migrate.sh upgrade head
+              docker exec -it cellim-viewer-api-prod python -m app.database.seed.seed_prod
