@@ -2,10 +2,10 @@ services:
   db:
     container_name: cellim-viewer-db-prod
     image: postgres:17.4-alpine
+    env_file:
+      - ./backend/.env.prod
     ports:
       - "5432:5432"
-    env_file:
-      - ./backend/.env.example
     restart: unless-stopped
     networks:
       - cellim-network
@@ -17,6 +17,8 @@ services:
     build:
       context: ./backend
       dockerfile: docker/dockerfile.prod
+    env_file:
+      - ./backend/.env.prod
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -30,6 +32,8 @@ services:
     build:
       context: ./frontend
       dockerfile: docker/dockerfile.prod
+    env_file:
+      - ./backend/.env.prod
     ports:
       - "5173:80"
     restart: unless-stopped
@@ -41,17 +45,12 @@ services:
   minio:
     container_name: cellim-viewer-minio-prod
     image: minio/minio:latest
+    env_file:
+      - ./backend/.env.prod
     ports:
       - "9000:9000"
       - "9001:9001"
-    env_file:
-      - ./backend/.env.example
     command: server /data --console-address ":9001"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
     restart: unless-stopped
     networks:
       - cellim-network

@@ -9,8 +9,6 @@ export function MainLayout({
 }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <DevIndicator />
-
       <Header />
 
       <main className="container mx-auto flex-grow px-2 sm:px-4 py-8">
@@ -22,7 +20,7 @@ export function MainLayout({
   );
 }
 
-function DevIndicator() {
+export function DevIndicator() {
   if (process.env.NODE_ENV !== "development") return null;
 
   return (

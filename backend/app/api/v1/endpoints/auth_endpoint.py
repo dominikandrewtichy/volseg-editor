@@ -127,7 +127,7 @@ async def oidc_callback(
     # Create and set JWT tokens
     jwt_token = create_access_token(data={"sub": str(user.id)})
     redirect_path = request.session.get("redirect_after_login") or "/dashboard"
-    redirect_response = RedirectResponse(url=f"http://localhost:5173{redirect_path}")
+    redirect_response = RedirectResponse(url=f"{get_settings().WEB_SERVER_URL}{redirect_path}")
     redirect_response.set_cookie(
         key=get_settings().JWT_ACCESS_TOKEN_COOKIE,
         value=jwt_token,

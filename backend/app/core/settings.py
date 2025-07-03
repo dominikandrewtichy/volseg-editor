@@ -2,10 +2,9 @@ import os
 from enum import Enum
 from functools import lru_cache
 
-from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
+# load_dotenv(".env.example")
 
 
 class ModeEnum(str, Enum):
@@ -19,6 +18,10 @@ class Settings(BaseSettings):
 
     # API
     API_V1_PREFIX: str = "/api/v1"
+
+    # SERVER URLS
+    API_SERVER_URL: str = os.getenv("API_SERVER_URL")
+    WEB_SERVER_URL: str = os.getenv("WEB_SERVER_URL")
 
     # APP INFO
     APP_NAME: str = "CELLIM Viewer API"
