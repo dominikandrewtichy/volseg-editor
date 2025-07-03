@@ -2,10 +2,7 @@ import os
 from enum import Enum
 from functools import lru_cache
 
-from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-load_dotenv()
 
 
 class ModeEnum(str, Enum):
@@ -42,7 +39,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: list[str] = [
         APP_URL,  # for OpenAPI docs
         "http://localhost:5173",  # for frontend
-        "http://78.128.235.41:6080",  # prod frontend
+        "http://78.128.235.41:5173",  # prod frontend
         "http://localhost:6006",  # for storybook
     ]
 

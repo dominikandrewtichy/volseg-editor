@@ -26,3 +26,9 @@
               git reset --hard origin/main
               git pull
               docker compose -f compose.prod.yml up --build --detach
+              cd backend
+              cat .env.example > .env
+              uv sync
+              source .venv/bin/activate
+              sh app/database/scripts/migrate.sh upgrade head
+              python -m app.database.seed.seed_prod
