@@ -88,3 +88,10 @@ Prod seed
 ```shell
 python -m app.database.seed.seed_prod
 ```
+
+## Secrets
+
+Add with dotnevx
+```shell
+docker run -it --rm -v $(pwd):/app dotenv/dotenvx set SECRET_KEY SECRET_VALUE -f .env.[mode]
+```

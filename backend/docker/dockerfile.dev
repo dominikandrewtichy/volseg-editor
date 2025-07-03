@@ -1,5 +1,15 @@
-FROM python:3.13.2-slim-bookworm
+FROM python:3.13.2-slim-bookworm as app
+
+# Install curl and cleanup
+RUN apt-get update && \
+apt-get install -y --no-install-recommends curl ca-certificates && \
+rm -rf /var/lib/apt/lists/*
+
+# Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Install dotenvx
+RUN curl -sfS https://dotenvx.sh/install.sh | sh
 
 # Create a non-root user
 RUN groupadd --gid 1000 appuser && \
@@ -35,8 +45,5 @@ USER appuser
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Reset the entrypoint, don't invoke `uv`
-ENTRYPOINT []
-
 # Run the FastAPI application by default
-CMD ["fastapi", "dev", "--host", "0.0.0.0"]
+CMD ["dotenvx", "run",  "--env-file=.env.development", "--", "fastapi", "dev", "--host", "0.0.0.0"]
