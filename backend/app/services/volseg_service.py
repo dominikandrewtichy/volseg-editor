@@ -9,8 +9,7 @@ from app.database.models.user_model import User
 from app.database.models.volseg_entry_model import VolsegEntry
 from app.database.session_manager import get_async_session
 from app.services.files.base_storage import BaseStorage
-from app.services.files.local_storage import LocalStorage
-from app.services.files.minio_storage import MinioStorage, get_minio_storage
+from app.services.files.minio_storage import get_minio_storage
 
 
 class VolsegService:
