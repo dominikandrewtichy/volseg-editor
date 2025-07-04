@@ -43,6 +43,11 @@ export default function VolsegUploadForm() {
 
   const form = useForm<VolsegEntriesUploadEntry>({
     resolver: zodResolver(zVolsegEntriesUploadEntry),
+    defaultValues: {
+      name: "",
+      is_public: false,
+      cvsx_file: undefined,
+    },
   });
 
   const mutation = useMutation({

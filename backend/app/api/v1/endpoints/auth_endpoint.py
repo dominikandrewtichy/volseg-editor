@@ -199,9 +199,11 @@ async def verify_auth(
     "/demo-login",
     status_code=status.HTTP_200_OK,
 )
-async def demo_login():
+async def demo_login(
+    redirect: str = "/dashboard",
+):
     jwt_token = get_regular_user_token()
-    redirect_response = RedirectResponse(url=f"{get_settings().WEB_SERVER_URL}/dashboard")
+    redirect_response = RedirectResponse(url=f"{get_settings().WEB_SERVER_URL}{redirect}")
 
     redirect_response.set_cookie(
         key=get_settings().JWT_ACCESS_TOKEN_COOKIE,

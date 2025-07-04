@@ -15,6 +15,7 @@ type AuthProviderState = {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (redirectPath: string | undefined) => void;
+  loginAsDemoUser: (redirectPath: string | undefined) => void;
   logout: () => Promise<void>;
 };
 
@@ -22,6 +23,7 @@ const initialState: AuthProviderState = {
   isAuthenticated: false,
   isLoading: false,
   login: () => void undefined,
+  loginAsDemoUser: () => void undefined,
   logout: async () => undefined,
 };
 
@@ -45,6 +47,10 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
     AuthService.login(redirectPath);
   };
 
+  const loginAsDemoUser = (redirectPath: string | undefined = "/") => {
+    AuthService.loginAsDemoUser(redirectPath);
+  };
+
   const logout = async () => {
     await AuthService.logout();
     setIsAuthenticated(false);
@@ -55,6 +61,7 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
     isLoading,
     login,
     logout,
+    loginAsDemoUser,
   };
 
   return (

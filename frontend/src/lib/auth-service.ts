@@ -9,6 +9,14 @@ export const AuthService = {
     window.location.href = loginUrl.toString();
   },
 
+  loginAsDemoUser(redirectPath = "/") {
+    const loginUrl = new URL(
+      `${import.meta.env.VITE_API_URL}/api/v1/auth/demo-login`,
+    );
+    loginUrl.searchParams.set("redirect", redirectPath);
+    window.location.href = loginUrl.toString();
+  },
+
   async logout() {
     try {
       const response = await authLogout();

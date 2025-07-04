@@ -52,7 +52,7 @@ const LogoImage = ({
 }) => <img src={src} alt={alt} className={className} />;
 
 export function LoginPage() {
-  const { login, isAuthenticated } = useAuth();
+  const { login, loginAsDemoUser, isAuthenticated } = useAuth();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
@@ -68,7 +68,7 @@ export function LoginPage() {
   };
 
   const handleDemoLogin = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/demo-login`;
+    loginAsDemoUser(from);
   };
 
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
