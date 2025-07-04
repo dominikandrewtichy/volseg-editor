@@ -1,4 +1,3 @@
-// src/components/views/SaveViewDialog.tsx
 import {
   Dialog,
   DialogContent,
@@ -10,11 +9,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMolstar } from "@/contexts/MolstarProvider";
-import { EntryResponse, ViewCreateRequest } from "@/lib/client";
+import {
+  EntryResponse,
+  ViewCreateRequest,
+  zViewCreateRequest,
+} from "@/lib/client";
+import {
+  viewsCreateViewMutation,
+  viewsListViewsForEntryQueryKey,
+} from "@/lib/client/@tanstack/react-query.gen";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Camera } from "lucide-react";
+import { PluginState } from "molstar/lib/mol-plugin/state";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
   Form,
   FormControl,
@@ -23,15 +35,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  viewsCreateViewMutation,
-  viewsListViewsForEntryQueryKey,
-} from "@/lib/client/@tanstack/react-query.gen";
-import { toast } from "sonner";
-import { PluginState } from "molstar/lib/mol-plugin/state";
-import { Checkbox } from "../ui/checkbox";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface ViewCreateDialogProps {
@@ -39,15 +42,6 @@ interface ViewCreateDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const zViewCreateRequest = z.object({
-  name: z.string().min(1).max(255),
-  description: z.union([z.string().max(255), z.null()]).optional(),
-  snapshot_json: z.custom<Blob | File>().or(z.null()).optional(),
-  thumbnail_image: z.custom<Blob | File>().or(z.null()).optional(),
-  is_thumbnail: z.boolean(),
-});
 
 export function ViewCreateDialog({
   entry,
@@ -63,17 +57,28 @@ export function ViewCreateDialog({
     undefined,
   );
 
+  const zViewCreateRequestExtend = zViewCreateRequest.extend({
+    snapshot_json: z.any(),
+    thumbnail_image: z.any(),
+  });
+
   const form = useForm<ViewCreateRequest>({
-    resolver: zodResolver(zViewCreateRequest),
+    resolver: zodResolver(zViewCreateRequestExtend),
     defaultValues: {
       name: "",
       description: "",
       is_thumbnail: false,
+      snapshot_json: undefined,
+      thumbnail_image: undefined,
     },
   });
 
   const createViewMutation = useMutation({
-    ...viewsCreateViewMutation(),
+    ...viewsCreateViewMutation({
+      requestValidator: async (data: any) => {
+        return await zViewCreateRequestExtend.parseAsync(data.body);
+      },
+    }),
     onSuccess: (newView) => {
       toast.success(`View "${newView.name}" created successfully`);
       queryClient.invalidateQueries({
@@ -177,11 +182,7 @@ export function ViewCreateDialog({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="View name"
-                      value={field.value ?? ""}
-                      onChange={field.onChange}
-                    />
+                    <Input placeholder="View name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -213,7 +214,7 @@ export function ViewCreateDialog({
                 <FormItem className="flex flex-row gap-x-3 items-center">
                   <FormControl>
                     <Checkbox
-                      checked={!!field.value}
+                      checked={field.value ?? false}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
@@ -232,11 +233,7 @@ export function ViewCreateDialog({
               >
                 Cancel
               </Button>
-              <Button
-                variant="default"
-                type="submit"
-                disabled={createViewMutation.isPending}
-              >
+              <Button type="submit" disabled={createViewMutation.isPending}>
                 {createViewMutation.isPending ? "Creating..." : "Create Entry"}
               </Button>
             </DialogFooter>

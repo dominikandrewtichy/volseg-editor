@@ -114,10 +114,12 @@ export default function VolsegUploadForm() {
                     accept=".cvsx"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      setCvsxFile(file || null);
-                      form.setValue("cvsx_file", file!, {
-                        // shouldValidate: true,
-                      });
+                      if (file) {
+                        setCvsxFile(file);
+                        form.setValue("cvsx_file", file, {
+                          // shouldValidate: true,
+                        });
+                      }
                     }}
                   />
                 </FormControl>
