@@ -5,7 +5,7 @@ import { LandingPage } from "./pages/LandingPage";
 import { EntryCreatePage } from "./pages/CreateEntryPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { EntryDetailsPage } from "./pages/EntryDetailsPage";
-import { LoginPage } from "./pages/LoginPage2";
+import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import UploadVolseg from "./pages/UploadVolseg";
 import { VolsegEntryPreview } from "./pages/VolsegEntryPreview";

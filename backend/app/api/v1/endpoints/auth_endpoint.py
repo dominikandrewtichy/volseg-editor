@@ -8,7 +8,7 @@ from fastapi.responses import RedirectResponse
 from app.api.v1.contracts.responses.user_responses import UserResponse
 from app.api.v1.deps import OptionalUserDep, RequireUserDep, UserServiceDep
 from app.api.v1.tags import Tags
-from app.core.security import create_access_token
+from app.core.security import create_access_token, get_regular_user_token
 from app.core.settings import get_settings
 from app.database.models.user_model import User
 
@@ -193,3 +193,22 @@ async def verify_auth(
     current_user: OptionalUserDep,
 ):
     return current_user is not None
+
+
+@router.get(
+    "/demo-login",
+    status_code=status.HTTP_200_OK,
+)
+async def demo_login():
+    jwt_token = get_regular_user_token()
+    redirect_response = RedirectResponse(url=f"{get_settings().WEB_SERVER_URL}/dashboard")
+
+    redirect_response.set_cookie(
+        key=get_settings().JWT_ACCESS_TOKEN_COOKIE,
+        value=jwt_token,
+        httponly=True,
+        secure=False,
+        samesite="Lax",
+    )
+
+    return redirect_response
