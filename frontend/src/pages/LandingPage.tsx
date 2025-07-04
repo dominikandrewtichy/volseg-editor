@@ -16,9 +16,7 @@ export function LandingPage() {
 
   const { data, isLoading, error } = useQuery({
     ...entriesListPublicEntriesOptions({
-      query: {
-        search_query: {},
-      },
+      query: {},
     }),
   });
 

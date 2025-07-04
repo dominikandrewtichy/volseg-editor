@@ -23,30 +23,51 @@ import { z } from "zod";
 export default function VolsegUploadForm() {
   const [cvsxFile, setCvsxFile] = useState<File | null>(null);
 
-  const formSchema = zBodyVolsegEntriesUploadEntry.omit({ cvsx_file: true });
-  type FormData = z.infer<typeof formSchema>;
+  // zod override
+  const zVolsegEntriesUploadEntry = zBodyVolsegEntriesUploadEntry.extend({
+    cvsx_file: z
+      .custom<File>((val) => val instanceof File, {
+        message: "CVSX file is required",
+      })
+      .refine((file) => file.name.toLowerCase().endsWith(".cvsx"), {
+        message: "File must have a .cvsx extension",
+      })
+      .refine((file) => file.size <= 4 * 1024 * 1024 * 1024, {
+        message: "File must be smaller than 1GB",
+      })
+      .refine((file) => /^[a-zA-Z0-9_\-.]+$/.test(file.name), {
+        message: "Filename contains invalid characters",
+      }),
+  });
+  type VolsegEntriesUploadEntry = z.infer<typeof zVolsegEntriesUploadEntry>;
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<VolsegEntriesUploadEntry>({
+    resolver: zodResolver(zVolsegEntriesUploadEntry),
   });
 
   const mutation = useMutation({
-    ...volsegEntriesUploadEntryMutation(),
+    ...volsegEntriesUploadEntryMutation({
+      // request validator override
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      requestValidator: async (data: any) => {
+        return await zVolsegEntriesUploadEntry.parseAsync(data.body);
+      },
+    }),
     onSuccess: () => {
       toast.success(`Data uploaded successfully`);
-      form.reset();
-      setCvsxFile(null);
     },
     onError: () => {
       toast.success(`Error`);
     },
   });
 
-  const handleSubmit = (data: FormData) => {
+  const handleSubmit = (data: VolsegEntriesUploadEntry) => {
     if (!cvsxFile) {
-      // toast.error("Please select a CVSX file.");
+      toast.error("Please select a CVSX file.");
       return;
     }
+
+    console.log(cvsxFile.type);
 
     mutation.mutate({
       body: {
@@ -76,23 +97,34 @@ export default function VolsegUploadForm() {
             )}
           />
 
-          <FormItem>
-            <FormLabel>CVSX File</FormLabel>
-            <FormControl>
-              <Input
-                type="file"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  setCvsxFile(file || null);
-                }}
-              />
-            </FormControl>
-            {!cvsxFile && form.formState.isSubmitted && (
-              <p className="text-destructive text-sm font-medium">
-                CVSX file is required.
-              </p>
+          <FormField
+            control={form.control}
+            name="cvsx_file"
+            render={() => (
+              <FormItem>
+                <FormLabel>CVSX File</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept=".cvsx"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      setCvsxFile(file || null);
+                      form.setValue("cvsx_file", file!, {
+                        // shouldValidate: true,
+                      });
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+                {/* {!cvsxFile && form.formState.isSubmitted && (
+                  <p className="text-destructive text-sm font-medium">
+                    CVSX file is required.
+                  </p>
+                )} */}
+              </FormItem>
             )}
-          </FormItem>
+          />
 
           <FormField
             control={form.control}

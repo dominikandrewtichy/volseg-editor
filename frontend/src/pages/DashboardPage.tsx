@@ -15,7 +15,6 @@ export function DashboardPage() {
   const entriesResult = useQuery({
     ...meListEntriesForUserOptions({
       query: {
-        search_query: {},
       },
     }),
   });
