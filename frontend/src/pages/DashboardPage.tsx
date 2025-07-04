@@ -13,7 +13,11 @@ export function DashboardPage() {
   const navigate = useNavigate();
 
   const entriesResult = useQuery({
-    ...meListEntriesForUserOptions(),
+    ...meListEntriesForUserOptions({
+      query: {
+        search_query: {},
+      },
+    }),
   });
 
   const volsegEntriesResult = useQuery({

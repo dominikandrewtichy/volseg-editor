@@ -15,7 +15,11 @@ export function LandingPage() {
   const perPage = parseInt(searchParams.get("per_page") || "12");
 
   const { data, isLoading, error } = useQuery({
-    ...entriesListPublicEntriesOptions(),
+    ...entriesListPublicEntriesOptions({
+      query: {
+        search_query: {},
+      },
+    }),
   });
 
   const handleSearch = (searchTerm: string) => {
