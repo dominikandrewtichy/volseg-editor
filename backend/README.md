@@ -69,24 +69,24 @@ uvx pre-commit install
 
 Add new migration
 ```shell
-sh app/database/scripts/migrate.sh revision --autogenerate -m "message"
+docker exec cellim-viewer-api sh app/database/scripts/migrate.sh revision --autogenerate -m "message"
 ```
 
 Apply migrations
 ```shell
-sh app/database/scripts/migrate.sh upgrade head
+docker exec cellim-viewer-api sh app/database/scripts/migrate.sh upgrade head
 ```
 
 ### Seeding
 
 Faker seed
 ```shell
-docker exec -it cellim-viewer-api-dev uv run tools/db_cli.py seed
+docker exec cellim-viewer-api python -m app.database.seed.seed_faker
 ```
 
 Prod seed
 ```shell
-python -m app.database.seed.seed_prod
+docker exec cellim-viewer-api python -m app.database.seed.seed_prod
 ```
 
 ## Secrets
