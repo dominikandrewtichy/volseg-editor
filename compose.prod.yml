@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: cellim-viewer-db-prod
+    container_name: cellim-viewer-db
     image: postgres:17.4-alpine
     env_file:
       - ./backend/.env.prod
@@ -13,7 +13,7 @@ services:
       - db_data:/var/lib/postgresql/data
 
   api:
-    container_name: cellim-viewer-api-prod
+    container_name: cellim-viewer-api
     build:
       context: ./backend
       dockerfile: docker/dockerfile.prod
@@ -28,7 +28,7 @@ services:
       - db
 
   frontend:
-    container_name: cellim-viewer-frontend-prod
+    container_name: cellim-viewer-frontend
     build:
       context: ./frontend
       dockerfile: docker/dockerfile.prod
@@ -43,7 +43,7 @@ services:
       - api
 
   minio:
-    container_name: cellim-viewer-minio-prod
+    container_name: cellim-viewer-minio
     image: minio/minio:latest
     env_file:
       - ./backend/.env.prod
