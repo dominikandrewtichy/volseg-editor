@@ -27,4 +27,4 @@
               git reset --hard origin/main
               docker compose -f compose.prod.yml up --build --detach
               docker exec cellim-viewer-api sh app/database/scripts/migrate.sh upgrade head
-              docker exec cellim-viewer-api python -m app.database.seed.seed_prod
+              docker exec cellim-viewer-api python -m app.database.seed.seed_demo
