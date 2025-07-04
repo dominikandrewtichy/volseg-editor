@@ -3,6 +3,13 @@
 import { z } from "zod";
 
 /**
+ * Body_test-upload_file
+ */
+export const zBodyTestUploadFile = z.object({
+  file: z.string(),
+});
+
+/**
  * Body_volseg entries-upload_entry
  */
 export const zBodyVolsegEntriesUploadEntry = z.object({
@@ -101,13 +108,6 @@ export const zShareLinkResponse = z.object({
 export const zShareLinkUpdateRequest = z.object({
   is_editable: z.union([z.boolean(), z.null()]).optional(),
   is_active: z.union([z.boolean(), z.null()]).optional(),
-});
-
-/**
- * UploadFileRequest
- */
-export const zUploadFileRequest = z.object({
-  file: z.string(),
 });
 
 /**
@@ -613,7 +613,7 @@ export const zAuthDemoLoginData = z.object({
 });
 
 export const zTestUploadFileData = z.object({
-  body: zUploadFileRequest,
+  body: zBodyTestUploadFile,
   path: z.never().optional(),
   query: z.never().optional(),
 });

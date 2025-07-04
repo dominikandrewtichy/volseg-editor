@@ -2,7 +2,6 @@ from typing import Annotated
 from uuid import uuid4
 
 from fastapi import APIRouter, File, UploadFile
-from pydantic import BaseModel
 
 from app.api.v1.tags import Tags
 from app.core.settings import get_settings
@@ -11,15 +10,9 @@ from app.services.files.minio_storage import MinioStorage
 router = APIRouter(prefix="/test", tags=[Tags.test])
 
 
-class UploadFileRequest(BaseModel):
-    file: UploadFile = File()
-
-    model_config = {"extra": "forbid"}
-
-
 @router.post("/upload")
 async def upload_file(
-    request: Annotated[UploadFileRequest, File()],
+    file: Annotated[UploadFile, File()],
 ):
     settings = get_settings()
     storage = MinioStorage(
@@ -32,7 +25,7 @@ async def upload_file(
 
     await storage.save(
         f"somewhere/{uuid4()}",
-        request.file.file,
+        file.file,
     )
 
     return "OK"
