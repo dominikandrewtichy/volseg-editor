@@ -20,7 +20,7 @@ fake.add_provider(CellimFakerProvider)
 
 
 async def seed_data(num_users=3, num_entries=10, num_views=5, clear=False):
-    async with get_session_manager(url=get_settings().POSTGRES_URL).session() as session:
+    async with get_session_manager().session() as session:
         if clear:
             print("Clearing existing data...")
             await session.execute(text("DELETE FROM views"))

@@ -50,7 +50,7 @@ async def get_or_create_role(session: AsyncSession, role_name: str) -> Role:
 
 
 async def seed_data():
-    async with get_session_manager(url=get_settings().POSTGRES_URL).session() as session:
+    async with get_session_manager().session() as session:
         # Create roles
         user_role = await get_or_create_role(session, "user")
         admin_role = await get_or_create_role(session, "admin")

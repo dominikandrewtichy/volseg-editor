@@ -3,12 +3,6 @@ kind: Service
 metadata:
   name: postgres
   namespace: tichy3-ns
-# spec:
-#   ports:
-#     - port: 5432
-#   selector:
-#     app: postgres
-#   type: ClusterIP
 spec:
   type: LoadBalancer
   ports:
