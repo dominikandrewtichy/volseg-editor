@@ -2,9 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: tichy3-ns
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: postgres
@@ -14,34 +12,38 @@ spec:
         app: postgres
     spec:
       securityContext:
-        allowPrivilegeEscalation: false
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        capabilities:
-          drop:
-            - ALL
         seccompProfile:
           type: RuntimeDefault
+        fsGroupChangePolicy: OnRootMismatch
       containers:
-      - name: postgres
-        image: postgres:17.4-alpine
-        envFrom:
-          - secretRef:
-              name: backend-env
-        ports:
-          - containerPort: 5432
-        volumeMounts:
-          - mountPath: /var/lib/postgresql/data
-            name: postgres-data
-        resources:
-          requests:
-            cpu: "0.2"
-            memory: "256Mi"
-          limits:
-            cpu: "1"
-            memory: "512Mi"
+        - name: postgres
+          image: cerit.io/frimen/postgres@sha256:4d6fb4d8132fc52b9b71b1f6361c6c2fdfbe00552dc62eee3e79e9928a3be1c3
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: 1G
+              cpu: "0.5"
+            limits:
+              memory: 2G
+              cpu: "1"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdata
+          securityContext:
+            runAsUser: 70  # postgres user ID in Alpine
+            runAsGroup: 70  # postgres group ID in Alpine
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
       volumes:
-        - name: postgres-data
+        - name: postgresdata
           persistentVolumeClaim:
-            claimName: db-data-pvc
+            claimName: postgres-volume-claim
+

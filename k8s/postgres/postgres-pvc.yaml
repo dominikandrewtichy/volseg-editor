@@ -1,11 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: db-data-pvc
+  name: postgres-volume-claim
   namespace: tichy3-ns
+  labels:
+    app: postgres
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
+  storageClassName: zfs-csi
