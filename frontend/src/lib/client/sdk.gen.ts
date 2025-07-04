@@ -57,7 +57,6 @@ import type {
   MeListEntriesForUserErrors,
   MeListVolsegEntriesForUserData,
   MeListVolsegEntriesForUserResponses,
-  MeListVolsegEntriesForUserErrors,
   ShareLinksGetShareLinkData,
   ShareLinksGetShareLinkResponses,
   ShareLinksGetShareLinkErrors,
@@ -85,7 +84,6 @@ import type {
   TestUploadFileErrors,
   VolsegEntriesListPublicEntriesData,
   VolsegEntriesListPublicEntriesResponses,
-  VolsegEntriesListPublicEntriesErrors,
   VolsegEntriesUploadEntryData,
   VolsegEntriesUploadEntryResponses,
   VolsegEntriesUploadEntryErrors,
@@ -180,9 +178,9 @@ export type Options<
  * List Public Entries
  */
 export const entriesListPublicEntries = <ThrowOnError extends boolean = false>(
-  options: Options<EntriesListPublicEntriesData, ThrowOnError>,
+  options?: Options<EntriesListPublicEntriesData, ThrowOnError>,
 ) => {
-  return (options.client ?? _heyApiClient).get<
+  return (options?.client ?? _heyApiClient).get<
     EntriesListPublicEntriesResponses,
     EntriesListPublicEntriesErrors,
     ThrowOnError
@@ -527,9 +525,9 @@ export const viewsGetViewThumbnailImage = <
  * List Entries For User
  */
 export const meListEntriesForUser = <ThrowOnError extends boolean = false>(
-  options: Options<MeListEntriesForUserData, ThrowOnError>,
+  options?: Options<MeListEntriesForUserData, ThrowOnError>,
 ) => {
-  return (options.client ?? _heyApiClient).get<
+  return (options?.client ?? _heyApiClient).get<
     MeListEntriesForUserResponses,
     MeListEntriesForUserErrors,
     ThrowOnError
@@ -555,7 +553,7 @@ export const meListVolsegEntriesForUser = <
 ) => {
   return (options?.client ?? _heyApiClient).get<
     MeListVolsegEntriesForUserResponses,
-    MeListVolsegEntriesForUserErrors,
+    unknown,
     ThrowOnError
   >({
     requestValidator: async (data) => {
@@ -793,7 +791,7 @@ export const volsegEntriesListPublicEntries = <
 ) => {
   return (options?.client ?? _heyApiClient).get<
     VolsegEntriesListPublicEntriesResponses,
-    VolsegEntriesListPublicEntriesErrors,
+    unknown,
     ThrowOnError
   >({
     requestValidator: async (data) => {

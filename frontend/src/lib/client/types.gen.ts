@@ -151,25 +151,6 @@ export type PaginatedResponseEntryResponse = {
 };
 
 /**
- * SearchQueryParams
- */
-export type SearchQueryParams = {
-  /**
-   * Search Term
-   * Keywords to search by in entry titles and descriptions.
-   */
-  search_term?: string | null;
-  /**
-   * Page
-   */
-  page?: number;
-  /**
-   * Per Page
-   */
-  per_page?: number;
-};
-
-/**
  * ShareLinkResponse
  */
 export type ShareLinkResponse = {
@@ -394,12 +375,20 @@ export type VolsegEntryResponse = {
 export type EntriesListPublicEntriesData = {
   body?: never;
   path?: never;
-  query: {
-    search_query: SearchQueryParams;
+  query?: {
     /**
-     * Url
+     * Search Term
+     * Keywords to search by in entry titles and descriptions.
      */
-    url?: string;
+    search_term?: string | null;
+    /**
+     * Page
+     */
+    page?: number;
+    /**
+     * Per Page
+     */
+    per_page?: number;
   };
   url: "/api/v1/entries";
 };
@@ -427,12 +416,7 @@ export type EntriesListPublicEntriesResponse =
 export type EntriesCreateEntryData = {
   body: EntryCreateRequest;
   path?: never;
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries";
 };
 
@@ -464,12 +448,7 @@ export type EntriesDeleteEntryData = {
      */
     entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}";
 };
 
@@ -502,12 +481,7 @@ export type EntriesGetEntryByIdData = {
      */
     entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}";
 };
 
@@ -539,12 +513,7 @@ export type EntriesUpdateEntryData = {
      */
     entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}";
 };
 
@@ -576,12 +545,7 @@ export type EntriesGetEntryByShareLinkData = {
      */
     share_link_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/share/{share_link_id}";
 };
 
@@ -613,12 +577,7 @@ export type EntriesGetEntryShareLinkData = {
      */
     entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/share_link";
 };
 
@@ -650,12 +609,7 @@ export type EntriesGetEntryThumbnailViewData = {
      */
     entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/thumbnail";
 };
 
@@ -687,12 +641,7 @@ export type ViewsListViewsForEntryData = {
      */
     entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/views";
 };
 
@@ -725,12 +674,7 @@ export type ViewsCreateViewData = {
      */
     entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/views";
 };
 
@@ -766,12 +710,7 @@ export type ViewsDeleteViewData = {
      */
     view_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/views/{view_id}";
 };
 
@@ -808,12 +747,7 @@ export type ViewsGetViewByIdData = {
      */
     view_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/views/{view_id}";
 };
 
@@ -849,12 +783,7 @@ export type ViewsUpdateViewData = {
      */
     view_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/views/{view_id}";
 };
 
@@ -890,12 +819,7 @@ export type ViewsGetViewSnapshotData = {
      */
     view_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/views/{view_id}/snapshot";
 };
 
@@ -928,12 +852,7 @@ export type ViewsGetViewThumbnailImageData = {
      */
     view_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/entries/{entry_id}/views/{view_id}/thumbnail";
 };
 
@@ -957,12 +876,20 @@ export type ViewsGetViewThumbnailImageResponses = {
 export type MeListEntriesForUserData = {
   body?: never;
   path?: never;
-  query: {
-    search_query: SearchQueryParams;
+  query?: {
     /**
-     * Url
+     * Search Term
+     * Keywords to search by in entry titles and descriptions.
      */
-    url?: string;
+    search_term?: string | null;
+    /**
+     * Page
+     */
+    page?: number;
+    /**
+     * Per Page
+     */
+    per_page?: number;
   };
   url: "/api/v1/me/entries";
 };
@@ -990,24 +917,9 @@ export type MeListEntriesForUserResponse =
 export type MeListVolsegEntriesForUserData = {
   body?: never;
   path?: never;
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/me/volseg";
 };
-
-export type MeListVolsegEntriesForUserErrors = {
-  /**
-   * Validation Error
-   */
-  422: HttpValidationError;
-};
-
-export type MeListVolsegEntriesForUserError =
-  MeListVolsegEntriesForUserErrors[keyof MeListVolsegEntriesForUserErrors];
 
 export type MeListVolsegEntriesForUserResponses = {
   /**
@@ -1028,12 +940,7 @@ export type ShareLinksGetShareLinkData = {
      */
     share_link_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/share_links/{share_link_id}";
 };
 
@@ -1065,12 +972,7 @@ export type ShareLinksUpdateShareLinkData = {
      */
     share_link_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/share_links/{share_link_id}";
 };
 
@@ -1134,10 +1036,6 @@ export type AuthOidcCallbackData = {
      * State
      */
     state: string;
-    /**
-     * Url
-     */
-    url?: string;
   };
   url: "/api/v1/auth/callback";
 };
@@ -1267,24 +1165,9 @@ export type TestUploadFileResponses = {
 export type VolsegEntriesListPublicEntriesData = {
   body?: never;
   path?: never;
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/volseg";
 };
-
-export type VolsegEntriesListPublicEntriesErrors = {
-  /**
-   * Validation Error
-   */
-  422: HttpValidationError;
-};
-
-export type VolsegEntriesListPublicEntriesError =
-  VolsegEntriesListPublicEntriesErrors[keyof VolsegEntriesListPublicEntriesErrors];
 
 export type VolsegEntriesListPublicEntriesResponses = {
   /**
@@ -1300,12 +1183,7 @@ export type VolsegEntriesListPublicEntriesResponse =
 export type VolsegEntriesUploadEntryData = {
   body: BodyVolsegEntriesUploadEntry;
   path?: never;
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/volseg";
 };
 
@@ -1337,12 +1215,7 @@ export type VolsegEntriesDeleteViewData = {
      */
     volseg_entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/volseg/{volseg_entry_id}";
 };
 
@@ -1375,12 +1248,7 @@ export type VolsegEntriesGetEntryByIdData = {
      */
     volseg_entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/volseg/{volseg_entry_id}";
 };
 
@@ -1412,12 +1280,7 @@ export type VolsegEntriesGetCvsxFileData = {
      */
     volseg_entry_id: string;
   };
-  query?: {
-    /**
-     * Url
-     */
-    url?: string;
-  };
+  query?: never;
   url: "/api/v1/volseg/{volseg_entry_id}/file";
 };
 

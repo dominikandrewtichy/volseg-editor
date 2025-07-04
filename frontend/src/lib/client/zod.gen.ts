@@ -81,15 +81,6 @@ export const zPaginatedResponseEntryResponse = z.object({
 });
 
 /**
- * SearchQueryParams
- */
-export const zSearchQueryParams = z.object({
-  search_term: z.union([z.string(), z.null()]).optional(),
-  page: z.number().int().gte(1).optional().default(1),
-  per_page: z.number().int().gte(1).lte(100).optional().default(10),
-});
-
-/**
  * ShareLinkResponse
  */
 export const zShareLinkResponse = z.object({
@@ -174,13 +165,13 @@ export const zVolsegEntryResponse = z.object({
 export const zEntriesListPublicEntriesData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
-  query: z.object({
-    search_query: zSearchQueryParams,
-    url: z
-      .string()
-      .optional()
-      .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-  }),
+  query: z
+    .object({
+      search_term: z.union([z.string(), z.null()]).optional(),
+      page: z.number().int().gte(1).optional().default(1),
+      per_page: z.number().int().gte(1).lte(100).optional().default(10),
+    })
+    .optional(),
 });
 
 /**
@@ -192,14 +183,7 @@ export const zEntriesListPublicEntriesResponse =
 export const zEntriesCreateEntryData = z.object({
   body: zEntryCreateRequest,
   path: z.never().optional(),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -212,14 +196,7 @@ export const zEntriesDeleteEntryData = z.object({
   path: z.object({
     entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -233,14 +210,7 @@ export const zEntriesGetEntryByIdData = z.object({
   path: z.object({
     entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -253,14 +223,7 @@ export const zEntriesUpdateEntryData = z.object({
   path: z.object({
     entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -273,14 +236,7 @@ export const zEntriesGetEntryByShareLinkData = z.object({
   path: z.object({
     share_link_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -293,14 +249,7 @@ export const zEntriesGetEntryShareLinkData = z.object({
   path: z.object({
     entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -313,14 +262,7 @@ export const zEntriesGetEntryThumbnailViewData = z.object({
   path: z.object({
     entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -333,14 +275,7 @@ export const zViewsListViewsForEntryData = z.object({
   path: z.object({
     entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -354,14 +289,7 @@ export const zViewsCreateViewData = z.object({
   path: z.object({
     entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -375,14 +303,7 @@ export const zViewsDeleteViewData = z.object({
     entry_id: z.string().uuid(),
     view_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -397,14 +318,7 @@ export const zViewsGetViewByIdData = z.object({
     entry_id: z.string().uuid(),
     view_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -418,14 +332,7 @@ export const zViewsUpdateViewData = z.object({
     entry_id: z.string().uuid(),
     view_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -439,14 +346,7 @@ export const zViewsGetViewSnapshotData = z.object({
     entry_id: z.string().uuid(),
     view_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 export const zViewsGetViewThumbnailImageData = z.object({
@@ -455,26 +355,19 @@ export const zViewsGetViewThumbnailImageData = z.object({
     entry_id: z.string().uuid(),
     view_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 export const zMeListEntriesForUserData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
-  query: z.object({
-    search_query: zSearchQueryParams,
-    url: z
-      .string()
-      .optional()
-      .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-  }),
+  query: z
+    .object({
+      search_term: z.union([z.string(), z.null()]).optional(),
+      page: z.number().int().gte(1).optional().default(1),
+      per_page: z.number().int().gte(1).lte(100).optional().default(10),
+    })
+    .optional(),
 });
 
 /**
@@ -485,14 +378,7 @@ export const zMeListEntriesForUserResponse = zPaginatedResponseEntryResponse;
 export const zMeListVolsegEntriesForUserData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -507,14 +393,7 @@ export const zShareLinksGetShareLinkData = z.object({
   path: z.object({
     share_link_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -527,14 +406,7 @@ export const zShareLinksUpdateShareLinkData = z.object({
   path: z.object({
     share_link_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -558,10 +430,6 @@ export const zAuthOidcCallbackData = z.object({
   query: z.object({
     code: z.string(),
     state: z.string(),
-    url: z
-      .string()
-      .optional()
-      .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
   }),
 });
 
@@ -621,14 +489,7 @@ export const zTestUploadFileData = z.object({
 export const zVolsegEntriesListPublicEntriesData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -641,14 +502,7 @@ export const zVolsegEntriesListPublicEntriesResponse =
 export const zVolsegEntriesUploadEntryData = z.object({
   body: zBodyVolsegEntriesUploadEntry,
   path: z.never().optional(),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -661,14 +515,7 @@ export const zVolsegEntriesDeleteViewData = z.object({
   path: z.object({
     volseg_entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -682,14 +529,7 @@ export const zVolsegEntriesGetEntryByIdData = z.object({
   path: z.object({
     volseg_entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -702,12 +542,5 @@ export const zVolsegEntriesGetCvsxFileData = z.object({
   path: z.object({
     volseg_entry_id: z.string().uuid(),
   }),
-  query: z
-    .object({
-      url: z
-        .string()
-        .optional()
-        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
-    })
-    .optional(),
+  query: z.never().optional(),
 });

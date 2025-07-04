@@ -136,14 +136,14 @@ const createQueryKey = <TOptions extends Options>(
 };
 
 export const entriesListPublicEntriesQueryKey = (
-  options: Options<EntriesListPublicEntriesData>,
+  options?: Options<EntriesListPublicEntriesData>,
 ) => createQueryKey("entriesListPublicEntries", options);
 
 /**
  * List Public Entries
  */
 export const entriesListPublicEntriesOptions = (
-  options: Options<EntriesListPublicEntriesData>,
+  options?: Options<EntriesListPublicEntriesData>,
 ) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
@@ -196,7 +196,7 @@ const createInfiniteParams = <
 };
 
 export const entriesListPublicEntriesInfiniteQueryKey = (
-  options: Options<EntriesListPublicEntriesData>,
+  options?: Options<EntriesListPublicEntriesData>,
 ): QueryKey<Options<EntriesListPublicEntriesData>> =>
   createQueryKey("entriesListPublicEntries", options, true);
 
@@ -204,7 +204,7 @@ export const entriesListPublicEntriesInfiniteQueryKey = (
  * List Public Entries
  */
 export const entriesListPublicEntriesInfiniteOptions = (
-  options: Options<EntriesListPublicEntriesData>,
+  options?: Options<EntriesListPublicEntriesData>,
 ) => {
   return infiniteQueryOptions<
     EntriesListPublicEntriesResponse,
@@ -229,7 +229,7 @@ export const entriesListPublicEntriesInfiniteOptions = (
             ? pageParam
             : {
                 query: {
-                  "search_query.page": pageParam,
+                  page: pageParam,
                 },
               };
         const params = createInfiniteParams(queryKey, page);
@@ -649,14 +649,14 @@ export const viewsGetViewThumbnailImageOptions = (
 };
 
 export const meListEntriesForUserQueryKey = (
-  options: Options<MeListEntriesForUserData>,
+  options?: Options<MeListEntriesForUserData>,
 ) => createQueryKey("meListEntriesForUser", options);
 
 /**
  * List Entries For User
  */
 export const meListEntriesForUserOptions = (
-  options: Options<MeListEntriesForUserData>,
+  options?: Options<MeListEntriesForUserData>,
 ) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
@@ -673,7 +673,7 @@ export const meListEntriesForUserOptions = (
 };
 
 export const meListEntriesForUserInfiniteQueryKey = (
-  options: Options<MeListEntriesForUserData>,
+  options?: Options<MeListEntriesForUserData>,
 ): QueryKey<Options<MeListEntriesForUserData>> =>
   createQueryKey("meListEntriesForUser", options, true);
 
@@ -681,7 +681,7 @@ export const meListEntriesForUserInfiniteQueryKey = (
  * List Entries For User
  */
 export const meListEntriesForUserInfiniteOptions = (
-  options: Options<MeListEntriesForUserData>,
+  options?: Options<MeListEntriesForUserData>,
 ) => {
   return infiniteQueryOptions<
     MeListEntriesForUserResponse,
@@ -706,7 +706,7 @@ export const meListEntriesForUserInfiniteOptions = (
             ? pageParam
             : {
                 query: {
-                  "search_query.page": pageParam,
+                  page: pageParam,
                 },
               };
         const params = createInfiniteParams(queryKey, page);
