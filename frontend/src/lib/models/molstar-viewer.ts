@@ -77,7 +77,6 @@ export class MolstarViewerModel extends BaseReactiveModel {
   }
 
   async clear(): Promise<void> {
-    console.log("clearing");
     await this.plugin.clear();
   }
 
@@ -105,8 +104,8 @@ export class MolstarViewerModel extends BaseReactiveModel {
     return file;
   }
 
-  getState(): PluginState.Snapshot {
-    return this.plugin.state.getSnapshot({ image: true });
+  getSnapshot(): PluginState.Snapshot {
+    return this.plugin.state.getSnapshot();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

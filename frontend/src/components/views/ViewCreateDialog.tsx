@@ -118,7 +118,7 @@ export function ViewCreateDialog({
       try {
         const url = await viewer.screenshot();
         const thumbnail_image = await viewer.thumbnailImage();
-        const snapshot: PluginState.Snapshot = viewer.getState();
+        const snapshot: PluginState.Snapshot = viewer.getSnapshot();
         const snapshotJson = JSON.stringify(snapshot);
         const snapshotBlob = new Blob([snapshotJson], {
           type: "application/json",
