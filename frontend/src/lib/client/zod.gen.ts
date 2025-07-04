@@ -2,12 +2,18 @@
 
 import { z } from "zod";
 
+/**
+ * Body_volseg entries-upload_entry
+ */
 export const zBodyVolsegEntriesUploadEntry = z.object({
   name: z.string().max(255),
   is_public: z.boolean(),
   cvsx_file: z.string(),
 });
 
+/**
+ * EntryCreateRequest
+ */
 export const zEntryCreateRequest = z.object({
   volseg_entry_id: z.string().uuid(),
   name: z.string().min(1).max(255),
@@ -15,6 +21,9 @@ export const zEntryCreateRequest = z.object({
   is_public: z.union([z.boolean(), z.null()]).optional(),
 });
 
+/**
+ * EntryResponse
+ */
 export const zEntryResponse = z.object({
   response_model: z.string().optional().default(""),
   id: z.string().uuid(),
@@ -27,22 +36,34 @@ export const zEntryResponse = z.object({
   volseg_entry_id: z.string().uuid(),
 });
 
+/**
+ * EntryUpdateRequest
+ */
 export const zEntryUpdateRequest = z.object({
   name: z.union([z.string().min(1).max(255), z.null()]).optional(),
   description: z.union([z.string(), z.null()]).optional(),
   is_public: z.union([z.boolean(), z.null()]).optional(),
 });
 
+/**
+ * ValidationError
+ */
 export const zValidationError = z.object({
-  loc: z.array(z.unknown()),
+  loc: z.array(z.union([z.string(), z.number().int()])),
   msg: z.string(),
   type: z.string(),
 });
 
+/**
+ * HTTPValidationError
+ */
 export const zHttpValidationError = z.object({
   detail: z.array(zValidationError).optional(),
 });
 
+/**
+ * PaginatedResponse[EntryResponse]
+ */
 export const zPaginatedResponseEntryResponse = z.object({
   response_model: z.string().optional().default(""),
   page: z.number().int().gte(1),
@@ -52,6 +73,18 @@ export const zPaginatedResponseEntryResponse = z.object({
   items: z.array(zEntryResponse),
 });
 
+/**
+ * SearchQueryParams
+ */
+export const zSearchQueryParams = z.object({
+  search_term: z.union([z.string(), z.null()]).optional(),
+  page: z.number().int().gte(1).optional().default(1),
+  per_page: z.number().int().gte(1).lte(100).optional().default(10),
+});
+
+/**
+ * ShareLinkResponse
+ */
 export const zShareLinkResponse = z.object({
   response_model: z.string().optional().default(""),
   id: z.string().uuid(),
@@ -62,15 +95,24 @@ export const zShareLinkResponse = z.object({
   is_active: z.boolean(),
 });
 
+/**
+ * ShareLinkUpdateRequest
+ */
 export const zShareLinkUpdateRequest = z.object({
   is_editable: z.union([z.boolean(), z.null()]).optional(),
   is_active: z.union([z.boolean(), z.null()]).optional(),
 });
 
+/**
+ * UploadFileRequest
+ */
 export const zUploadFileRequest = z.object({
   file: z.string(),
 });
 
+/**
+ * UserResponse
+ */
 export const zUserResponse = z.object({
   response_model: z.string().optional().default(""),
   id: z.string().uuid(),
@@ -80,6 +122,9 @@ export const zUserResponse = z.object({
   email: z.string(),
 });
 
+/**
+ * ViewCreateRequest
+ */
 export const zViewCreateRequest = z.object({
   name: z.string().min(1).max(255),
   description: z.union([z.string().max(255), z.null()]).optional(),
@@ -88,6 +133,9 @@ export const zViewCreateRequest = z.object({
   is_thumbnail: z.boolean(),
 });
 
+/**
+ * ViewResponse
+ */
 export const zViewResponse = z.object({
   response_model: z.string().optional().default(""),
   id: z.string().uuid(),
@@ -101,12 +149,18 @@ export const zViewResponse = z.object({
   is_thumbnail: z.boolean(),
 });
 
+/**
+ * ViewUpdateRequest
+ */
 export const zViewUpdateRequest = z.object({
   name: z.union([z.string().min(1).max(255), z.null()]).optional(),
   description: z.union([z.string().max(255), z.null()]).optional(),
   is_thumbnail: z.union([z.boolean(), z.null()]).optional(),
 });
 
+/**
+ * VolsegEntryResponse
+ */
 export const zVolsegEntryResponse = z.object({
   response_model: z.string().optional().default(""),
   id: z.string().uuid(),
@@ -117,53 +171,543 @@ export const zVolsegEntryResponse = z.object({
   cvsx_filepath: z.union([z.string().max(2083), z.null()]),
 });
 
+export const zEntriesListPublicEntriesData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.object({
+    search_query: zSearchQueryParams,
+    url: z
+      .string()
+      .optional()
+      .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+  }),
+});
+
+/**
+ * Successful Response
+ */
 export const zEntriesListPublicEntriesResponse =
   zPaginatedResponseEntryResponse;
 
+export const zEntriesCreateEntryData = z.object({
+  body: zEntryCreateRequest,
+  path: z.never().optional(),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zEntriesCreateEntryResponse = zEntryResponse;
 
+export const zEntriesDeleteEntryData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Response Entries-Delete Entry
+ * Successful Response
+ */
 export const zEntriesDeleteEntryResponse = z.string().uuid();
 
+export const zEntriesGetEntryByIdData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zEntriesGetEntryByIdResponse = zEntryResponse;
 
+export const zEntriesUpdateEntryData = z.object({
+  body: zEntryUpdateRequest,
+  path: z.object({
+    entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zEntriesUpdateEntryResponse = zEntryResponse;
 
+export const zEntriesGetEntryByShareLinkData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    share_link_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zEntriesGetEntryByShareLinkResponse = zEntryResponse;
 
+export const zEntriesGetEntryShareLinkData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zEntriesGetEntryShareLinkResponse = zShareLinkResponse;
 
+export const zEntriesGetEntryThumbnailViewData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zEntriesGetEntryThumbnailViewResponse = zViewResponse;
 
+export const zViewsListViewsForEntryData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Response Views-List Views For Entry
+ * Successful Response
+ */
 export const zViewsListViewsForEntryResponse = z.array(zViewResponse);
 
+export const zViewsCreateViewData = z.object({
+  body: zViewCreateRequest,
+  path: z.object({
+    entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zViewsCreateViewResponse = zViewResponse;
 
+export const zViewsDeleteViewData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+    view_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Response Views-Delete View
+ * Successful Response
+ */
 export const zViewsDeleteViewResponse = z.string().uuid();
 
+export const zViewsGetViewByIdData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+    view_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zViewsGetViewByIdResponse = zViewResponse;
 
+export const zViewsUpdateViewData = z.object({
+  body: zViewUpdateRequest,
+  path: z.object({
+    entry_id: z.string().uuid(),
+    view_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zViewsUpdateViewResponse = zViewResponse;
 
+export const zViewsGetViewSnapshotData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+    view_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+export const zViewsGetViewThumbnailImageData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+    view_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+export const zMeListEntriesForUserData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.object({
+    search_query: zSearchQueryParams,
+    url: z
+      .string()
+      .optional()
+      .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+  }),
+});
+
+/**
+ * Successful Response
+ */
 export const zMeListEntriesForUserResponse = zPaginatedResponseEntryResponse;
 
+export const zMeListVolsegEntriesForUserData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Response Me-List Volseg Entries For User
+ * Successful Response
+ */
 export const zMeListVolsegEntriesForUserResponse =
   z.array(zVolsegEntryResponse);
 
+export const zShareLinksGetShareLinkData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    share_link_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zShareLinksGetShareLinkResponse = zShareLinkResponse;
 
+export const zShareLinksUpdateShareLinkData = z.object({
+  body: zShareLinkUpdateRequest,
+  path: z.object({
+    share_link_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zShareLinksUpdateShareLinkResponse = zShareLinkResponse;
 
+export const zAuthLoginUserData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z
+    .object({
+      redirect: z.string().optional().default("/dashboard"),
+    })
+    .optional(),
+});
+
+export const zAuthOidcCallbackData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.object({
+    code: z.string(),
+    state: z.string(),
+    url: z
+      .string()
+      .optional()
+      .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+  }),
+});
+
+export const zAuthLogoutData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+export const zAuthReadUsersMeData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zAuthReadUsersMeResponse = zUserResponse;
 
+export const zAuthGetUsersTokenData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+/**
+ * Response Auth-Get Users Token
+ * Successful Response
+ */
 export const zAuthGetUsersTokenResponse = z.union([z.string(), z.null()]);
 
+export const zAuthVerifyAuthData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+/**
+ * Response Auth-Verify Auth
+ * Successful Response
+ */
 export const zAuthVerifyAuthResponse = z.boolean();
 
+export const zAuthDemoLoginData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+export const zTestUploadFileData = z.object({
+  body: zUploadFileRequest,
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+export const zVolsegEntriesListPublicEntriesData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Response Volseg Entries-List Public Entries
+ * Successful Response
+ */
 export const zVolsegEntriesListPublicEntriesResponse =
   z.array(zVolsegEntryResponse);
 
+export const zVolsegEntriesUploadEntryData = z.object({
+  body: zBodyVolsegEntriesUploadEntry,
+  path: z.never().optional(),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zVolsegEntriesUploadEntryResponse = zVolsegEntryResponse;
 
+export const zVolsegEntriesDeleteViewData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    volseg_entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Response Volseg Entries-Delete View
+ * Successful Response
+ */
 export const zVolsegEntriesDeleteViewResponse = z.string().uuid();
 
+export const zVolsegEntriesGetEntryByIdData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    volseg_entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});
+
+/**
+ * Successful Response
+ */
 export const zVolsegEntriesGetEntryByIdResponse = zVolsegEntryResponse;
+
+export const zVolsegEntriesGetCvsxFileData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    volseg_entry_id: z.string().uuid(),
+  }),
+  query: z
+    .object({
+      url: z
+        .string()
+        .optional()
+        .default("postgresql+asyncpg://postgres:postgres@db/cellim_viewer"),
+    })
+    .optional(),
+});

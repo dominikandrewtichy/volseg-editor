@@ -210,6 +210,34 @@ export const PaginatedResponse_EntryResponse_Schema = {
   required: ["page", "per_page", "total_pages", "total_items", "items"],
 } as const;
 
+export const SearchQueryParamsSchema = {
+  properties: {
+    search_term: {
+      anyOf: [
+        {
+          type: "string",
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    page: {
+      type: "integer",
+      minimum: 1,
+      default: 1,
+    },
+    per_page: {
+      type: "integer",
+      maximum: 100,
+      minimum: 1,
+      default: 10,
+    },
+  },
+  additionalProperties: false,
+  type: "object",
+} as const;
+
 export const ShareLinkResponseSchema = {
   properties: {
     response_model: {

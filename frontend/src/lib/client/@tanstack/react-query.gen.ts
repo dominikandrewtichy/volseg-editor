@@ -27,6 +27,7 @@ import {
   authReadUsersMe,
   authGetUsersToken,
   authVerifyAuth,
+  authDemoLogin,
   testUploadFile,
   volsegEntriesListPublicEntries,
   volsegEntriesUploadEntry,
@@ -85,6 +86,7 @@ import type {
   AuthReadUsersMeData,
   AuthGetUsersTokenData,
   AuthVerifyAuthData,
+  AuthDemoLoginData,
   TestUploadFileData,
   TestUploadFileError,
   VolsegEntriesListPublicEntriesData,
@@ -134,11 +136,14 @@ const createQueryKey = <TOptions extends Options>(
 };
 
 export const entriesListPublicEntriesQueryKey = (
-  options?: Options<EntriesListPublicEntriesData>,
+  options: Options<EntriesListPublicEntriesData>,
 ) => createQueryKey("entriesListPublicEntries", options);
 
+/**
+ * List Public Entries
+ */
 export const entriesListPublicEntriesOptions = (
-  options?: Options<EntriesListPublicEntriesData>,
+  options: Options<EntriesListPublicEntriesData>,
 ) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
@@ -160,7 +165,9 @@ const createInfiniteParams = <
   queryKey: QueryKey<Options>,
   page: K,
 ) => {
-  const params = queryKey[0];
+  const params = {
+    ...queryKey[0],
+  };
   if (page.body) {
     params.body = {
       ...(queryKey[0].body as any),
@@ -189,12 +196,15 @@ const createInfiniteParams = <
 };
 
 export const entriesListPublicEntriesInfiniteQueryKey = (
-  options?: Options<EntriesListPublicEntriesData>,
+  options: Options<EntriesListPublicEntriesData>,
 ): QueryKey<Options<EntriesListPublicEntriesData>> =>
   createQueryKey("entriesListPublicEntries", options, true);
 
+/**
+ * List Public Entries
+ */
 export const entriesListPublicEntriesInfiniteOptions = (
-  options?: Options<EntriesListPublicEntriesData>,
+  options: Options<EntriesListPublicEntriesData>,
 ) => {
   return infiniteQueryOptions<
     EntriesListPublicEntriesResponse,
@@ -219,7 +229,7 @@ export const entriesListPublicEntriesInfiniteOptions = (
             ? pageParam
             : {
                 query: {
-                  page: pageParam,
+                  "search_query.page": pageParam,
                 },
               };
         const params = createInfiniteParams(queryKey, page);
@@ -240,6 +250,9 @@ export const entriesCreateEntryQueryKey = (
   options: Options<EntriesCreateEntryData>,
 ) => createQueryKey("entriesCreateEntry", options);
 
+/**
+ * Create Entry
+ */
 export const entriesCreateEntryOptions = (
   options: Options<EntriesCreateEntryData>,
 ) => {
@@ -257,6 +270,9 @@ export const entriesCreateEntryOptions = (
   });
 };
 
+/**
+ * Create Entry
+ */
 export const entriesCreateEntryMutation = (
   options?: Partial<Options<EntriesCreateEntryData>>,
 ): UseMutationOptions<
@@ -281,6 +297,9 @@ export const entriesCreateEntryMutation = (
   return mutationOptions;
 };
 
+/**
+ * Delete Entry
+ */
 export const entriesDeleteEntryMutation = (
   options?: Partial<Options<EntriesDeleteEntryData>>,
 ): UseMutationOptions<
@@ -309,6 +328,9 @@ export const entriesGetEntryByIdQueryKey = (
   options: Options<EntriesGetEntryByIdData>,
 ) => createQueryKey("entriesGetEntryById", options);
 
+/**
+ * Get Entry By Id
+ */
 export const entriesGetEntryByIdOptions = (
   options: Options<EntriesGetEntryByIdData>,
 ) => {
@@ -326,6 +348,9 @@ export const entriesGetEntryByIdOptions = (
   });
 };
 
+/**
+ * Update Entry
+ */
 export const entriesUpdateEntryMutation = (
   options?: Partial<Options<EntriesUpdateEntryData>>,
 ): UseMutationOptions<
@@ -354,6 +379,9 @@ export const entriesGetEntryByShareLinkQueryKey = (
   options: Options<EntriesGetEntryByShareLinkData>,
 ) => createQueryKey("entriesGetEntryByShareLink", options);
 
+/**
+ * Get Entry By Share Link
+ */
 export const entriesGetEntryByShareLinkOptions = (
   options: Options<EntriesGetEntryByShareLinkData>,
 ) => {
@@ -375,6 +403,9 @@ export const entriesGetEntryShareLinkQueryKey = (
   options: Options<EntriesGetEntryShareLinkData>,
 ) => createQueryKey("entriesGetEntryShareLink", options);
 
+/**
+ * Get Entry Share Link
+ */
 export const entriesGetEntryShareLinkOptions = (
   options: Options<EntriesGetEntryShareLinkData>,
 ) => {
@@ -396,6 +427,9 @@ export const entriesGetEntryThumbnailViewQueryKey = (
   options: Options<EntriesGetEntryThumbnailViewData>,
 ) => createQueryKey("entriesGetEntryThumbnailView", options);
 
+/**
+ * Get Entry Thumbnail View
+ */
 export const entriesGetEntryThumbnailViewOptions = (
   options: Options<EntriesGetEntryThumbnailViewData>,
 ) => {
@@ -417,6 +451,9 @@ export const viewsListViewsForEntryQueryKey = (
   options: Options<ViewsListViewsForEntryData>,
 ) => createQueryKey("viewsListViewsForEntry", options);
 
+/**
+ * List Views For Entry
+ */
 export const viewsListViewsForEntryOptions = (
   options: Options<ViewsListViewsForEntryData>,
 ) => {
@@ -438,6 +475,9 @@ export const viewsCreateViewQueryKey = (
   options: Options<ViewsCreateViewData>,
 ) => createQueryKey("viewsCreateView", options);
 
+/**
+ * Create View
+ */
 export const viewsCreateViewOptions = (
   options: Options<ViewsCreateViewData>,
 ) => {
@@ -455,6 +495,9 @@ export const viewsCreateViewOptions = (
   });
 };
 
+/**
+ * Create View
+ */
 export const viewsCreateViewMutation = (
   options?: Partial<Options<ViewsCreateViewData>>,
 ): UseMutationOptions<
@@ -479,6 +522,9 @@ export const viewsCreateViewMutation = (
   return mutationOptions;
 };
 
+/**
+ * Delete View
+ */
 export const viewsDeleteViewMutation = (
   options?: Partial<Options<ViewsDeleteViewData>>,
 ): UseMutationOptions<
@@ -507,6 +553,9 @@ export const viewsGetViewByIdQueryKey = (
   options: Options<ViewsGetViewByIdData>,
 ) => createQueryKey("viewsGetViewById", options);
 
+/**
+ * Get View By Id
+ */
 export const viewsGetViewByIdOptions = (
   options: Options<ViewsGetViewByIdData>,
 ) => {
@@ -524,6 +573,9 @@ export const viewsGetViewByIdOptions = (
   });
 };
 
+/**
+ * Update View
+ */
 export const viewsUpdateViewMutation = (
   options?: Partial<Options<ViewsUpdateViewData>>,
 ): UseMutationOptions<
@@ -552,6 +604,9 @@ export const viewsGetViewSnapshotQueryKey = (
   options: Options<ViewsGetViewSnapshotData>,
 ) => createQueryKey("viewsGetViewSnapshot", options);
 
+/**
+ * Get View Snapshot
+ */
 export const viewsGetViewSnapshotOptions = (
   options: Options<ViewsGetViewSnapshotData>,
 ) => {
@@ -573,6 +628,9 @@ export const viewsGetViewThumbnailImageQueryKey = (
   options: Options<ViewsGetViewThumbnailImageData>,
 ) => createQueryKey("viewsGetViewThumbnailImage", options);
 
+/**
+ * Get View Thumbnail Image
+ */
 export const viewsGetViewThumbnailImageOptions = (
   options: Options<ViewsGetViewThumbnailImageData>,
 ) => {
@@ -591,11 +649,14 @@ export const viewsGetViewThumbnailImageOptions = (
 };
 
 export const meListEntriesForUserQueryKey = (
-  options?: Options<MeListEntriesForUserData>,
+  options: Options<MeListEntriesForUserData>,
 ) => createQueryKey("meListEntriesForUser", options);
 
+/**
+ * List Entries For User
+ */
 export const meListEntriesForUserOptions = (
-  options?: Options<MeListEntriesForUserData>,
+  options: Options<MeListEntriesForUserData>,
 ) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
@@ -612,12 +673,15 @@ export const meListEntriesForUserOptions = (
 };
 
 export const meListEntriesForUserInfiniteQueryKey = (
-  options?: Options<MeListEntriesForUserData>,
+  options: Options<MeListEntriesForUserData>,
 ): QueryKey<Options<MeListEntriesForUserData>> =>
   createQueryKey("meListEntriesForUser", options, true);
 
+/**
+ * List Entries For User
+ */
 export const meListEntriesForUserInfiniteOptions = (
-  options?: Options<MeListEntriesForUserData>,
+  options: Options<MeListEntriesForUserData>,
 ) => {
   return infiniteQueryOptions<
     MeListEntriesForUserResponse,
@@ -642,7 +706,7 @@ export const meListEntriesForUserInfiniteOptions = (
             ? pageParam
             : {
                 query: {
-                  page: pageParam,
+                  "search_query.page": pageParam,
                 },
               };
         const params = createInfiniteParams(queryKey, page);
@@ -663,6 +727,9 @@ export const meListVolsegEntriesForUserQueryKey = (
   options?: Options<MeListVolsegEntriesForUserData>,
 ) => createQueryKey("meListVolsegEntriesForUser", options);
 
+/**
+ * List Volseg Entries For User
+ */
 export const meListVolsegEntriesForUserOptions = (
   options?: Options<MeListVolsegEntriesForUserData>,
 ) => {
@@ -684,6 +751,9 @@ export const shareLinksGetShareLinkQueryKey = (
   options: Options<ShareLinksGetShareLinkData>,
 ) => createQueryKey("shareLinksGetShareLink", options);
 
+/**
+ * Get Share Link
+ */
 export const shareLinksGetShareLinkOptions = (
   options: Options<ShareLinksGetShareLinkData>,
 ) => {
@@ -701,6 +771,9 @@ export const shareLinksGetShareLinkOptions = (
   });
 };
 
+/**
+ * Update Share Link
+ */
 export const shareLinksUpdateShareLinkMutation = (
   options?: Partial<Options<ShareLinksUpdateShareLinkData>>,
 ): UseMutationOptions<
@@ -728,6 +801,9 @@ export const shareLinksUpdateShareLinkMutation = (
 export const authLoginUserQueryKey = (options?: Options<AuthLoginUserData>) =>
   createQueryKey("authLoginUser", options);
 
+/**
+ * Login User
+ */
 export const authLoginUserOptions = (options?: Options<AuthLoginUserData>) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
@@ -747,6 +823,9 @@ export const authOidcCallbackQueryKey = (
   options: Options<AuthOidcCallbackData>,
 ) => createQueryKey("authOidcCallback", options);
 
+/**
+ * Oidc Callback
+ */
 export const authOidcCallbackOptions = (
   options: Options<AuthOidcCallbackData>,
 ) => {
@@ -767,6 +846,9 @@ export const authOidcCallbackOptions = (
 export const authLogoutQueryKey = (options?: Options<AuthLogoutData>) =>
   createQueryKey("authLogout", options);
 
+/**
+ * Logout
+ */
 export const authLogoutOptions = (options?: Options<AuthLogoutData>) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
@@ -782,6 +864,9 @@ export const authLogoutOptions = (options?: Options<AuthLogoutData>) => {
   });
 };
 
+/**
+ * Logout
+ */
 export const authLogoutMutation = (
   options?: Partial<Options<AuthLogoutData>>,
 ): UseMutationOptions<unknown, DefaultError, Options<AuthLogoutData>> => {
@@ -806,6 +891,9 @@ export const authReadUsersMeQueryKey = (
   options?: Options<AuthReadUsersMeData>,
 ) => createQueryKey("authReadUsersMe", options);
 
+/**
+ * Read Users Me
+ */
 export const authReadUsersMeOptions = (
   options?: Options<AuthReadUsersMeData>,
 ) => {
@@ -827,6 +915,9 @@ export const authGetUsersTokenQueryKey = (
   options?: Options<AuthGetUsersTokenData>,
 ) => createQueryKey("authGetUsersToken", options);
 
+/**
+ * Get Users Token
+ */
 export const authGetUsersTokenOptions = (
   options?: Options<AuthGetUsersTokenData>,
 ) => {
@@ -847,6 +938,9 @@ export const authGetUsersTokenOptions = (
 export const authVerifyAuthQueryKey = (options?: Options<AuthVerifyAuthData>) =>
   createQueryKey("authVerifyAuth", options);
 
+/**
+ * Verify Auth
+ */
 export const authVerifyAuthOptions = (
   options?: Options<AuthVerifyAuthData>,
 ) => {
@@ -864,9 +958,33 @@ export const authVerifyAuthOptions = (
   });
 };
 
+export const authDemoLoginQueryKey = (options?: Options<AuthDemoLoginData>) =>
+  createQueryKey("authDemoLogin", options);
+
+/**
+ * Demo Login
+ */
+export const authDemoLoginOptions = (options?: Options<AuthDemoLoginData>) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await authDemoLogin({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: authDemoLoginQueryKey(options),
+  });
+};
+
 export const testUploadFileQueryKey = (options: Options<TestUploadFileData>) =>
   createQueryKey("testUploadFile", options);
 
+/**
+ * Upload File
+ */
 export const testUploadFileOptions = (options: Options<TestUploadFileData>) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
@@ -882,6 +1000,9 @@ export const testUploadFileOptions = (options: Options<TestUploadFileData>) => {
   });
 };
 
+/**
+ * Upload File
+ */
 export const testUploadFileMutation = (
   options?: Partial<Options<TestUploadFileData>>,
 ): UseMutationOptions<
@@ -910,6 +1031,9 @@ export const volsegEntriesListPublicEntriesQueryKey = (
   options?: Options<VolsegEntriesListPublicEntriesData>,
 ) => createQueryKey("volsegEntriesListPublicEntries", options);
 
+/**
+ * List Public Entries
+ */
 export const volsegEntriesListPublicEntriesOptions = (
   options?: Options<VolsegEntriesListPublicEntriesData>,
 ) => {
@@ -931,6 +1055,9 @@ export const volsegEntriesUploadEntryQueryKey = (
   options: Options<VolsegEntriesUploadEntryData>,
 ) => createQueryKey("volsegEntriesUploadEntry", options);
 
+/**
+ * Upload Entry
+ */
 export const volsegEntriesUploadEntryOptions = (
   options: Options<VolsegEntriesUploadEntryData>,
 ) => {
@@ -948,6 +1075,9 @@ export const volsegEntriesUploadEntryOptions = (
   });
 };
 
+/**
+ * Upload Entry
+ */
 export const volsegEntriesUploadEntryMutation = (
   options?: Partial<Options<VolsegEntriesUploadEntryData>>,
 ): UseMutationOptions<
@@ -972,6 +1102,9 @@ export const volsegEntriesUploadEntryMutation = (
   return mutationOptions;
 };
 
+/**
+ * Delete View
+ */
 export const volsegEntriesDeleteViewMutation = (
   options?: Partial<Options<VolsegEntriesDeleteViewData>>,
 ): UseMutationOptions<
@@ -1000,6 +1133,9 @@ export const volsegEntriesGetEntryByIdQueryKey = (
   options: Options<VolsegEntriesGetEntryByIdData>,
 ) => createQueryKey("volsegEntriesGetEntryById", options);
 
+/**
+ * Get Entry By Id
+ */
 export const volsegEntriesGetEntryByIdOptions = (
   options: Options<VolsegEntriesGetEntryByIdData>,
 ) => {
@@ -1021,6 +1157,9 @@ export const volsegEntriesGetCvsxFileQueryKey = (
   options: Options<VolsegEntriesGetCvsxFileData>,
 ) => createQueryKey("volsegEntriesGetCvsxFile", options);
 
+/**
+ * Get Cvsx File
+ */
 export const volsegEntriesGetCvsxFileOptions = (
   options: Options<VolsegEntriesGetCvsxFileData>,
 ) => {
