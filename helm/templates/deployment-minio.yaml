@@ -29,13 +29,11 @@ spec:
             - /data
             - --console-address
             - ":9001"
-          env:
-            - name: MINIO_ENDPOINT
-              value: {{ .Values.minio.endpoint }}
-            - name: MINIO_ACCESS_KEY
-              value: {{ .Values.minio.accessKey }}
-            - name: MINIO_SECRET_KEY
-              value: {{ .Values.minio.secretKey }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-minio-config
+            - secretRef:
+                name: {{ .Release.Name }}-minio-secrets
           resources:
             requests:
               memory: 1Gi

@@ -22,7 +22,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: {{ .Release.Name }}-api
-          image: {{ .Values.image.api.repository }}:{{ .Values.image.api.tag }}
+          image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
           resources:
             requests:
               memory: 1Gi
@@ -34,7 +34,7 @@ spec:
             - containerPort: 8000
           envFrom:
             - configMapRef:
-              name: {{ .Release.Name }}-api-config
+                name: {{ .Release.Name }}-api-config
             - secretRef:
                 name: {{ .Release.Name }}-api-secrets
           env:
