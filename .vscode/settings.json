@@ -53,4 +53,7 @@
     "peacock.color": "#42b883",
     "workbench.preferredDarkColorTheme": "Shades of Purple",
     "workbench.preferredLightColorTheme": "Solarized Light",
+    "files.associations": {
+        "**/helm/templates/*.yaml": "yaml",
+    }
 }

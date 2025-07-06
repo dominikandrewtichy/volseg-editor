@@ -4,8 +4,6 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# load_dotenv(".env.example")
-
 
 class ModeEnum(str, Enum):
     development = "development"
@@ -52,13 +50,11 @@ class Settings(BaseSettings):
     JWT_REFRESH_TOKEN_COOKIE: str = "refresh_token"
 
     # MINIO
-    MINIO_HOST: str = os.getenv("MINIO_HOST")
-    MINIO_PORT: str = os.getenv("MINIO_PORT")
-    MINIO_ENDPOINT: str = f"{MINIO_HOST}:{MINIO_PORT}"
-    MINIO_ACCESS_KEY: str = os.getenv("MINIO_ROOT_USER")
-    MINIO_SECRET_KEY: str = os.getenv("MINIO_ROOT_PASSWORD")
-    MINIO_BUCKET: str = os.getenv("MINIO_BUCKET")
-    MINIO_SECURE: bool = os.getenv("MINIO_SECURE")
+    MINIO_ENDPOINT: str = os.getenv("MINIO_ENDPOINT")
+    MINIO_ACCESS_KEY: str = os.getenv("MINIO_ACCESS_KEY")
+    MINIO_SECRET_KEY: str = os.getenv("MINIO_SECRET_KEY")
+    MINIO_SECURE: bool = False
+    MINIO_BUCKET: str = "cellim-viewer"
 
     # OIDC
     OIDC_CLIENT_ID: str = os.getenv("OIDC_CLIENT_ID")
