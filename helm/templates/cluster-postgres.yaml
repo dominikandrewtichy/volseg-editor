@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.postgres.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: postgres
+spec:
+  instances: 1
+  imageName: {{ .Values.postgres.image }}
+  storage:
+    size: 10Gi
+    storageClass: zfs-csi

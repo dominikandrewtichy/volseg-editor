@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cellim-viewer
+description: A Helm chart for deploying CELLIM Viewer app
+version: "0.0.0"
+appVersion:  "0.0.0"
+

@@ -1,0 +1,34 @@
+namespace: tichy3-ns
+
+image:
+  api:
+    repository: cerit.io/frimen/cellim-viewer-api
+    tag: latest
+  web:
+    repository: cerit.io/frimen/cellim-viewer-web
+    tag: latest
+
+minio:
+  accessKey: minioadmin
+  secretKey: minioadmin
+  endpoint: cellim-viewer-minio-service.tichy3-ns.svc.cluster.local:9000
+  storageClass: zfs-csi
+
+postgres:
+  name: postgres-cluster
+  image: ghcr.io/cloudnative-pg/postgresql:17
+
+jwt:
+  secretKey: seomthign-secret
+
+cookie:
+  sessionSecret: soemthing0secret
+
+oidc:
+  clientId: 89d5c38f-02e7-4b3c-ba58-57a6c351b5f2
+  clientSecret: b4c92b21-ee7d-410e-bf0b-8c032425e02c6ae9e7d5-80ac-4fa0-a7c6-2125e41b949b
+  issuerUrl: https://login.e-infra.cz/oidc
+  redirectUri: http://localhost:8000/api/v1/auth/callback
+
+apiServerUrl: http://localhost:8000
+webServerUrl: http://localhost:5173
