@@ -24,8 +24,8 @@ class ApiSettings(BaseAppSettings):
     }
 
     # SERVER URLS
-    API_SERVER_URL: str = os.getenv("API_SERVER_URL")
-    WEB_SERVER_URL: str = os.getenv("WEB_SERVER_URL")
+    API_SERVER_URL: str = os.getenv("API_SERVER_URL", "")
+    WEB_SERVER_URL: str = os.getenv("WEB_SERVER_URL", "")
 
     # CORS
     CORS_ORIGINS: list[str] = [
@@ -34,20 +34,20 @@ class ApiSettings(BaseAppSettings):
     ]
 
     # COOKIES
-    COOKIE_SESSION_SECRET: str = os.getenv("COOKIE_SESSION_SECRET")
+    COOKIE_SESSION_SECRET: str = os.getenv("COOKIE_SESSION_SECRET", "")
 
     # JWT
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "")
     JWT_ACCESS_TOKEN_COOKIE: str = "access_token"
     JWT_REFRESH_TOKEN_COOKIE: str = "refresh_token"
 
     # OIDC
-    OIDC_CLIENT_ID: str = os.getenv("OIDC_CLIENT_ID")
-    OIDC_CLIENT_SECRET: str = os.getenv("OIDC_CLIENT_SECRET")
-    OIDC_ISSUER_URL: str = os.getenv("OIDC_ISSUER_URL")
-    OIDC_REDIRECT_URI: str = os.getenv("OIDC_REDIRECT_URI")
+    OIDC_CLIENT_ID: str = os.getenv("OIDC_CLIENT_ID", "")
+    OIDC_CLIENT_SECRET: str = os.getenv("OIDC_CLIENT_SECRET", "")
+    OIDC_ISSUER_URL: str = os.getenv("OIDC_ISSUER_URL", "")
+    OIDC_REDIRECT_URI: str = os.getenv("OIDC_REDIRECT_URI", "")
     OIDC_SCOPES: list[str] = ["openid", "profile", "email", "offline_access"]
     OIDC_AUTHORIZATION_URL: str = f"{OIDC_ISSUER_URL}/authorize"
     OIDC_TOKEN_URL: str = f"{OIDC_ISSUER_URL}/token"

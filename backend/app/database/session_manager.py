@@ -66,8 +66,10 @@ class DatabaseSessionManager:
 @lru_cache
 def get_session_manager():
     return DatabaseSessionManager(
-        get_postgres_settings().POSTGRES_URL,
-        {"echo": get_settings().MODE != ModeEnum.production},
+        host=get_postgres_settings().POSTGRES_URL,
+        engine_kwargs={
+            "echo": True,
+        },
     )
 
 
