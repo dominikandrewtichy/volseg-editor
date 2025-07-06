@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ImageIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Button } from "../ui/button";
 import { EntryResponse } from "@/lib/client";
 import { useQuery } from "@tanstack/react-query";

@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthProvider";
 import { InfoIcon } from "lucide-react";
 import { useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router";
 import einfraLogo from "../assets/einfra_logo.svg";
 import lifeScienceLogo from "../assets/lifescience_logo.png";
 

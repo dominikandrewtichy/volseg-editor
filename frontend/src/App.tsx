@@ -1,6 +1,6 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router";
 import { ScrollToTop } from "./components/common/ScrollToTop";
-import { MainLayout } from "./components/layout/Layout";
+import { Layout } from "./components/layout/Layout";
 import { LandingPage } from "./pages/LandingPage";
 import { EntryCreatePage } from "./pages/CreateEntryPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
@@ -16,9 +16,8 @@ export function App() {
   return (
     <>
       <BrowserRouter>
-        <ScrollToTop />
-        <MainLayout>
-          <Routes>
+        <Routes>
+          <Route element={<Layout />}>
             <Route path="/" element={<LandingPage />} />
             <Route path="/entries/:entryId" element={<EntryDetailsPage />} />
             <Route
@@ -61,8 +60,8 @@ export function App() {
             />
 
             <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </MainLayout>
+          </Route>
+        </Routes>
       </BrowserRouter>
     </>
   );

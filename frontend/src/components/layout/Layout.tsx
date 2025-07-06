@@ -1,18 +1,14 @@
-import { ReactNode } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { Outlet } from "react-router";
 
-export function MainLayout({
-  children,
-}: {
-  children: ReactNode | ReactNode[];
-}) {
+export function Layout() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
 
       <main className="container mx-auto flex-grow px-2 sm:px-4 py-8">
-        {children}
+        <Outlet />
       </main>
 
       <Footer />

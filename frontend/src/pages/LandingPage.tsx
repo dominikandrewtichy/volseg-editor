@@ -4,7 +4,7 @@ import { EntryPreview } from "@/components/entries/EntryPreview";
 import { Button } from "@/components/ui/button";
 import { entriesListPublicEntriesOptions } from "@/lib/client/@tanstack/react-query.gen";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
 
 export function LandingPage() {
   const [searchParams, setSearchParams] = useSearchParams();

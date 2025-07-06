@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 export function useRequiredParam(paramName: string): string {
   const params = useParams();

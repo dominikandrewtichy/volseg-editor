@@ -7,15 +7,14 @@ import {
   meListVolsegEntriesForUserOptions,
 } from "@/lib/client/@tanstack/react-query.gen";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export function DashboardPage() {
   const navigate = useNavigate();
 
   const entriesResult = useQuery({
     ...meListEntriesForUserOptions({
-      query: {
-      },
+      query: {},
     }),
   });
 

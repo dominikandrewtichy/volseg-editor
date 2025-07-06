@@ -14,6 +14,8 @@ client.setConfig({
   credentials: "include",
 });
 
+// client.interceptors.response.use((response, request) => {});
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -23,14 +25,14 @@ const queryClient = new QueryClient({
 });
 
 createRoot(document.getElementById("root")!).render(
-  <AuthProvider>
-    <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={queryClient}>
+    <Toaster />
+    <AuthProvider>
       <ThemeProvider>
         <MolstarProvider>
           <App />
         </MolstarProvider>
       </ThemeProvider>
-    </QueryClientProvider>
-    <Toaster />
-  </AuthProvider>,
+    </AuthProvider>
+  </QueryClientProvider>,
 );
