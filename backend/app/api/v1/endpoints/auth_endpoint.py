@@ -2,7 +2,7 @@ import secrets
 from urllib.parse import urlencode
 
 import httpx
-from fastapi import APIRouter, HTTPException, Request, Response, status
+from fastapi import APIRouter, Cookie, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
 
 from app.api.v1.contracts.responses.user_responses import UserResponse
@@ -144,6 +144,19 @@ async def oidc_callback(
     )
 
     return redirect_response
+
+
+@router.post(
+    "/refresh",
+    status_code=status.HTTP_200_OK,
+)
+async def refresh_token(
+    request: Request,
+    response: Response,
+    refresh_token: str | None = Cookie(default=None, alias=get_settings().JWT_REFRESH_TOKEN_COOKIE),
+):
+    # TODO
+    pass
 
 
 @router.post(

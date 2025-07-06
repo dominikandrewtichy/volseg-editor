@@ -15,7 +15,17 @@ client.setConfig({
   credentials: "include",
 });
 
-// client.interceptors.response.use((response, request) => {});
+// TODO
+// client.interceptors.response.use((response: Response, request: Request) => {
+//   if (response.status === 401) {
+//     try {
+//       const tokenResponse = await authrefreshtoken()
+
+//     } catch (error) {
+//       console.error("Token refresh failed", error);
+//     }
+//   }
+// });
 
 const queryClient = new QueryClient({
   defaultOptions: {
