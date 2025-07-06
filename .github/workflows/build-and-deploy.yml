@@ -7,6 +7,7 @@ on:
 
 env:
   DEPLOYMENT_NAME: cellim-viewer
+  K8S_NAMESPACE: tichy3-ns
   API_IMAGE_NAME: cerit.io/frimen/cellim-viewer-api
   WEB_IMAGE_NAME: cerit.io/frimen/cellim-viewer-web
 
@@ -72,4 +73,4 @@ jobs:
 
       - name: Helm upgrade or install release
         run: |
-          helm upgrade --install ${{ env.DEPLOYMENT_NAME }} --wait ./helm
+          helm upgrade --install ${{ env.DEPLOYMENT_NAME }} --wait ./helm --namespace ${{ env.K8S_NAMESPACE }}
