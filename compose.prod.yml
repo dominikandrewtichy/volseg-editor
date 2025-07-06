@@ -27,13 +27,11 @@ services:
     depends_on:
       - db
 
-  frontend:
-    container_name: cellim-viewer-frontend
+  web:
+    container_name: cellim-viewer-web
     build:
       context: ./frontend
       dockerfile: docker/dockerfile.prod
-    env_file:
-      - ./backend/.env.prod
     ports:
       - "5173:80"
     restart: unless-stopped
