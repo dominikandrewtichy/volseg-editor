@@ -4,11 +4,13 @@ metadata:
   name: {{ .Release.Name }}-api-ingress
   namespace: {{ .Values.namespace }}
   annotations:
-    # kubernetes.io/tls-acme: "true"
-    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.{{ .Release.Name }}.dyn.cloud.e-infra.cz
+      secretName: api.{{ .Release.Name }}.dyn.cloud.e-infra.cz-tls
   rules:
     - host: "api.{{ .Release.Name }}.dyn.cloud.e-infra.cz"
       http:

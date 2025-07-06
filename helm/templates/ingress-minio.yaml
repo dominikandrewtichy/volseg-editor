@@ -4,11 +4,13 @@ metadata:
   name: {{ .Release.Name }}-minio-ingress
   namespace: {{ .Values.namespace }}
   annotations:
-    # kubernetes.io/tls-acme: "true"
-    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - minio.{{ .Release.Name }}.dyn.cloud.e-infra.cz
+      secretName: minio.{{ .Release.Name }}.dyn.cloud.e-infra.cz-tls
   rules:
     - host: "minio.{{ .Release.Name }}.dyn.cloud.e-infra.cz"
       http:
