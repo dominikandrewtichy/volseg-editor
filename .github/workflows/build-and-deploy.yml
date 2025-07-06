@@ -9,6 +9,8 @@ env:
   DEPLOYMENT_NAME: cellim-viewer
   K8S_NAMESPACE: tichy3-ns
   API_IMAGE_NAME: cerit.io/frimen/cellim-viewer-api
+  MIGRATIONS_IMAGE_NAME: cerit.io/frimen/cellim-viewer-migrations
+  SEED_IMAGE_NAME: cerit.io/frimen/cellim-viewer-seed
   WEB_IMAGE_NAME: cerit.io/frimen/cellim-viewer-web
 
 jobs:
@@ -36,7 +38,20 @@ jobs:
           file: ./backend/docker/dockerfile.prod
           push: true
           tags: ${{ env.API_IMAGE_NAME }}:latest
-      
+      - name: Build and push migrations image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          file: ./backend/docker/dockerfile.migrations.prod
+          push: true
+          tags: ${{ env.MIGRATIONS_IMAGE_NAME }}:latest
+      - name: Build and push seed image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          file: ./backend/docker/dockerfile.seed.prod
+          push: true
+          tags: ${{ env.SEED_IMAGE_NAME }}:latest
       - name: Build and push web image
         uses: docker/build-push-action@v4
         with:
@@ -73,4 +88,4 @@ jobs:
 
       - name: Helm upgrade or install release
         run: |
-          helm upgrade --install ${{ env.DEPLOYMENT_NAME }} --wait ./helm --namespace ${{ env.K8S_NAMESPACE }}
+          helm upgrade --install --wait ${{ env.DEPLOYMENT_NAME }} ./helm --namespace ${{ env.K8S_NAMESPACE }}

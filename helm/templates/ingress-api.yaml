@@ -5,6 +5,7 @@ metadata:
   namespace: {{ .Values.namespace }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   ingressClassName: nginx
   tls:
@@ -19,5 +20,5 @@ spec:
               service:
                 name: {{ .Release.Name }}-api-service
                 port:
-                  number: 80
+                  number: 8000
             pathType: ImplementationSpecific
