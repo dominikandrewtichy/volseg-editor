@@ -1,18 +1,32 @@
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthProvider";
-import { ReactNode } from "react";
+import { authVerifyAuthOptions } from "@/lib/client/@tanstack/react-query.gen";
+import { useQuery } from "@tanstack/react-query";
+import { Navigate, Outlet, useLocation } from "react-router";
 
-export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+export function ProtectedRoute() {
   const location = useLocation();
+  const {
+    data: isAuthenticated,
+    isLoading,
+    isError,
+    error,
+    isRefetching,
+  } = useQuery({
+    ...authVerifyAuthOptions(),
+  });
 
-  if (isLoading) {
+  console.log("ProtectedRoute", isLoading || isRefetching, isAuthenticated);
+
+  if (isLoading || isRefetching) {
     return null;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  if (isError) {
+    return <>Error: {error.message}</>;
   }
 
-  return children;
-};
+  if (isAuthenticated) {
+    return <Outlet />;
+  }
+
+  return <Navigate to="/login" state={{ from: location }} replace />;
+}

@@ -4,9 +4,9 @@ from typing import Any, Literal
 from uuid import UUID
 
 import httpx
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, HTTPException, Request, Response, status
 from fastapi.security import OAuth2AuthorizationCodeBearer
-from jwt import DecodeError, ExpiredSignatureError, MissingRequiredClaimError, decode, encode
+from jwt import ExpiredSignatureError, decode, encode
 from pydantic import BaseModel
 
 from app.core.settings import get_settings
@@ -50,7 +50,7 @@ def create_access_token(data: dict[str, str], expires_delta: timedelta = None) -
     if expires_delta:
         expire = utcnow() + expires_delta
     else:
-        expire = utcnow() + timedelta(minutes=get_settings().JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = utcnow() + timedelta(seconds=10)
 
     to_encode.update({"exp": expire})
 
@@ -96,18 +96,31 @@ def decode_token(token: str) -> dict[str, Any]:
     )
 
 
-@lru_cache
 def get_regular_user_token():
-    return create_access_token({"sub": get_regular_user_id()}, expires_delta=timedelta(hours=10))
+    return create_access_token({"sub": get_regular_user_id()})
 
 
-@lru_cache
 def get_admin_user_token():
     return create_access_token({"sub": get_admin_user_id()}, expires_delta=timedelta(hours=10))
 
 
 def get_token_from_request(request: Request) -> str | None:
     return request.cookies.get(get_settings().JWT_ACCESS_TOKEN_COOKIE)
+
+
+def delete_jwt_tokens(response: Response) -> None:
+    response.delete_cookie(
+        key=get_settings().JWT_ACCESS_TOKEN_COOKIE,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+    )
+    response.delete_cookie(
+        key=get_settings().JWT_REFRESH_TOKEN_COOKIE,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+    )
 
 
 def get_required_user(
@@ -149,31 +162,19 @@ def get_optional_user(required_role: RoleEnum | None = None) -> User | None:
 
 
 def get_current_user_id(required_role: RoleEnum | None = None) -> str | None:
-    async def _get_user(request: Request):
+    async def _get_user(request: Request, response: Response):
         token = get_token_from_request(request)
 
         if token is None:
             return None
         try:
             payload = decode_token(token)
+            user_id = payload["sub"]
+            return user_id
         except ExpiredSignatureError:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Your token has expired. Please log in again.",
-            )
-        except DecodeError:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Error when decoding the token. Please check your request.",
-            )
-        except MissingRequiredClaimError:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="There is no required field in your token. Please contact the administrator.",
-            )
-
-        user_id = payload["sub"]
-        return user_id
+            delete_jwt_tokens(response)
+        except:
+            return None
 
     return _get_user
 

@@ -1,10 +1,6 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  ReactNode,
-} from "react";
+import { authVerifyAuthOptions } from "@/lib/client/@tanstack/react-query.gen";
+import { useQuery } from "@tanstack/react-query";
+import { createContext, ReactNode, useContext } from "react";
 import { AuthService } from "../lib/auth-service";
 
 interface AuthProviderProps {
@@ -30,21 +26,9 @@ const initialState: AuthProviderState = {
 const AuthProviderContext = createContext<AuthProviderState>(initialState);
 
 export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      const authStatus = await AuthService.verify();
-      if (!authStatus) {
-        await logout();
-      }
-      setIsAuthenticated(authStatus);
-      setIsLoading(false);
-    };
-
-    checkAuthentication();
-  }, []);
+  const { data, isLoading, isRefetching } = useQuery({
+    ...authVerifyAuthOptions(),
+  });
 
   const login = (redirectPath: string | undefined = "/") => {
     AuthService.login(redirectPath);
@@ -56,12 +40,11 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
 
   const logout = async () => {
     await AuthService.logout();
-    setIsAuthenticated(false);
   };
 
   const value = {
-    isAuthenticated,
-    isLoading,
+    isAuthenticated: data ?? false,
+    isLoading: isLoading || isRefetching,
     login,
     logout,
     loginAsDemoUser,

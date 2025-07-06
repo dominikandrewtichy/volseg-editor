@@ -53,3 +53,5 @@ app.add_middleware(
     SessionMiddleware,
     secret_key=get_settings().COOKIE_SESSION_SECRET,
 )
+
+# app.add_exception_handler(HTTPException, http_exception_handler)

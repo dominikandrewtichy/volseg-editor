@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { Layout } from "./components/layout/Layout";
 import { EntryCreatePage } from "./pages/CreateEntryPage";
@@ -12,53 +12,25 @@ import { VolsegEntryPreview } from "./pages/VolsegEntryPreview";
 
 export function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="/entries/:entryId" element={<EntryDetailsPage />} />
-          <Route
-            path="/volseg-entries/:entryId"
-            element={<VolsegEntryPreview />}
-          />
-          <Route path="/login" element={<LoginPage />} />
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/entries/:entryId" element={<EntryDetailsPage />} />
+        <Route
+          path="/volseg-entries/:entryId"
+          element={<VolsegEntryPreview />}
+        />
 
-          <Route
-            path="/share/:share_link_id"
-            element={
-              <ProtectedRoute>
-                <ShareEntryPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/entries/new"
-            element={
-              <ProtectedRoute>
-                <EntryCreatePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/upload"
-            element={
-              <ProtectedRoute>
-                <UploadVolseg />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route path="*" element={<HomePage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/share/:share_link_id" element={<ShareEntryPage />} />
+          <Route path="/entries/new" element={<EntryCreatePage />} />
+          <Route path="/upload" element={<UploadVolseg />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Route>
-      </Routes>
-    </BrowserRouter>
+
+        <Route path="*" element={<HomePage />} />
+      </Route>
+    </Routes>
   );
 }

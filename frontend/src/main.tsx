@@ -6,6 +6,7 @@ import { MolstarProvider } from "./contexts/MolstarProvider.tsx";
 import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
 import { AuthProvider } from "./contexts/AuthProvider.tsx";
 import { client } from "./lib/client/client.gen.ts";
+import { BrowserRouter } from "react-router";
 
 import "./index.css";
 
@@ -27,12 +28,14 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <Toaster />
-    <AuthProvider>
-      <ThemeProvider>
-        <MolstarProvider>
-          <App />
-        </MolstarProvider>
-      </ThemeProvider>
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <ThemeProvider>
+          <MolstarProvider>
+            <App />
+          </MolstarProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </QueryClientProvider>,
 );
