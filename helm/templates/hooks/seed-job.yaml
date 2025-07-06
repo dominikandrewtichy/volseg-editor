@@ -9,14 +9,13 @@ metadata:
 spec:
   template:
     spec:
-      restartPolicy: Never
+      restartPolicy: OnFailure
       containers:
         - name: {{ .Release.Name }}-seed
           image: {{ .Values.seed.image.repository }}:{{ .Values.seed.image.tag }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-postgres-config
-            - secretRef:
           env:
             - name: POSTGRES_USER
               valueFrom:
