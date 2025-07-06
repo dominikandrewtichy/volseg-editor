@@ -30,6 +30,8 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
     ...authVerifyAuthOptions(),
   });
 
+  console.log("AuthProvider", isLoading || isRefetching, !!data);
+
   const login = (redirectPath: string | undefined = "/") => {
     AuthService.login(redirectPath);
   };
@@ -43,7 +45,7 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
   };
 
   const value = {
-    isAuthenticated: data ?? false,
+    isAuthenticated: !!data,
     isLoading: isLoading || isRefetching,
     login,
     logout,
