@@ -1,14 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-volume-claim
-  namespace: tichy3-ns
-  labels:
-    app: postgres
+  name: {{ .Release.Name }}-minio-pvc
+  namespace: {{ .Values.namespace }}
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
-  storageClassName: zfs-csi
+  storageClassName: {{ .Values.minio.storageClass }}
