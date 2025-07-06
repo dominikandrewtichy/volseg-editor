@@ -33,6 +33,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./backend
+          file: ./backend/docker/dockerfile.prod
           push: true
           tags: ${{ env.API_IMAGE_NAME }}:latest
       
@@ -40,6 +41,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
+          file: ./frontend/docker/dockerfile.prod
           push: true
           tags: ${{ env.WEB_IMAGE_NAME }}:latest
 

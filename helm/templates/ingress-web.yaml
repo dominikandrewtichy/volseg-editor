@@ -4,6 +4,9 @@ metadata:
   name: {{ .Release.Name }}-web-ingress
   namespace: {{ .Values.namespace }}
   annotations:
+    # kubernetes.io/tls-acme: "true"
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
