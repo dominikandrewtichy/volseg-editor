@@ -7,7 +7,10 @@ metadata:
     app: postgres
 spec:
   instances: 1
-  imageName: {{ .Values.postgres.image }}
+  imageName: {{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}
+  bootstrap:
+    initdb:
+      database: {{ .Values.postgres.env.db }}
   storage:
     size: 10Gi
     storageClass: zfs-csi

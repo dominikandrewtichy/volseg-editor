@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from app.core.security import get_regular_user_id
-from app.core.settings import get_settings
 from app.database.models.role_model import Role
 from app.database.models.user_model import User
 from app.database.session_manager import get_session_manager
