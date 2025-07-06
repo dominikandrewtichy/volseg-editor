@@ -6,7 +6,7 @@ import { entriesListPublicEntriesOptions } from "@/lib/client/@tanstack/react-qu
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 
-export function LandingPage() {
+export function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
