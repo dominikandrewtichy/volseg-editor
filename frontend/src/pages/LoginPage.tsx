@@ -14,8 +14,8 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { InfoIcon } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import einfraLogo from "/public/einfra_logo.svg";
-import lifeScienceLogo from "/public/lifescience_logo.png";
+import einfraLogo from "../assets/einfra_logo.svg";
+import lifeScienceLogo from "../assets/lifescience_logo.png";
 
 type LoginProviderKey = "einfra" | "lifescience";
 

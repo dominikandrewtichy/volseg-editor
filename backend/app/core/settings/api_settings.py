@@ -1,23 +1,15 @@
 import os
-from enum import Enum
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from app.core.settings.base_settings import BaseAppSettings
 
 
-class ModeEnum(str, Enum):
-    development = "development"
-    production = "production"
-    testing = "testing"
-
-
-class Settings(BaseSettings):
-    MODE: ModeEnum = ModeEnum.development
-
+class ApiSettings(BaseAppSettings):
     # API
     API_V1_PREFIX: str = "/api/v1"
+    API_OPENAPI_URL: str = f"/api/v1/openapi.json"
 
-    # APP INFO
+    # APP
     APP_NAME: str = "CELLIM Viewer API"
     APP_SUMMARY: str = "API managing CELLIM data entries"
     APP_VERSION: str = "0.0.0"
@@ -30,7 +22,6 @@ class Settings(BaseSettings):
         "name": "Apache 2.0",
         "identifier": "MIT",
     }
-    OPENAPI_URL: str = f"{API_V1_PREFIX}/openapi.json"
 
     # SERVER URLS
     API_SERVER_URL: str = os.getenv("API_SERVER_URL")
@@ -42,19 +33,15 @@ class Settings(BaseSettings):
         WEB_SERVER_URL,  # for frontend
     ]
 
+    # COOKIES
+    COOKIE_SESSION_SECRET: str = os.getenv("COOKIE_SESSION_SECRET")
+
     # JWT
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
     JWT_ACCESS_TOKEN_COOKIE: str = "access_token"
     JWT_REFRESH_TOKEN_COOKIE: str = "refresh_token"
-
-    # MINIO
-    MINIO_ENDPOINT: str = os.getenv("MINIO_ENDPOINT")
-    MINIO_ACCESS_KEY: str = os.getenv("MINIO_ACCESS_KEY")
-    MINIO_SECRET_KEY: str = os.getenv("MINIO_SECRET_KEY")
-    MINIO_SECURE: bool = False
-    MINIO_BUCKET: str = "cellim-viewer"
 
     # OIDC
     OIDC_CLIENT_ID: str = os.getenv("OIDC_CLIENT_ID")
@@ -66,26 +53,7 @@ class Settings(BaseSettings):
     OIDC_TOKEN_URL: str = f"{OIDC_ISSUER_URL}/token"
     OIDC_USERINFO_URL: str = f"{OIDC_ISSUER_URL}/userinfo"
 
-    # POSTGRES
-    POSTGRES_DIALECT: str = "postgresql"
-    POSTGRES_DBAPI: str = "asyncpg"
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
-    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB")
-    POSTGRES_URL: str = f"{POSTGRES_DIALECT}+{POSTGRES_DBAPI}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}"
 
-    model_config = SettingsConfigDict(
-        env_file=".env.example",
-        env_file_encoding="utf-8",
-        case_sensitive=True,
-        extra="ignore",
-    )
-
-    # SESSION
-    COOKIE_SESSION_SECRET: str = os.getenv("COOKIE_SESSION_SECRET")
-
-
-@lru_cache
-def get_settings():
-    return Settings()
+@lru_cache()
+def get_api_settings():
+    return ApiSettings()

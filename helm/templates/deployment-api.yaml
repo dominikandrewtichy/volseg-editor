@@ -35,8 +35,14 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-api-config
+            - configMapRef:
+                name: {{ .Release.Name }}-minio-config
+            - configMapRef:
+                name: {{ .Release.Name }}-postgres-config
             - secretRef:
                 name: {{ .Release.Name }}-api-secrets
+            - secretRef:
+                name: {{ .Release.Name }}-minio-secrets
           env:
             - name: POSTGRES_USER
               valueFrom:

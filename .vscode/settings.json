@@ -54,6 +54,6 @@
     "workbench.preferredDarkColorTheme": "Shades of Purple",
     "workbench.preferredLightColorTheme": "Solarized Light",
     "files.associations": {
-        "**/helm/templates/*.yaml": "yaml",
+        "**/helm/templates/**/*.yaml": "yaml",
     }
 }

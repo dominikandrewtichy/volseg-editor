@@ -63,18 +63,18 @@ uv run mypy .
 uvx pre-commit install
 ```
 
-## Database
+<!-- ## Database
 
 ### Migrations
 
 Add new migration
 ```shell
-docker exec cellim-viewer-api sh app/database/scripts/migrate.sh revision --autogenerate -m "message"
+docker exec cellim-viewer-api alembic -c app/database/alembic.ini revision --autogenerate -m "message"
 ```
 
 Apply migrations
 ```shell
-docker exec cellim-viewer-api sh app/database/scripts/migrate.sh upgrade head
+docker exec cellim-viewer-api sh app/database/scripts/run-migrations.sh
 ```
 
 ### Seeding
@@ -93,5 +93,5 @@ docker exec cellim-viewer-api python -m app.database.seed.seed_prod
 
 Add encrypted secret with dotnevx
 ```shell
-docker run -it --rm -v $(pwd):/app dotenv/dotenvx set SECRET_KEY SECRET_VALUE -f .env.[mode]
+docker run -it --rm -v $(pwd):/app dotenv/dotenvx set SECRET_KEY SECRET_VALUE -f .env.[mode] -->
 ```

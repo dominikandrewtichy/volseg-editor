@@ -7,11 +7,11 @@ RUN npm run build
 
 FROM bitnami/nginx:latest AS app
 
-USER root
-RUN apt-get update && \
-    apt-get install -y curl dnsutils iputils-ping && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# USER root
+# RUN apt-get update && \
+#     apt-get install -y curl dnsutils iputils-ping && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80

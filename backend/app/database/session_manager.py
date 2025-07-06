@@ -11,7 +11,9 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from app.core.settings import ModeEnum, get_settings
+from app.core.settings import get_settings
+from app.core.settings.base_settings import ModeEnum
+from app.core.settings.postgres_settings import get_postgres_settings
 
 
 class DatabaseSessionManager:
@@ -64,7 +66,7 @@ class DatabaseSessionManager:
 @lru_cache
 def get_session_manager():
     return DatabaseSessionManager(
-        get_settings().POSTGRES_URL,
+        get_postgres_settings().POSTGRES_URL,
         {"echo": get_settings().MODE != ModeEnum.production},
     )
 

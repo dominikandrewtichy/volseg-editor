@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+immutable: true
+metadata:
+  name: {{ .Release.Name }}-postgres-config
+  namespace: {{ .Values.namespace }}
+data:
+  POSTGRES_DB: {{ .Values.postgres.env.db }}
+  POSTGRES_HOST: {{ .Release.Name }}-{{ .Values.postgres.name }}-rw.tichy3-ns.svc.cluster.local

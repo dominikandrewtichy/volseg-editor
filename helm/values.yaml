@@ -32,6 +32,16 @@ postgres:
   env:
     db: cellim_viewer
 
+migrations:
+  image:
+    repository: cerit.io/frimen/cellim-viewer-migrations
+    tag: latest
+
+seed:
+  image:
+    repository: cerit.io/frimen/cellim-viewer-seed
+    tag: latest
+
 web:
   image:
     repository: cerit.io/frimen/cellim-viewer-web
