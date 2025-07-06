@@ -50,7 +50,7 @@ def create_access_token(data: dict[str, str], expires_delta: timedelta = None) -
     if expires_delta:
         expire = utcnow() + expires_delta
     else:
-        expire = utcnow() + timedelta(seconds=10)
+        expire = utcnow() + timedelta(minutes=get_settings().JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
 
     to_encode.update({"exp": expire})
 
@@ -97,7 +97,7 @@ def decode_token(token: str) -> dict[str, Any]:
 
 
 def get_regular_user_token():
-    return create_access_token({"sub": get_regular_user_id()})
+    return create_access_token({"sub": get_regular_user_id()}, expires_delta=timedelta(hours=10))
 
 
 def get_admin_user_token():
