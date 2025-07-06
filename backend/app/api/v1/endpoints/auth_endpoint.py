@@ -158,6 +158,12 @@ async def logout(response: Response):
         secure=False,
         samesite="lax",
     )
+    response.delete_cookie(
+        key=get_settings().JWT_REFRESH_TOKEN_COOKIE,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+    )
 
 
 @router.get(

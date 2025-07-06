@@ -36,6 +36,9 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
   useEffect(() => {
     const checkAuthentication = async () => {
       const authStatus = await AuthService.verify();
+      if (!authStatus) {
+        await logout();
+      }
       setIsAuthenticated(authStatus);
       setIsLoading(false);
     };
