@@ -3,13 +3,18 @@ kind: Job
 metadata:
   name: {{ .Release.Name }}-seed
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "0"
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   template:
     spec:
       restartPolicy: OnFailure
+      securityContext:
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: {{ .Release.Name }}-seed
           image: {{ .Values.seed.image.repository }}:{{ .Values.seed.image.tag }}
@@ -27,3 +32,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-{{ .Values.postgres.name }}-app
                   key: password
+          securityContext:
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
