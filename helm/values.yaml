@@ -1,34 +1,38 @@
 namespace: tichy3-ns
 
-image:
-  api:
+api:
+  image:
     repository: cerit.io/frimen/cellim-viewer-api
     tag: latest
-  web:
-    repository: cerit.io/frimen/cellim-viewer-web
-    tag: latest
+  env:
+    apiServerUrl: http://localhost:8000
+    webServerUrl: http://localhost:5173
+    oidcClientId: 89d5c38f-02e7-4b3c-ba58-57a6c351b5f2
+    oidcIssuerUrl: https://login.e-infra.cz/oidc
+    oidcRedirectUri: http://localhost:8000/api/v1/auth/callback
+  secrets:
+    cookiesSessionSecret: soemthing0secret
+    jwtSecretKey: seomthign-secret
+    oidcClientSecret: b4c92b21-ee7d-410e-bf0b-8c032425e02c6ae9e7d5-80ac-4fa0-a7c6-2125e41b949b
 
 minio:
-  accessKey: minioadmin
-  secretKey: minioadmin
-  endpoint: cellim-viewer-minio-service.tichy3-ns.svc.cluster.local:9000
   storageClass: zfs-csi
+  env:
+    endpoint: cellim-viewer-minio-service.tichy3-ns.svc.cluster.local:9000
+  secrets:
+    accessKey: minioadmin
+    secretKey: minioadmin
 
 postgres:
   name: postgres-cluster
-  image: ghcr.io/cloudnative-pg/postgresql:17
+  storageClass: zfs-csi
+  image: 
+    repository: ghcr.io/cloudnative-pg/postgresql
+    tag: "17"
+  env:
+    db: cellim_viewer
 
-jwt:
-  secretKey: seomthign-secret
-
-cookie:
-  sessionSecret: soemthing0secret
-
-oidc:
-  clientId: 89d5c38f-02e7-4b3c-ba58-57a6c351b5f2
-  clientSecret: b4c92b21-ee7d-410e-bf0b-8c032425e02c6ae9e7d5-80ac-4fa0-a7c6-2125e41b949b
-  issuerUrl: https://login.e-infra.cz/oidc
-  redirectUri: http://localhost:8000/api/v1/auth/callback
-
-apiServerUrl: http://localhost:8000
-webServerUrl: http://localhost:5173
+web:
+  image:
+    repository: cerit.io/frimen/cellim-viewer-web
+    tag: latest

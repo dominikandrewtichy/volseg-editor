@@ -71,9 +71,9 @@ class Settings(BaseSettings):
     POSTGRES_DBAPI: str = "asyncpg"
     POSTGRES_USER: str = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
-    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER")
+    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST")
     POSTGRES_DB: str = os.getenv("POSTGRES_DB")
-    POSTGRES_URL: str = f"{POSTGRES_DIALECT}+{POSTGRES_DBAPI}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
+    POSTGRES_URL: str = f"{POSTGRES_DIALECT}+{POSTGRES_DBAPI}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}"
 
     model_config = SettingsConfigDict(
         env_file=".env.example",

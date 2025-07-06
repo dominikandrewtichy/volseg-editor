@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+immutable: true
+metadata:
+  name: {{ .Release.Name }}-api-config
+  namespace: {{ .Values.namespace }}
+data:
+  API_SERVER_URL: {{ .Values.api.env.apiServerUrl }}
+  WEB_SERVER_URL: {{ .Values.api.env.webServerUrl }}
+  OIDC_CLIENT_ID: {{ .Values.api.env.oidcClientId }}
+  OIDC_ISSUER_URL: {{ .Values.api.env.oidcIssuerUrl }}
+  OIDC_REDIRECT_URI: {{ .Values.api.env.oidcRedirectUri }}
+  MINIO_ENDPOINT: {{ .Values.minio.env.endpoint }}
+  POSTGRES_DB: {{ .Values.postgres.env.db }}
+  POSTGRES_HOST: {{ .Release.Name }}-{{ .Values.postgres.name }}-rw.tichy3-ns.svc.cluster.local

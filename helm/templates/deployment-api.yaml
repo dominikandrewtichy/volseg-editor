@@ -32,6 +32,11 @@ spec:
               cpu: "1"
           ports:
             - containerPort: 8000
+          envFrom:
+            - configMapRef:
+              name: {{ .Release.Name }}-api-config
+            - secretRef:
+                name: {{ .Release.Name }}-api-secrets
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -43,32 +48,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-{{ .Values.postgres.name }}-app
                   key: password
-            - name: POSTGRES_SERVER
-              value: {{ .Release.Name }}-{{ .Values.postgres.name }}-rw.tichy3-ns.svc.cluster.local
-            - name: POSTGRES_DB
-              value: {{ .Values.postgres.db | quote }}
-            - name: MINIO_ENDPOINT
-              value: {{ .Values.minio.endpoint | quote }}
-            - name: MINIO_ACCESS_KEY
-              value: {{ .Values.minio.accessKey | quote }}
-            - name: MINIO_SECRET_KEY
-              value: {{ .Values.minio.secretKey | quote }}
-            - name: JWT_SECRET_KEY
-              value: {{ .Values.jwt.secretKey | quote }}
-            - name: OIDC_CLIENT_ID
-              value: {{ .Values.oidc.clientId | quote }}
-            - name: OIDC_CLIENT_SECRET
-              value: {{ .Values.oidc.clientSecret | quote }}
-            - name: OIDC_ISSUER_URL
-              value: {{ .Values.oidc.issuerUrl | quote }}
-            - name: OIDC_REDIRECT_URI
-              value: {{ .Values.oidc.redirectUri | quote }}
-            - name: COOKIE_SESSION_SECRET
-              value: {{ .Values.cookie.sessionSecret | quote }}
-            - name: API_SERVER_URL
-              value: {{ .Values.apiServerUrl | quote }}
-            - name: WEB_SERVER_URL
-              value: {{ .Values.webServerUrl | quote }}
           securityContext:
             runAsUser: 1000
             allowPrivilegeEscalation: false
