@@ -72,4 +72,4 @@ jobs:
 
       - name: Helm upgrade or install release
         run: |
-          helm upgrade --install ${{ env.DEPLOYMENT_NAME }} ./helm
+          helm upgrade --install ${{ env.DEPLOYMENT_NAME }} --wait ./helm
