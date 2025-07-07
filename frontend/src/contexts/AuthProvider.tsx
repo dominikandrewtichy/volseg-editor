@@ -1,5 +1,8 @@
-import { authVerifyAuthOptions } from "@/lib/client/@tanstack/react-query.gen";
-import { useQuery } from "@tanstack/react-query";
+import {
+  authVerifyAuthOptions,
+  authVerifyAuthQueryKey,
+} from "@/lib/client/@tanstack/react-query.gen";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, ReactNode, useContext } from "react";
 import { AuthService } from "../lib/auth-service";
 
@@ -26,6 +29,7 @@ const initialState: AuthProviderState = {
 const AuthProviderContext = createContext<AuthProviderState>(initialState);
 
 export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
+  const queryClient = useQueryClient();
   const { data, isLoading, isRefetching } = useQuery({
     ...authVerifyAuthOptions(),
   });
@@ -42,6 +46,7 @@ export const AuthProvider = ({ children, ...props }: AuthProviderProps) => {
 
   const logout = async () => {
     await AuthService.logout();
+    queryClient.invalidateQueries({ queryKey: authVerifyAuthQueryKey() });
   };
 
   const value = {
