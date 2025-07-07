@@ -15,13 +15,13 @@ client.setConfig({
   credentials: "include",
 });
 
-async function myInterceptor(response: Response) {
-  if (response.status === 401) {
-    window.location.href = "/login";
-  }
-  return response;
-}
-client.interceptors.response.use(myInterceptor);
+// async function myInterceptor(response: Response) {
+//   if (response.status === 401) {
+//     window.location.href = "/login";
+//   }
+//   return response;
+// }
+// client.interceptors.response.use(myInterceptor);
 
 const queryClient = new QueryClient({
   defaultOptions: {
