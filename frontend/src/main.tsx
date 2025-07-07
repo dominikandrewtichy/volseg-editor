@@ -15,17 +15,14 @@ client.setConfig({
   credentials: "include",
 });
 
-// TODO
-// client.interceptors.response.use((response: Response, request: Request) => {
-//   if (response.status === 401) {
-//     try {
-//       const tokenResponse = await authrefreshtoken()
-
-//     } catch (error) {
-//       console.error("Token refresh failed", error);
-//     }
-//   }
-// });
+async function myInterceptor(response: Response) {
+  if (response.status === 401) {
+    console.log("REDIRECTINGS");
+    window.location.href = "/login";
+  }
+  return response;
+}
+client.interceptors.response.use(myInterceptor);
 
 const queryClient = new QueryClient({
   defaultOptions: {
