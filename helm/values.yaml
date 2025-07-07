@@ -16,7 +16,7 @@ api:
     oidcClientSecret: b4c92b21-ee7d-410e-bf0b-8c032425e02c6ae9e7d5-80ac-4fa0-a7c6-2125e41b949b
 
 minio:
-  storageClass: zfs-csi
+  storageClass: nfs-csi
   env:
     endpoint: cellim-viewer-minio-service.tichy3-ns.svc.cluster.local:9000
   secrets:
@@ -25,7 +25,7 @@ minio:
 
 postgres:
   name: postgres-cluster
-  storageClass: zfs-csi
+  storageClass: nfs-csi
   image: 
     repository: ghcr.io/cloudnative-pg/postgresql
     tag: "17"
