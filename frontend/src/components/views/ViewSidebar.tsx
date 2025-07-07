@@ -48,9 +48,14 @@ export function ViewsSidebar({
   return (
     <div className="flex flex-col h-full w-96">
       <div className="flex items-center justify-between mb-2 pr-4">
-        <h2 className="text-xl font-bold">Saved Views</h2>
+        {/* <h2 className="text-xl font-bold">Saved Views</h2> */}
         {isEditable && (
-          <Button onClick={onSaveView} size="sm" className="gap-1">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="gap-1"
+            onClick={onSaveView}
+          >
             <Camera size={16} />
             <span>Save View</span>
           </Button>

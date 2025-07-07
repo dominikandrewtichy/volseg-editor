@@ -3,7 +3,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { VisibilityBadge } from "@/components/common/VisibilityBadge";
 import { EntryDescription } from "@/components/entries/EntryDescription";
 import { MolstarViewer } from "@/components/molstar/MolstarViewer";
-import { ShareLinkDialog } from "@/components/share-links/ShareLinkDialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -14,7 +13,6 @@ import { useMolstar } from "@/contexts/MolstarProvider";
 import {
   entriesGetEntryByIdOptions,
   entriesGetEntryByIdQueryKey,
-  entriesGetEntryShareLinkOptions,
   entriesUpdateEntryMutation,
   volsegEntriesGetEntryByIdOptions,
 } from "@/lib/client/@tanstack/react-query.gen";
@@ -27,23 +25,19 @@ import { toast } from "sonner";
 
 interface EntryDetailsPageProps {
   entryId?: string;
-  isEditable?: boolean;
 }
 
 export function EntryDetailsPage({
   entryId: overrideEntryId,
-  isEditable = true,
 }: EntryDetailsPageProps) {
   const { viewer } = useMolstar();
-  const { isAuthenticated } = useAuth();
-  const canEdit = isAuthenticated && isEditable;
+  const { isAuthenticated: canEdit } = useAuth();
   const params = useParams();
   const routeEntryId = params["entryId"];
   const entryId = overrideEntryId ?? routeEntryId;
   const queryClient = useQueryClient();
 
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [showShareDialog, setShowShareDialog] = useState(false);
 
   const entryQuery = useQuery({
     ...entriesGetEntryByIdOptions({
@@ -69,14 +63,6 @@ export function EntryDetailsPage({
       },
     }),
     enabled: !!entryQuery.data?.volseg_entry_id,
-  });
-
-  const shareLinkQuery = useQuery({
-    ...entriesGetEntryShareLinkOptions({
-      path: {
-        entry_id: entryId!,
-      },
-    }),
   });
 
   const entryMutation = useMutation({
@@ -148,10 +134,10 @@ export function EntryDetailsPage({
     <div className="container py-8">
       <div className="md:col-span-2">
         <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
+          <div className="flex-1 space-y-2">
             {isEditing ? (
               <input
-                className="text-3xl font-bold border-b border-muted focus:outline-none focus:border-primary px-1 w-auto max-w-full"
+                className="text-2xl font-semibold pb-1 border-b border-muted focus:outline-none focus:border-primary w-auto max-w-full"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -203,14 +189,7 @@ export function EntryDetailsPage({
                 ) : (
                   <>
                     <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowShareDialog(true)}
-                    >
-                      Share
-                    </Button>
-                    <Button
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
                       onClick={() => {
                         setName(entryQuery.data.name);
@@ -231,7 +210,7 @@ export function EntryDetailsPage({
 
       {isEditing ? (
         <textarea
-          className="w-full p-2 border rounded text-sm font-mono mb-8"
+          className="w-full p-2 border rounded-md text-sm font-mono mb-8"
           rows={20}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -262,12 +241,6 @@ export function EntryDetailsPage({
           />
         </>
       )}
-
-      <ShareLinkDialog
-        open={showShareDialog}
-        setOpen={setShowShareDialog}
-        shareLinkId={shareLinkQuery.data?.id ?? "NONE"}
-      />
     </div>
   );
 }

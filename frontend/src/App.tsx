@@ -6,7 +6,6 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { EntryDetailsPage } from "./pages/EntryDetailsPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
-import ShareEntryPage from "./pages/ShareEntryPage";
 import UploadVolseg from "./pages/UploadVolseg";
 import { VolsegEntryPreview } from "./pages/VolsegEntryPreview";
 
@@ -23,7 +22,7 @@ export function App() {
         />
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/share/:share_link_id" element={<ShareEntryPage />} />
+          {/* <Route path="/share/:share_link_id" element={<ShareEntryPage />} /> */}
           <Route path="/entries/new" element={<EntryCreatePage />} />
           <Route path="/upload" element={<UploadVolseg />} />
           <Route path="/dashboard" element={<DashboardPage />} />

@@ -46,10 +46,5 @@ export default function ShareEntryPage() {
     );
   }
 
-  return (
-    <EntryDetailsPage
-      entryId={shareLinkQuery.data.entry_id}
-      isEditable={false}
-    />
-  );
+  return <EntryDetailsPage entryId={shareLinkQuery.data.entry_id} />;
 }
