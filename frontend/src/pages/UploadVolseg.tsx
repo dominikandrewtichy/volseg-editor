@@ -86,6 +86,8 @@ export default function VolsegUploadForm() {
       form.setValue("cvsx_file", file, {
         // shouldValidate: true,
       });
+    } else {
+      await viewer.clear();
     }
   }
 
