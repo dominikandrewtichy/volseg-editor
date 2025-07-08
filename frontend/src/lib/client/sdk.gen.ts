@@ -69,6 +69,9 @@ import type {
   AuthOidcCallbackData,
   AuthOidcCallbackResponses,
   AuthOidcCallbackErrors,
+  AuthRefreshTokenData,
+  AuthRefreshTokenResponses,
+  AuthRefreshTokenErrors,
   AuthLogoutData,
   AuthLogoutResponses,
   AuthReadUsersMeData,
@@ -79,9 +82,7 @@ import type {
   AuthVerifyAuthResponses,
   AuthDemoLoginData,
   AuthDemoLoginResponses,
-  TestUploadFileData,
-  TestUploadFileResponses,
-  TestUploadFileErrors,
+  AuthDemoLoginErrors,
   VolsegEntriesListPublicEntriesData,
   VolsegEntriesListPublicEntriesResponses,
   VolsegEntriesUploadEntryData,
@@ -136,6 +137,7 @@ import {
   zShareLinksUpdateShareLinkResponse,
   zAuthLoginUserData,
   zAuthOidcCallbackData,
+  zAuthRefreshTokenData,
   zAuthLogoutData,
   zAuthReadUsersMeData,
   zAuthReadUsersMeResponse,
@@ -144,7 +146,6 @@ import {
   zAuthVerifyAuthData,
   zAuthVerifyAuthResponse,
   zAuthDemoLoginData,
-  zTestUploadFileData,
   zVolsegEntriesListPublicEntriesData,
   zVolsegEntriesListPublicEntriesResponse,
   zVolsegEntriesUploadEntryData,
@@ -654,6 +655,25 @@ export const authOidcCallback = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Refresh Token
+ */
+export const authRefreshToken = <ThrowOnError extends boolean = false>(
+  options?: Options<AuthRefreshTokenData, ThrowOnError>,
+) => {
+  return (options?.client ?? _heyApiClient).post<
+    AuthRefreshTokenResponses,
+    AuthRefreshTokenErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) => {
+      return await zAuthRefreshTokenData.parseAsync(data);
+    },
+    url: "/api/v1/auth/refresh",
+    ...options,
+  });
+};
+
+/**
  * Logout
  */
 export const authLogout = <ThrowOnError extends boolean = false>(
@@ -746,7 +766,7 @@ export const authDemoLogin = <ThrowOnError extends boolean = false>(
 ) => {
   return (options?.client ?? _heyApiClient).get<
     AuthDemoLoginResponses,
-    unknown,
+    AuthDemoLoginErrors,
     ThrowOnError
   >({
     requestValidator: async (data) => {
@@ -754,30 +774,6 @@ export const authDemoLogin = <ThrowOnError extends boolean = false>(
     },
     url: "/api/v1/auth/demo-login",
     ...options,
-  });
-};
-
-/**
- * Upload File
- */
-export const testUploadFile = <ThrowOnError extends boolean = false>(
-  options: Options<TestUploadFileData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).post<
-    TestUploadFileResponses,
-    TestUploadFileErrors,
-    ThrowOnError
-  >({
-    ...formDataBodySerializer,
-    requestValidator: async (data) => {
-      return await zTestUploadFileData.parseAsync(data);
-    },
-    url: "/api/v1/test/upload",
-    ...options,
-    headers: {
-      "Content-Type": null,
-      ...options.headers,
-    },
   });
 };
 

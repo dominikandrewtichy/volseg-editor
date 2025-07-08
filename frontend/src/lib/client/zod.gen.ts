@@ -3,13 +3,6 @@
 import { z } from "zod";
 
 /**
- * Body_test-upload_file
- */
-export const zBodyTestUploadFile = z.object({
-  file: z.string(),
-});
-
-/**
  * Body_volseg entries-upload_entry
  */
 export const zBodyVolsegEntriesUploadEntry = z.object({
@@ -433,6 +426,12 @@ export const zAuthOidcCallbackData = z.object({
   }),
 });
 
+export const zAuthRefreshTokenData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
 export const zAuthLogoutData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
@@ -477,13 +476,11 @@ export const zAuthVerifyAuthResponse = z.boolean();
 export const zAuthDemoLoginData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
-  query: z.never().optional(),
-});
-
-export const zTestUploadFileData = z.object({
-  body: zBodyTestUploadFile,
-  path: z.never().optional(),
-  query: z.never().optional(),
+  query: z
+    .object({
+      redirect: z.string().optional().default("/dashboard"),
+    })
+    .optional(),
 });
 
 export const zVolsegEntriesListPublicEntriesData = z.object({

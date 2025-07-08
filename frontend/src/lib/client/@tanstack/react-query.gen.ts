@@ -23,12 +23,12 @@ import {
   shareLinksUpdateShareLink,
   authLoginUser,
   authOidcCallback,
+  authRefreshToken,
   authLogout,
   authReadUsersMe,
   authGetUsersToken,
   authVerifyAuth,
   authDemoLogin,
-  testUploadFile,
   volsegEntriesListPublicEntries,
   volsegEntriesUploadEntry,
   volsegEntriesDeleteView,
@@ -82,13 +82,13 @@ import type {
   ShareLinksUpdateShareLinkResponse,
   AuthLoginUserData,
   AuthOidcCallbackData,
+  AuthRefreshTokenData,
+  AuthRefreshTokenError,
   AuthLogoutData,
   AuthReadUsersMeData,
   AuthGetUsersTokenData,
   AuthVerifyAuthData,
   AuthDemoLoginData,
-  TestUploadFileData,
-  TestUploadFileError,
   VolsegEntriesListPublicEntriesData,
   VolsegEntriesUploadEntryData,
   VolsegEntriesUploadEntryError,
@@ -843,6 +843,57 @@ export const authOidcCallbackOptions = (
   });
 };
 
+export const authRefreshTokenQueryKey = (
+  options?: Options<AuthRefreshTokenData>,
+) => createQueryKey("authRefreshToken", options);
+
+/**
+ * Refresh Token
+ */
+export const authRefreshTokenOptions = (
+  options?: Options<AuthRefreshTokenData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await authRefreshToken({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: authRefreshTokenQueryKey(options),
+  });
+};
+
+/**
+ * Refresh Token
+ */
+export const authRefreshTokenMutation = (
+  options?: Partial<Options<AuthRefreshTokenData>>,
+): UseMutationOptions<
+  unknown,
+  AuthRefreshTokenError,
+  Options<AuthRefreshTokenData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    unknown,
+    AuthRefreshTokenError,
+    Options<AuthRefreshTokenData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await authRefreshToken({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
 export const authLogoutQueryKey = (options?: Options<AuthLogoutData>) =>
   createQueryKey("authLogout", options);
 
@@ -977,54 +1028,6 @@ export const authDemoLoginOptions = (options?: Options<AuthDemoLoginData>) => {
     },
     queryKey: authDemoLoginQueryKey(options),
   });
-};
-
-export const testUploadFileQueryKey = (options: Options<TestUploadFileData>) =>
-  createQueryKey("testUploadFile", options);
-
-/**
- * Upload File
- */
-export const testUploadFileOptions = (options: Options<TestUploadFileData>) => {
-  return queryOptions({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await testUploadFile({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: testUploadFileQueryKey(options),
-  });
-};
-
-/**
- * Upload File
- */
-export const testUploadFileMutation = (
-  options?: Partial<Options<TestUploadFileData>>,
-): UseMutationOptions<
-  unknown,
-  TestUploadFileError,
-  Options<TestUploadFileData>
-> => {
-  const mutationOptions: UseMutationOptions<
-    unknown,
-    TestUploadFileError,
-    Options<TestUploadFileData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await testUploadFile({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
 };
 
 export const volsegEntriesListPublicEntriesQueryKey = (
