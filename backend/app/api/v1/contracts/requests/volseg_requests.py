@@ -6,5 +6,6 @@ class VolsegUploadEntry(BaseModel):
     name: str = Field(max_length=255)
     is_public: bool = Field()
     cvsx_file: UploadFile = Field()
+    snapshot_file: UploadFile = Field()
 
     model_config = {"extra": "forbid"}

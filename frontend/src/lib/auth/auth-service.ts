@@ -1,4 +1,4 @@
-import { authGetUsersToken, authLogout, authVerifyAuth } from "./client";
+import { authGetUsersToken, authLogout, authVerifyAuth } from "../client";
 
 export const AuthService = {
   login(redirectPath = "/") {

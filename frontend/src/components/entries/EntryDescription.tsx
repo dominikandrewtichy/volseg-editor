@@ -13,7 +13,7 @@ const MAX_HEIGHT = 200;
 export function EntryDescription({ description }: EntryDescriptionProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
-  const [isOverflowing, setIsOverflowing] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(true);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -63,7 +63,7 @@ function ExpandButton({
 }) {
   return (
     <Button
-      variant="ghost"
+      variant="outline"
       size="sm"
       className={cn("", className)}
       onClick={() => setExpanded(!expanded)}

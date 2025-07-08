@@ -18,7 +18,7 @@ import { volsegEntriesUploadEntryMutation } from "@/lib/client/@tanstack/react-q
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -107,6 +107,13 @@ export default function VolsegUploadForm() {
     });
   }
 
+  useEffect(() => {
+    async function mount() {
+      await viewer.clear();
+    }
+    mount();
+  }, []);
+
   return (
     <div className="flex flex-col gap-y-5">
       <div className="max-w-xl p-6 border shadow-md rounded-2xl">
@@ -122,7 +129,7 @@ export default function VolsegUploadForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Entry name</FormLabel>
+                  <FormLabel>Volseg entry name</FormLabel>
                   <FormControl>
                     <Input placeholder="Entry name" {...field} />
                   </FormControl>
@@ -209,7 +216,7 @@ export default function VolsegUploadForm() {
           </form>
         </Form>
       </div>
-      <div className="grow relative h-[500px] max-w-xl">
+      <div className="grow relative h-[450px] max-w-xl">
         <Suspense fallback={<Skeleton className="size-full" />}>
           <MolstarViewer />
         </Suspense>

@@ -4,7 +4,7 @@ import {
 } from "@/lib/client/@tanstack/react-query.gen";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, ReactNode, useContext } from "react";
-import { AuthService } from "../lib/auth-service";
+import { AuthService } from "../lib/auth/auth-service";
 
 interface AuthProviderProps {
   children: ReactNode;
