@@ -3,6 +3,8 @@ import ReactMarkdown from "react-markdown";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import remarkGfm from "remark-gfm";
+import { MarkdownViewer } from "../MarkdownViewer";
 
 interface EntryDescriptionProps {
   description?: string | null | undefined;
@@ -45,7 +47,7 @@ export function EntryDescription({ description }: EntryDescriptionProps) {
                 : "0px",
           }}
         >
-          <ReactMarkdown>{description}</ReactMarkdown>
+          <MarkdownViewer markdown={description} />
         </div>
       </div>
     </div>
