@@ -10,6 +10,8 @@ import { BehaviorSubject } from "rxjs";
 import { BaseReactiveModel } from "./base-model";
 import { CVSXSpec } from "@/volseg/src/extensions/cvsx-extension/behaviour";
 import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
+import { OpenFiles } from "molstar/lib/commonjs/mol-plugin-state/actions/file";
+import { UUID } from "molstar/lib/mol-util";
 
 type InitializationState = "pending" | "initializing" | "success" | "error";
 
@@ -138,5 +140,62 @@ export class MolstarViewerModel extends BaseReactiveModel {
     await loadCVSXFromAnything(this.plugin, data);
 
     this.state.isLoading.next(false);
+  }
+
+  async loadFile(file: File): Promise<boolean> {
+    const task = this.plugin.state.data.applyAction(OpenFiles, {
+      files: [
+        {
+          id: UUID.createv4(),
+          kind: "file",
+          name: file.name,
+          file: file,
+        },
+      ],
+      format: {
+        name: "auto",
+        params: {},
+      },
+      visuals: false,
+    });
+    try {
+      await task.run();
+      return true;
+    } catch (e) {
+      if (e instanceof Error) {
+        console.error(e);
+      } else {
+        console.error(`Unknown error: ${e}`);
+      }
+      return false;
+    }
+  }
+
+  async loadCvsxFile(file: File): Promise<PluginState.Snapshot | null> {
+    const result = await this.loadingWrapper<boolean>(async () => {
+      await this.clear();
+      return await this.loadFile(file);
+    });
+
+    if (!result) {
+      return null;
+    }
+    return this.getSnapshot();
+  }
+
+  async loadingWrapper<T>(fn: () => Promise<T>) {
+    this.state.isLoading.next(true);
+    try {
+      await fn();
+      return true;
+    } catch (e) {
+      if (e instanceof Error) {
+        console.error(e);
+      } else {
+        console.error(`Unknown error: ${e}`);
+      }
+    } finally {
+      this.state.isLoading.next(false);
+    }
   }
 }
