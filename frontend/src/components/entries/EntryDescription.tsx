@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import ReactMarkdown from "react-markdown";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import remarkGfm from "remark-gfm";
 import { MarkdownViewer } from "../MarkdownViewer";
 
 interface EntryDescriptionProps {

@@ -30,7 +30,7 @@ export default function VolsegUploadForm() {
   const { viewer } = useMolstar();
   const isLoading = useBehavior(viewer.state.isLoading);
   const [cvsxFile, setCvsxFile] = useState<File | null>(null);
-  const [snapshot, setSnapshot] = useState<PluginState.Snapshot | null>(null);
+  const [, setSnapshot] = useState<PluginState.Snapshot | null>(null);
 
   // zod override
   const zVolsegEntriesUploadEntry = zBodyVolsegEntriesUploadEntry.extend({
