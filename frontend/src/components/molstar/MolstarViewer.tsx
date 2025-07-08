@@ -3,7 +3,7 @@ import { useBehavior } from "@/hooks/useBehavior";
 import { useEffect } from "react";
 import { ViewerLayout } from "./ViewerLayout";
 
-export function MolstarViewer() {
+export default function MolstarViewer() {
   const { viewer } = useMolstar();
 
   const isInitialized = useBehavior(viewer.state.isInitialized);

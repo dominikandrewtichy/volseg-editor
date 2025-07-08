@@ -111,7 +111,7 @@ export function ViewCard({ view, isEditable }: ViewCardProps) {
 
   return (
     <>
-      <Card className="transition-all hover:shadow-md mr-0 relative">
+      <Card className="transition-all relative hover:shadow-md">
         <CardHeader>
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-x-2">

@@ -1,12 +1,13 @@
 import { VisibilityBadge } from "@/components/common/VisibilityBadge";
-import { MolstarViewer } from "@/components/molstar/MolstarViewer";
 import { useMolstar } from "@/contexts/MolstarProvider";
 import { useRequiredParam } from "@/hooks/useRequiredParam";
 import { volsegEntriesGetEntryByIdOptions } from "@/lib/client/@tanstack/react-query.gen";
 import { formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "lucide-react";
-import { useEffect } from "react";
+import { lazy, useEffect } from "react";
+
+const MolstarViewer = lazy(() => import("../components/molstar/MolstarViewer"));
 
 export function VolsegEntryPreview() {
   const entryId = useRequiredParam("entryId");

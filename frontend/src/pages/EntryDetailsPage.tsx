@@ -2,7 +2,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { VisibilityBadge } from "@/components/common/VisibilityBadge";
 import { EntryDescription } from "@/components/entries/EntryDescription";
-import { MolstarViewer } from "@/components/molstar/MolstarViewer";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -19,9 +18,12 @@ import {
 import { formatDate } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, CalendarIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const MolstarViewer = lazy(() => import("../components/molstar/MolstarViewer"));
 
 interface EntryDetailsPageProps {
   entryId?: string;
@@ -228,7 +230,9 @@ export function EntryDetailsPage({
           />
         </aside>
         <div className="flex-1 relative">
-          <MolstarViewer />
+          <Suspense fallback={<Skeleton className="size-full" />}>
+            <MolstarViewer />
+          </Suspense>
         </div>
       </div>
 
