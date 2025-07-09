@@ -13,6 +13,8 @@ class VolsegEntry(Base, UuidMixin, TimestampMixin):
     name: Mapped[str] = mapped_column(String(255))
     is_public: Mapped[bool] = mapped_column(default=False)
     cvsx_filepath: Mapped[str | None] = mapped_column(String(2083), default=None)
+    snapshot_filepath: Mapped[str | None] = mapped_column(String(2083), default=None)
+    annotation_filepath: Mapped[str | None] = mapped_column(String(2083), default=None)
 
     user_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),

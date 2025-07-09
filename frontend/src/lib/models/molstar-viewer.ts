@@ -1,4 +1,3 @@
-import { loadCVSXFromAnything } from "@/volseg/src/extensions/cvsx-extension";
 import { PluginStateSnapshotManager } from "molstar/lib/commonjs/mol-plugin-state/manager/snapshots";
 import { PluginUIContext } from "molstar/lib/commonjs/mol-plugin-ui/context";
 import {
@@ -12,6 +11,8 @@ import { CVSXSpec } from "@/volseg/src/extensions/cvsx-extension/behaviour";
 import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
 import { OpenFiles } from "molstar/lib/commonjs/mol-plugin-state/actions/file";
 import { UUID } from "molstar/lib/mol-util";
+import { PluginCommands } from "molstar/lib/commonjs/mol-plugin/commands";
+import { volsegEntriesGetSnapshotFile } from "../client";
 
 type InitializationState = "pending" | "initializing" | "success" | "error";
 
@@ -131,13 +132,15 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
     this.state.isLoading.next(true);
 
-    const url = `${import.meta.env.VITE_API_URL}/api/v1/volseg/${entryId}/file`;
-    const data = await this.plugin.builders.data.download({
-      url: url,
-      isBinary: true,
-      label: "CVSX data",
+    const response = await volsegEntriesGetSnapshotFile({
+      path: {
+        volseg_entry_id: entryId,
+      },
     });
-    await loadCVSXFromAnything(this.plugin, data);
+    const snapshot = response.data as PluginState.Snapshot;
+
+    await this.plugin.state.setSnapshot(snapshot);
+    await this.plugin.managers.camera.reset();
 
     this.state.isLoading.next(false);
   }
@@ -174,7 +177,9 @@ export class MolstarViewerModel extends BaseReactiveModel {
   async loadCvsxFile(file: File): Promise<PluginState.Snapshot | null> {
     const result = await this.loadingWrapper<boolean>(async () => {
       await this.clear();
-      return await this.loadFile(file);
+      const result = await this.loadFile(file);
+      await PluginCommands.Camera.Reset(this.plugin, {});
+      return result;
     });
 
     if (!result) {

@@ -22,7 +22,6 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
 
 const MolstarViewer = lazy(() => import("../components/molstar/MolstarViewer"));
 
@@ -30,7 +29,7 @@ export default function VolsegUploadForm() {
   const { viewer } = useMolstar();
   const isLoading = useBehavior(viewer.state.isLoading);
   const [cvsxFile, setCvsxFile] = useState<File | null>(null);
-  const [, setSnapshot] = useState<PluginState.Snapshot | null>(null);
+  const [snapshot, setSnapshot] = useState<Blob | null>(null);
 
   // zod override
   const zVolsegEntriesUploadEntry = zBodyVolsegEntriesUploadEntry.extend({
@@ -47,13 +46,14 @@ export default function VolsegUploadForm() {
       .refine((file) => /^[a-zA-Z0-9_\-.]+$/.test(file.name), {
         message: "Filename contains invalid characters",
       }),
+    snapshot_file: z.instanceof(Blob),
   });
   type VolsegEntriesUploadEntry = z.infer<typeof zVolsegEntriesUploadEntry>;
 
   const form = useForm<VolsegEntriesUploadEntry>({
     resolver: zodResolver(zVolsegEntriesUploadEntry),
     defaultValues: {
-      name: "",
+      name: undefined,
       is_public: false,
       cvsx_file: undefined,
     },
@@ -81,7 +81,12 @@ export default function VolsegUploadForm() {
       setCvsxFile(file);
       console.log("Loadded?");
       const snapshot = await viewer.loadCvsxFile(file);
-      setSnapshot(snapshot);
+      const snapshotJson = JSON.stringify(snapshot);
+      const snapshotBlob = new Blob([snapshotJson], {
+        type: "application/json",
+      });
+      setSnapshot(snapshotBlob);
+      form.setValue("snapshot_file", snapshotBlob);
       console.log(snapshot);
       form.setValue("cvsx_file", file, {
         // shouldValidate: true,
@@ -97,12 +102,11 @@ export default function VolsegUploadForm() {
       return;
     }
 
-    console.log(cvsxFile.type);
-
     mutation.mutate({
       body: {
         ...data,
         cvsx_file: cvsxFile,
+        snapshot_file: snapshot,
       },
     });
   }

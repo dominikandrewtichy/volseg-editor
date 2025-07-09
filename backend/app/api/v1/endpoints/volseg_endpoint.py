@@ -19,6 +19,7 @@ async def upload_entry(
     name: Annotated[str, Form(max_length=255)],
     is_public: Annotated[bool, Form()],
     cvsx_file: Annotated[UploadFile, File()],
+    snapshot_file: Annotated[UploadFile | None, File()],
     current_user: RequireUserDep,
     service: VolsegServiceDep,
 ):
@@ -26,6 +27,7 @@ async def upload_entry(
         name=name,
         is_public=is_public,
         cvsx_file=cvsx_file,
+        snapshot_file=snapshot_file,
         user=current_user,
     )
 
@@ -58,7 +60,7 @@ async def list_public_entries(
 
 
 @router.get(
-    "/{volseg_entry_id}/file",
+    "/{volseg_entry_id}/data",
     status_code=status.HTTP_200_OK,
     response_class=Response,
 )
@@ -70,6 +72,41 @@ async def get_cvsx_file(
     return await service.get_file(
         id=volseg_entry_id,
         user=current_user,
+        file="cvsx",
+    )
+
+
+@router.get(
+    "/{volseg_entry_id}/snapshot",
+    status_code=status.HTTP_200_OK,
+    response_class=Response,
+)
+async def get_snapshot_file(
+    volseg_entry_id: Annotated[UUID, Path(title="Entry ID")],
+    current_user: OptionalUserDep,
+    service: VolsegServiceDep,
+):
+    return await service.get_file(
+        id=volseg_entry_id,
+        user=current_user,
+        file="snapshot",
+    )
+
+
+@router.get(
+    "/{volseg_entry_id}/annotations",
+    status_code=status.HTTP_200_OK,
+    response_class=Response,
+)
+async def get_annotations_file(
+    volseg_entry_id: Annotated[UUID, Path(title="Entry ID")],
+    current_user: OptionalUserDep,
+    service: VolsegServiceDep,
+):
+    return await service.get_file(
+        id=volseg_entry_id,
+        user=current_user,
+        file="annotations",
     )
 
 

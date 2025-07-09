@@ -6,6 +6,7 @@ from app.api.v1.contracts.responses.common import DebugModelName, Timestamp, Uui
 class VolsegEntryResponse(Timestamp, Uuid, DebugModelName, BaseModel):
     name: str = Field(max_length=255)
     is_public: bool = Field()
-    cvsx_filepath: str | None = Field(max_length=2083)
+    cvsx_url: str | None = Field(max_length=2083)
+    snapshot_url: str | None = Field(max_length=2083)
 
     model_config = ConfigDict(from_attributes=True)

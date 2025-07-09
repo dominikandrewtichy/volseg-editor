@@ -1,10 +1,15 @@
+import json
+from io import BytesIO
+from typing import BinaryIO, Literal
 from uuid import UUID, uuid4
+from zipfile import BadZipFile, ZipFile
 
 from fastapi import Depends, HTTPException, Response, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.contracts.responses.volseg_responses import VolsegEntryResponse
+from app.core.settings.api_settings import get_api_settings
 from app.database.models.user_model import User
 from app.database.models.volseg_entry_model import VolsegEntry
 from app.database.session_manager import get_async_session
@@ -28,6 +33,7 @@ class VolsegService:
         name: str,
         is_public: bool,
         cvsx_file: UploadFile,
+        snapshot_file: UploadFile,
     ) -> VolsegEntryResponse:
         entry_id = uuid4()
 
@@ -35,25 +41,101 @@ class VolsegService:
             user_id=user.id,
             entry_id=entry_id,
         )
-        file_path = f"{base_path}/{cvsx_file.filename}"
-        file_data = cvsx_file.file
+        cvsx_filepath = f"{base_path}/data.cvsx"
+        cvsx_bytes = cvsx_file.file.read()
         await self.storage.save(
-            file_path=file_path,
-            file_data=file_data,
+            file_path=cvsx_filepath,
+            file_data=BytesIO(cvsx_bytes),
+        )
+
+        snapshot_filepath = f"{base_path}/snapshot.json"
+        snapshot_dict = self.binaryio_to_dict(snapshot_file.file)
+        snapshot_data: dict = self.rewrite_nodes(id=entry_id, snapshot=snapshot_dict)
+        await self.storage.save(
+            file_path=snapshot_filepath,
+            file_data=self.dict_to_bytesio(snapshot_data),
+        )
+
+        annotations_filepath = f"{base_path}/annotations.json"
+        annotations_file = self.extract_annotations_json(BytesIO(cvsx_bytes))
+        await self.storage.save(
+            file_path=annotations_filepath,
+            file_data=annotations_file,
         )
 
         volseg_entry = VolsegEntry(
             id=entry_id,
             name=name,
             is_public=is_public,
-            cvsx_filepath=file_path,
+            cvsx_filepath=cvsx_filepath,
+            snapshot_filepath=snapshot_filepath,
             user=user,
         )
 
         self.session.add(volseg_entry)
         await self.session.commit()
 
-        return VolsegEntryResponse.model_validate(volseg_entry)
+        cvsx_url, snapshot_url, annotation_url = self.get_urls(entry_id)
+
+        return VolsegEntryResponse.model_validate(
+            {
+                **volseg_entry.__dict__,
+                "cvsx_url": cvsx_url,
+                "snapshot_url": snapshot_url,
+                "annotation_url": annotation_url,
+            }
+        )
+
+    def get_urls(self, entry_id: UUID):
+        settings = get_api_settings()
+        cvsx_url = f"{settings.API_SERVER_URL}{settings.API_V1_PREFIX}/volseg/{entry_id}/data"
+        snapshot_url = (
+            f"{settings.API_SERVER_URL}{settings.API_V1_PREFIX}/volseg/{entry_id}/snapshot"
+        )
+        annotation_url = (
+            f"{settings.API_SERVER_URL}{settings.API_V1_PREFIX}/volseg/{entry_id}/annotation"
+        )
+        return cvsx_url, snapshot_url, annotation_url
+
+    def binaryio_to_dict(self, binary_io):
+        binary_io.seek(0)
+        raw_bytes = binary_io.read()
+        decoded_str = raw_bytes.decode("utf-8")
+        return json.loads(decoded_str)
+
+    def rewrite_nodes(self, id: UUID, snapshot: dict) -> None:
+        settings = get_api_settings()
+        snapshot["data"]["tree"]["transforms"][1]["transformer"] = "ms-plugin.download"
+        snapshot["data"]["tree"]["transforms"][1]["params"] = {
+            "url": f"{settings.API_SERVER_URL}{settings.API_V1_PREFIX}/volseg/{id}/data",
+            "label": "CVSX Data",
+            "isBinary": True,
+        }
+        return snapshot
+
+    def dict_to_bytesio(self, data: dict) -> BytesIO:
+        json_str = json.dumps(data)
+        json_bytes = json_str.encode("utf-8")
+        return BytesIO(json_bytes)
+
+    def extract_annotations_json(self, zip_file: BinaryIO) -> dict:
+        try:
+            with ZipFile(zip_file) as zip_ref:
+                file_list = zip_ref.namelist()
+                json_file = next((f for f in file_list if f.endswith("annotations.json")), None)
+
+                if json_file is None:
+                    raise FileNotFoundError("annotations.json not found in the ZIP archive.")
+
+                with zip_ref.open(json_file) as file:
+                    return BytesIO(file.read())
+
+        except BadZipFile:
+            print("Error: The provided file is not a valid ZIP archive.")
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
 
     async def get_entry_by_id(
         self,
@@ -64,27 +146,63 @@ class VolsegService:
 
         self._check_permissions(volseg_entry, user)
 
-        return VolsegEntryResponse.model_validate(volseg_entry)
+        cvsx_url, snapshot_url, annotation_url = self.get_urls(volseg_entry.id)
+
+        return VolsegEntryResponse.model_validate(
+            {
+                **volseg_entry.__dict__,
+                "cvsx_url": cvsx_url,
+                "snapshot_url": snapshot_url,
+                "annotation_url": annotation_url,
+            }
+        )
 
     async def list_public_entries(self) -> list[VolsegEntryResponse]:
         result = await self.session.execute(
             select(VolsegEntry).where(VolsegEntry.is_public == True),
         )
         entries: list[VolsegEntry] = result.scalars().all()
-        return [VolsegEntryResponse.model_validate(entry) for entry in entries]
+        response = []
+        for entry in entries:
+            cvsx_url, snapshot_url, annotation_url = self.get_urls(entry.id)
+            response += [
+                VolsegEntryResponse.model_validate(
+                    {
+                        **entry.__dict__,
+                        "cvsx_url": cvsx_url,
+                        "snapshot_url": snapshot_url,
+                        "annotation_url": annotation_url,
+                    }
+                )
+            ]
+        return response
 
     async def list_user_entries(self, user: User) -> list[VolsegEntryResponse]:
         result = await self.session.execute(
             select(VolsegEntry).where(VolsegEntry.user_id == user.id),
         )
-        volseg_entries: list[VolsegEntry] = result.scalars().all()
-        return [VolsegEntryResponse.model_validate(entry) for entry in volseg_entries]
+        entries: list[VolsegEntry] = result.scalars().all()
+        response = []
+        for entry in entries:
+            cvsx_url, snapshot_url, annotation_url = self.get_urls(entry.id)
+            response += [
+                VolsegEntryResponse.model_validate(
+                    {
+                        **entry.__dict__,
+                        "cvsx_url": cvsx_url,
+                        "snapshot_url": snapshot_url,
+                        "annotation_url": annotation_url,
+                    }
+                )
+            ]
+        return response
 
     async def get_file(
         self,
         *,
         id: UUID,
         user: User,
+        file: Literal["cvsx", "snapshot", "annotations"],
     ) -> UUID:
         volseg_entry: VolsegEntry = await self._get_volseg_entry_by_id(id)
 
@@ -97,8 +215,29 @@ class VolsegService:
             )
 
         try:
-            file = await self.storage.get(
-                file_path=volseg_entry.cvsx_filepath,
+            if file == "cvsx":
+                file_content = await self.storage.get(
+                    file_path=volseg_entry.cvsx_filepath,
+                )
+                filename = "data.cvsx"
+                media_type = "application/zip"
+            elif file == "snapshot":
+                file_content = await self.storage.get(
+                    file_path=volseg_entry.snapshot_filepath,
+                )
+                filename = f"snapshot.molj"
+                media_type = "application/json"
+            else:  # annotations
+                file_content = await self.storage.get(
+                    file_path=volseg_entry.annotation_filepath,
+                )
+                filename = "annotations.json"
+                media_type = "application/json"
+
+            return Response(
+                content=file_content,
+                media_type=media_type,
+                headers={"Content-Disposition": f'attachment; filename="{filename}"'},
             )
         except FileNotFoundError:
             raise HTTPException(
@@ -110,11 +249,6 @@ class VolsegService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"{e}",
             )
-
-        return Response(
-            content=file,
-            media_type="application/zip",
-        )
 
     async def delete(
         self,
