@@ -246,7 +246,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
     if (!node) return;
 
-    const segmentLoci = this.makeLoci([segmentId], segmentationId, node);
+    const segmentLoci = this.makeLoci([segmentId], segmentationId);
 
     if (!segmentLoci) return;
 
@@ -269,7 +269,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
     if (!node) return;
 
-    const segmentLoci = this.makeLoci([segmentId], segmentationId, node);
+    const segmentLoci = this.makeLoci([segmentId], segmentationId);
 
     if (!segmentLoci) return;
 
