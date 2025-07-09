@@ -1,16 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { EntryResponse, VolsegEntryResponse } from "@/lib/client";
 import {
-  authGetUsersTokenOptions,
   authReadUsersMeOptions,
+  entriesDeleteEntryMutation,
   meListEntriesForUserOptions,
+  meListEntriesForUserQueryKey,
   meListVolsegEntriesForUserOptions,
+  meListVolsegEntriesForUserQueryKey,
+  volsegEntriesDeleteViewMutation,
 } from "@/lib/client/@tanstack/react-query.gen";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Trash2Icon } from "lucide-react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export function DashboardPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const entriesResult = useQuery({
     ...meListEntriesForUserOptions({
@@ -18,7 +25,7 @@ export function DashboardPage() {
     }),
   });
 
-  const volsegEntriesResult = useQuery({
+  const volsegEntriesListUserQuery = useQuery({
     ...meListVolsegEntriesForUserOptions(),
   });
 
@@ -26,9 +33,41 @@ export function DashboardPage() {
     ...authReadUsersMeOptions(),
   });
 
-  const tokenResult = useQuery({
-    ...authGetUsersTokenOptions(),
+  const entryDeleteMutation = useMutation({
+    ...entriesDeleteEntryMutation(),
+    onSuccess: () => {
+      toast.success("Entry deleted");
+      queryClient.invalidateQueries({
+        queryKey: meListEntriesForUserQueryKey(),
+      });
+    },
   });
+
+  const volsegEntryDeleteMutation = useMutation({
+    ...volsegEntriesDeleteViewMutation(),
+    onSuccess: () => {
+      toast.success("Volseg entry deleted");
+      queryClient.invalidateQueries({
+        queryKey: meListVolsegEntriesForUserQueryKey(),
+      });
+    },
+  });
+
+  function handleDeleteEntry(entry: EntryResponse) {
+    entryDeleteMutation.mutate({
+      path: {
+        entry_id: entry.id,
+      },
+    });
+  }
+
+  function handleDeleteVolsegEntry(volsegEntry: VolsegEntryResponse) {
+    volsegEntryDeleteMutation.mutate({
+      path: {
+        volseg_entry_id: volsegEntry.id,
+      },
+    });
+  }
 
   return (
     <div className="max-w-4xl mx-auto py-10 space-y-6">
@@ -62,15 +101,6 @@ export function DashboardPage() {
       </Card>
 
       <Card>
-        <CardContent className="py-4 px-6 space-y-3">
-          <h2 className="text-xl font-semibold mb-4">Auth Token</h2>
-          <pre className="bg-accent p-4 rounded text-sm break-words whitespace-pre-wrap">
-            {tokenResult.data ? tokenResult.data : "No token"}
-          </pre>
-        </CardContent>
-      </Card>
-
-      <Card>
         <CardContent className="py-4 px-6">
           <h2 className="text-xl font-semibold mb-4">Your Entries</h2>
 
@@ -100,12 +130,21 @@ export function DashboardPage() {
                       })}
                     </p>
                   </div>
-                  <Button
-                    variant="secondary"
-                    onClick={() => navigate(`/entries/${entry.id}`)}
-                  >
-                    View Entry
-                  </Button>
+                  <div className="flex flex-row gap-x-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() => navigate(`/entries/${entry.id}`)}
+                    >
+                      View
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => handleDeleteEntry(entry)}
+                    >
+                      <Trash2Icon />
+                    </Button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -119,14 +158,17 @@ export function DashboardPage() {
         <CardContent className="py-4 px-6">
           <h2 className="text-xl font-semibold mb-4">Your Volseg Entries</h2>
 
-          {volsegEntriesResult.isLoading && <p>Loading volseg entries...</p>}
-          {volsegEntriesResult.isError && (
+          {volsegEntriesListUserQuery.isLoading && (
+            <p>Loading volseg entries...</p>
+          )}
+          {volsegEntriesListUserQuery.isError && (
             <p className="text-destructive">Failed to load volseg entries.</p>
           )}
 
-          {volsegEntriesResult.data && volsegEntriesResult.data.length > 0 ? (
+          {volsegEntriesListUserQuery.data &&
+          volsegEntriesListUserQuery.data.length > 0 ? (
             <ul className="space-y-3">
-              {volsegEntriesResult.data.map((entry) => (
+              {volsegEntriesListUserQuery.data.map((entry) => (
                 <li
                   key={entry.id}
                   className="border rounded p-4 bg-background shadow-sm flex items-center justify-between"
@@ -145,17 +187,28 @@ export function DashboardPage() {
                       })}
                     </p>
                   </div>
-                  <Button
-                    variant="secondary"
-                    onClick={() => navigate(`/volseg-entries/${entry.id}`)}
-                  >
-                    View Entry
-                  </Button>
+                  <div className="flex flex-row gap-x-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() => navigate(`/volseg-entries/${entry.id}`)}
+                    >
+                      View
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => handleDeleteVolsegEntry(entry)}
+                    >
+                      <Trash2Icon />
+                    </Button>
+                  </div>
                 </li>
               ))}
             </ul>
           ) : (
-            !volsegEntriesResult.isLoading && <p>No volseg entries found.</p>
+            !volsegEntriesListUserQuery.isLoading && (
+              <p>No volseg entries found.</p>
+            )
           )}
         </CardContent>
       </Card>

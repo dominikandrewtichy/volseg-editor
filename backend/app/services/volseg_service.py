@@ -8,7 +8,12 @@ from fastapi import Depends, HTTPException, Response, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.contracts.responses.volseg_responses import VolsegEntryResponse
+from app.api.v1.contracts.responses.volseg_responses import (
+    Annotations,
+    Segment,
+    VolsegEntryResponse,
+    Volume,
+)
 from app.core.settings.api_settings import get_api_settings
 from app.database.models.user_model import User
 from app.database.models.volseg_entry_model import VolsegEntry
@@ -69,6 +74,7 @@ class VolsegService:
             is_public=is_public,
             cvsx_filepath=cvsx_filepath,
             snapshot_filepath=snapshot_filepath,
+            annotation_filepath=annotations_filepath,
             user=user,
         )
 
@@ -144,9 +150,11 @@ class VolsegService:
     ) -> VolsegEntryResponse:
         volseg_entry: VolsegEntry = await self._get_volseg_entry_by_id(volseg_entry_id)
 
-        self._check_permissions(volseg_entry, user)
+        # await self._check_permissions(volseg_entry, user)
 
         cvsx_url, snapshot_url, annotation_url = self.get_urls(volseg_entry.id)
+
+        annotations = await self.get_annotations(volseg_entry)
 
         return VolsegEntryResponse.model_validate(
             {
@@ -154,6 +162,43 @@ class VolsegService:
                 "cvsx_url": cvsx_url,
                 "snapshot_url": snapshot_url,
                 "annotation_url": annotation_url,
+                "annotations": annotations,
+            }
+        )
+
+    async def get_annotations(self, entry: VolsegEntry):
+        annotations = await self.storage.get(
+            file_path=entry.annotation_filepath,
+        )
+        decoded = annotations.decode("utf-8")
+        annotations_json = json.loads(decoded)
+
+        segments = []
+        for segment in annotations_json["descriptions"].values():
+            print(
+                {
+                    "name": segment["name"],
+                    "segmentation_id": segment["target_id"]["segmentation_id"],
+                    "segment_id": segment["target_id"]["segment_id"],
+                    "kind": segment["target_kind"],
+                    "time": segment["time"],
+                }
+            )
+            segments.append(
+                Segment.model_validate(
+                    {
+                        "name": segment["name"],
+                        "segmentation_id": segment["target_id"]["segmentation_id"],
+                        "segment_id": segment["target_id"]["segment_id"],
+                        "kind": segment["target_kind"],
+                        "time": segment["time"],
+                    }
+                )
+            )
+        return Annotations.model_validate(
+            {
+                "segments": segments,
+                "volumes": [Volume()],
             }
         )
 
@@ -206,7 +251,7 @@ class VolsegService:
     ) -> UUID:
         volseg_entry: VolsegEntry = await self._get_volseg_entry_by_id(id)
 
-        self._check_permissions(volseg_entry, user)
+        # await self._check_permissions(volseg_entry, user)
 
         if not volseg_entry.cvsx_filepath:
             raise HTTPException(
@@ -220,7 +265,7 @@ class VolsegService:
                     file_path=volseg_entry.cvsx_filepath,
                 )
                 filename = "data.cvsx"
-                media_type = "application/zip"
+                media_type = None
             elif file == "snapshot":
                 file_content = await self.storage.get(
                     file_path=volseg_entry.snapshot_filepath,
@@ -257,7 +302,7 @@ class VolsegService:
     ) -> UUID:
         volseg_entry: VolsegEntry = await self._get_volseg_entry_by_id(id)
 
-        self._check_permissions(volseg_entry, user)
+        # await self._check_permissions(volseg_entry, user)
 
         base_path = self._get_base_file_path(
             user_id=user.id,

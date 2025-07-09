@@ -115,7 +115,7 @@ async def get_annotations_file(
     status_code=status.HTTP_200_OK,
     response_model=UUID,
 )
-async def delete_view(
+async def delete_entry(
     volseg_entry_id: Annotated[UUID, Path(title="Volseg Entry ID")],
     current_user: RequireUserDep,
     service: VolsegServiceDep,
