@@ -286,6 +286,8 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
     // await actionToggleAllFilteredSegments(node, "0", "lattice", []);
     this.plugin.managers.interactivity.lociSelects.deselectAll();
+    this.plugin.managers.interactivity.lociHighlights.clearHighlights();
+    this.plugin.managers.camera.reset();
   }
 
   async selectSegment(
