@@ -1,7 +1,6 @@
 import {
   actionSelectSegment,
   actionShowSegments,
-  actionToggleAllFilteredSegments,
   findNodesByTags,
 } from "@/volseg/src/common";
 import { CVSXSpec } from "@/volseg/src/extensions/cvsx-extension/behaviour";
@@ -222,7 +221,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
     }
   }
 
-  makeLoci(segments: number[], segmentationId: string, model: VolsegEntryData) {
+  makeLoci(segments: number[], segmentationId: string) {
     const visual = findNodesByTags(
       this.plugin,
       SEGMENT_VISUAL_TAG,
