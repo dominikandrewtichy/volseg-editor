@@ -32,13 +32,14 @@ import {
   VolsegState,
   VolsegStateParams,
 } from "./entry-state";
-import { VolsegGlobalStateData, VolsegGlobalStateParams } from "./global-state";
+import { VolsegGlobalStateData } from "./global-state";
 import { CreateTransformer } from "./helpers";
 import {
   VolsegGeometricSegmentation,
   VolsegShapePrimitivesData,
 } from "./shape_primitives";
 import { ShapePrimitiveData } from "./volseg-api/data";
+import { ParamDefinition as PD } from "molstar/lib/commonjs/mol-util/param-definition";
 
 class VolsegEntry extends PluginStateObject.CreateBehavior<VolsegEntryData>({
   name: "Vol & Seg Entry",
@@ -47,6 +48,16 @@ class VolsegEntry extends PluginStateObject.CreateBehavior<VolsegEntryData>({
 class VolsegGlobalState extends PluginStateObject.CreateBehavior<VolsegGlobalStateData>(
   { name: "Vol & Seg Global State" },
 ) {}
+
+export const VolsegGlobalStateParams = {
+  tryUseGpu: PD.Boolean(true, {
+    description:
+      "Attempt using GPU for faster rendering. \nCaution: with some hardware setups, this might render some objects incorrectly or not at all.",
+  }),
+  selectionMode: PD.Boolean(true, {
+    description: "Allow selecting/deselecting a segment by clicking on it.",
+  }),
+};
 
 export const ProjectDataParams = {
   timeframeIndex: ParamDefinition.Numeric(0, { step: 1 }),

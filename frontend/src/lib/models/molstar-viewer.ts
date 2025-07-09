@@ -1,7 +1,7 @@
 import {
   actionSelectSegment,
+  actionShowSegments,
   actionToggleAllFilteredSegments,
-  actionToggleSegment,
   findNodesByTags,
 } from "@/volseg/src/common";
 import { CVSXSpec } from "@/volseg/src/extensions/cvsx-extension/behaviour";
@@ -248,12 +248,14 @@ export class MolstarViewerModel extends BaseReactiveModel {
     if (!node) return;
 
     const segmentLoci = this.makeLoci([segmentId], segmentationId, node);
+
     if (!segmentLoci) return;
-    this.plugin.managers.interactivity.lociHighlights.highlight(
+
+    this.plugin.managers.interactivity.lociHighlights.highlightOnly(
       segmentLoci,
       false,
     );
-    this.plugin.managers.camera.focusLoci(segmentLoci.loci, false);
+    this.plugin.managers.camera.focusLoci(segmentLoci.loci);
   }
 
   async showSegment(
@@ -268,11 +270,13 @@ export class MolstarViewerModel extends BaseReactiveModel {
     if (!node) return;
 
     const segmentLoci = this.makeLoci([segmentId], segmentationId, node);
+
     if (!segmentLoci) return;
+
     // this.plugin.managers.camera.focusLoci(segmentLoci.loci, false);
     // this.plugin.managers.interactivity.lociSelects.select(segmentLoci, false);
-
-    await actionToggleSegment(node, key);
+    // await actionToggleSegment(node, key);
+    await actionShowSegments([key], node);
   }
 
   async resetSegmentVisibility(entry_id: string) {
