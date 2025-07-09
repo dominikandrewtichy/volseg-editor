@@ -1,5 +1,5 @@
 import { MolstarViewerModel } from "@/lib/models/molstar-viewer";
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 
 interface MolstarContextType {
   viewer: MolstarViewerModel;
@@ -30,5 +30,10 @@ export const useMolstar = () => {
   if (context === undefined) {
     throw new Error("useMolstar must be used within a MolstarProvider");
   }
+  useEffect(() => {
+    return () => {
+      context.viewer.clear();
+    };
+  }, [context.viewer]);
   return context;
 };

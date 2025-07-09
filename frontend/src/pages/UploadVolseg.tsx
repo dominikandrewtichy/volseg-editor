@@ -111,13 +111,6 @@ export default function VolsegUploadForm() {
     });
   }
 
-  useEffect(() => {
-    async function mount() {
-      await viewer.clear();
-    }
-    mount();
-  }, []);
-
   return (
     <div className="flex flex-col gap-y-5">
       <div className="max-w-xl p-6 border shadow-md rounded-2xl">

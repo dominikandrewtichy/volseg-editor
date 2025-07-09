@@ -89,7 +89,6 @@ export function EntryDetailsPage({
     async function loadVolseg() {
       const entryId = volsegMutation.data?.id;
       if (!entryId) return;
-      await viewer.clear();
       await viewer.loadVolseg(entryId);
     }
     loadVolseg();

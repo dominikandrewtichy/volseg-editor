@@ -27,11 +27,7 @@ export function VolsegEntryPreview() {
   });
 
   useEffect(() => {
-    async function loadVolseg() {
-      await viewer.clear();
-      await viewer.loadVolseg(entryId);
-    }
-    loadVolseg();
+    viewer.loadVolseg(entryId);
   }, [entryId, viewer]);
 
   async function handleSegmentView(segment: Segment) {
