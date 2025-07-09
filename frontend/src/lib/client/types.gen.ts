@@ -16,6 +16,10 @@ export type BodyVolsegEntriesUploadEntry = {
    * Cvsx File
    */
   cvsx_file: Blob | File;
+  /**
+   * Snapshot File
+   */
+  snapshot_file: (Blob | File) | null;
 };
 
 /**
@@ -357,9 +361,13 @@ export type VolsegEntryResponse = {
    */
   is_public: boolean;
   /**
-   * Cvsx Filepath
+   * Cvsx Url
    */
-  cvsx_filepath: string | null;
+  cvsx_url: string | null;
+  /**
+   * Snapshot Url
+   */
+  snapshot_url: string | null;
 };
 
 export type EntriesListPublicEntriesData = {
@@ -1285,7 +1293,7 @@ export type VolsegEntriesGetCvsxFileData = {
     volseg_entry_id: string;
   };
   query?: never;
-  url: "/api/v1/volseg/{volseg_entry_id}/file";
+  url: "/api/v1/volseg/{volseg_entry_id}/data";
 };
 
 export type VolsegEntriesGetCvsxFileErrors = {
@@ -1299,6 +1307,64 @@ export type VolsegEntriesGetCvsxFileError =
   VolsegEntriesGetCvsxFileErrors[keyof VolsegEntriesGetCvsxFileErrors];
 
 export type VolsegEntriesGetCvsxFileResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
+export type VolsegEntriesGetSnapshotFileData = {
+  body?: never;
+  path: {
+    /**
+     * Entry ID
+     */
+    volseg_entry_id: string;
+  };
+  query?: never;
+  url: "/api/v1/volseg/{volseg_entry_id}/snapshot";
+};
+
+export type VolsegEntriesGetSnapshotFileErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type VolsegEntriesGetSnapshotFileError =
+  VolsegEntriesGetSnapshotFileErrors[keyof VolsegEntriesGetSnapshotFileErrors];
+
+export type VolsegEntriesGetSnapshotFileResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
+export type VolsegEntriesGetAnnotationsFileData = {
+  body?: never;
+  path: {
+    /**
+     * Entry ID
+     */
+    volseg_entry_id: string;
+  };
+  query?: never;
+  url: "/api/v1/volseg/{volseg_entry_id}/annotations";
+};
+
+export type VolsegEntriesGetAnnotationsFileErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type VolsegEntriesGetAnnotationsFileError =
+  VolsegEntriesGetAnnotationsFileErrors[keyof VolsegEntriesGetAnnotationsFileErrors];
+
+export type VolsegEntriesGetAnnotationsFileResponses = {
   /**
    * Successful Response
    */

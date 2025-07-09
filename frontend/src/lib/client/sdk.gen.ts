@@ -97,6 +97,12 @@ import type {
   VolsegEntriesGetCvsxFileData,
   VolsegEntriesGetCvsxFileResponses,
   VolsegEntriesGetCvsxFileErrors,
+  VolsegEntriesGetSnapshotFileData,
+  VolsegEntriesGetSnapshotFileResponses,
+  VolsegEntriesGetSnapshotFileErrors,
+  VolsegEntriesGetAnnotationsFileData,
+  VolsegEntriesGetAnnotationsFileResponses,
+  VolsegEntriesGetAnnotationsFileErrors,
 } from "./types.gen";
 import {
   zEntriesListPublicEntriesData,
@@ -155,6 +161,8 @@ import {
   zVolsegEntriesGetEntryByIdData,
   zVolsegEntriesGetEntryByIdResponse,
   zVolsegEntriesGetCvsxFileData,
+  zVolsegEntriesGetSnapshotFileData,
+  zVolsegEntriesGetAnnotationsFileData,
 } from "./zod.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -886,7 +894,49 @@ export const volsegEntriesGetCvsxFile = <ThrowOnError extends boolean = false>(
     requestValidator: async (data) => {
       return await zVolsegEntriesGetCvsxFileData.parseAsync(data);
     },
-    url: "/api/v1/volseg/{volseg_entry_id}/file",
+    url: "/api/v1/volseg/{volseg_entry_id}/data",
+    ...options,
+  });
+};
+
+/**
+ * Get Snapshot File
+ */
+export const volsegEntriesGetSnapshotFile = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<VolsegEntriesGetSnapshotFileData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).get<
+    VolsegEntriesGetSnapshotFileResponses,
+    VolsegEntriesGetSnapshotFileErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) => {
+      return await zVolsegEntriesGetSnapshotFileData.parseAsync(data);
+    },
+    url: "/api/v1/volseg/{volseg_entry_id}/snapshot",
+    ...options,
+  });
+};
+
+/**
+ * Get Annotations File
+ */
+export const volsegEntriesGetAnnotationsFile = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<VolsegEntriesGetAnnotationsFileData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).get<
+    VolsegEntriesGetAnnotationsFileResponses,
+    VolsegEntriesGetAnnotationsFileErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) => {
+      return await zVolsegEntriesGetAnnotationsFileData.parseAsync(data);
+    },
+    url: "/api/v1/volseg/{volseg_entry_id}/annotations",
     ...options,
   });
 };

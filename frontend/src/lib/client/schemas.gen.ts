@@ -13,9 +13,20 @@ export const Body_volseg_entries_upload_entrySchema = {
       type: "string",
       format: "binary",
     },
+    snapshot_file: {
+      anyOf: [
+        {
+          type: "string",
+          format: "binary",
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
   },
   type: "object",
-  required: ["name", "is_public", "cvsx_file"],
+  required: ["name", "is_public", "cvsx_file", "snapshot_file"],
 } as const;
 
 export const EntryCreateRequestSchema = {
@@ -538,7 +549,18 @@ export const VolsegEntryResponseSchema = {
     is_public: {
       type: "boolean",
     },
-    cvsx_filepath: {
+    cvsx_url: {
+      anyOf: [
+        {
+          type: "string",
+          maxLength: 2083,
+        },
+        {
+          type: "null",
+        },
+      ],
+    },
+    snapshot_url: {
       anyOf: [
         {
           type: "string",
@@ -557,6 +579,7 @@ export const VolsegEntryResponseSchema = {
     "updated_at",
     "name",
     "is_public",
-    "cvsx_filepath",
+    "cvsx_url",
+    "snapshot_url",
   ],
 } as const;

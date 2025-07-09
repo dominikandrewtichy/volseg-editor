@@ -9,6 +9,7 @@ export const zBodyVolsegEntriesUploadEntry = z.object({
   name: z.string().max(255),
   is_public: z.boolean(),
   cvsx_file: z.string(),
+  snapshot_file: z.union([z.string(), z.null()]),
 });
 
 /**
@@ -152,7 +153,8 @@ export const zVolsegEntryResponse = z.object({
   updated_at: z.string().datetime(),
   name: z.string().max(255),
   is_public: z.boolean(),
-  cvsx_filepath: z.union([z.string().max(2083), z.null()]),
+  cvsx_url: z.union([z.string().max(2083), z.null()]),
+  snapshot_url: z.union([z.string().max(2083), z.null()]),
 });
 
 export const zEntriesListPublicEntriesData = z.object({
@@ -535,6 +537,22 @@ export const zVolsegEntriesGetEntryByIdData = z.object({
 export const zVolsegEntriesGetEntryByIdResponse = zVolsegEntryResponse;
 
 export const zVolsegEntriesGetCvsxFileData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    volseg_entry_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
+export const zVolsegEntriesGetSnapshotFileData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    volseg_entry_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
+export const zVolsegEntriesGetAnnotationsFileData = z.object({
   body: z.never().optional(),
   path: z.object({
     volseg_entry_id: z.string().uuid(),

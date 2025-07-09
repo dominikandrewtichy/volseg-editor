@@ -34,6 +34,8 @@ import {
   volsegEntriesDeleteView,
   volsegEntriesGetEntryById,
   volsegEntriesGetCvsxFile,
+  volsegEntriesGetSnapshotFile,
+  volsegEntriesGetAnnotationsFile,
 } from "../sdk.gen";
 import {
   queryOptions,
@@ -98,6 +100,8 @@ import type {
   VolsegEntriesDeleteViewResponse,
   VolsegEntriesGetEntryByIdData,
   VolsegEntriesGetCvsxFileData,
+  VolsegEntriesGetSnapshotFileData,
+  VolsegEntriesGetAnnotationsFileData,
 } from "../types.gen";
 import { client as _heyApiClient } from "../client.gen";
 
@@ -1177,5 +1181,53 @@ export const volsegEntriesGetCvsxFileOptions = (
       return data;
     },
     queryKey: volsegEntriesGetCvsxFileQueryKey(options),
+  });
+};
+
+export const volsegEntriesGetSnapshotFileQueryKey = (
+  options: Options<VolsegEntriesGetSnapshotFileData>,
+) => createQueryKey("volsegEntriesGetSnapshotFile", options);
+
+/**
+ * Get Snapshot File
+ */
+export const volsegEntriesGetSnapshotFileOptions = (
+  options: Options<VolsegEntriesGetSnapshotFileData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await volsegEntriesGetSnapshotFile({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: volsegEntriesGetSnapshotFileQueryKey(options),
+  });
+};
+
+export const volsegEntriesGetAnnotationsFileQueryKey = (
+  options: Options<VolsegEntriesGetAnnotationsFileData>,
+) => createQueryKey("volsegEntriesGetAnnotationsFile", options);
+
+/**
+ * Get Annotations File
+ */
+export const volsegEntriesGetAnnotationsFileOptions = (
+  options: Options<VolsegEntriesGetAnnotationsFileData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await volsegEntriesGetAnnotationsFile({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: volsegEntriesGetAnnotationsFileQueryKey(options),
   });
 };
