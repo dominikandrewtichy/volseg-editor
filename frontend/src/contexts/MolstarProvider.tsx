@@ -30,10 +30,10 @@ export const useMolstar = () => {
   if (context === undefined) {
     throw new Error("useMolstar must be used within a MolstarProvider");
   }
-  useEffect(() => {
-    return () => {
-      context.viewer.clear();
-    };
-  }, [context.viewer]);
+  // useEffect(() => {
+  //   return () => {
+  //     context.viewer.clear();
+  //   };
+  // }, [context.viewer]);
   return context;
 };

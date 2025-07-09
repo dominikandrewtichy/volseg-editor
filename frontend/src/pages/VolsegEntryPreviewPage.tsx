@@ -14,7 +14,7 @@ import { lazy, Suspense, useEffect } from "react";
 
 const MolstarViewer = lazy(() => import("../components/molstar/MolstarViewer"));
 
-export function VolsegEntryPreview() {
+export function VolsegEntryPreviewPage() {
   const entryId = useRequiredParam("entryId");
   const { viewer } = useMolstar();
 

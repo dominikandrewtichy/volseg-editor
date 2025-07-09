@@ -18,14 +18,14 @@ import { volsegEntriesUploadEntryMutation } from "@/lib/client/@tanstack/react-q
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const MolstarViewer = lazy(() => import("../components/molstar/MolstarViewer"));
 
-export default function VolsegUploadForm() {
+export default function UploadVolsegPage() {
   const { viewer } = useMolstar();
   const isLoading = useBehavior(viewer.state.isLoading);
   const [cvsxFile, setCvsxFile] = useState<File | null>(null);

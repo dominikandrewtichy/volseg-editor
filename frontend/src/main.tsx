@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { App } from "./App.tsx";
-import { MolstarProvider } from "./contexts/MolstarProvider.tsx";
 import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
 import { AuthProvider } from "./contexts/AuthProvider.tsx";
 import { client } from "./lib/client/client.gen.ts";
@@ -37,9 +36,7 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <AuthProvider>
         <ThemeProvider>
-          <MolstarProvider>
-            <App />
-          </MolstarProvider>
+          <App />
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>

@@ -6,8 +6,9 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { EntryDetailsPage } from "./pages/EntryDetailsPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
-import UploadVolseg from "./pages/UploadVolseg";
-import { VolsegEntryPreview } from "./pages/VolsegEntryPreview";
+import UploadVolseg from "./pages/UploadVolsegPage";
+import { VolsegEntryPreviewPage } from "./pages/VolsegEntryPreviewPage";
+import { MolstarProvider } from "./contexts/MolstarProvider";
 
 export function App() {
   return (
@@ -15,16 +16,34 @@ export function App() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/entries/:entryId" element={<EntryDetailsPage />} />
+        <Route
+          path="/entries/:entryId"
+          element={
+            <MolstarProvider>
+              <EntryDetailsPage />
+            </MolstarProvider>
+          }
+        />
         <Route
           path="/volseg-entries/:entryId"
-          element={<VolsegEntryPreview />}
+          element={
+            <MolstarProvider>
+              <VolsegEntryPreviewPage />
+            </MolstarProvider>
+          }
         />
 
         <Route element={<ProtectedRoute />}>
           {/* <Route path="/share/:share_link_id" element={<ShareEntryPage />} /> */}
           <Route path="/entries/new" element={<EntryCreatePage />} />
-          <Route path="/upload" element={<UploadVolseg />} />
+          <Route
+            path="/upload"
+            element={
+              <MolstarProvider>
+                <UploadVolseg />
+              </MolstarProvider>
+            }
+          />
           <Route path="/dashboard" element={<DashboardPage />} />
         </Route>
 
