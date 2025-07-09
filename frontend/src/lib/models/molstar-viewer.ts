@@ -251,11 +251,12 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
     if (!segmentLoci) return;
 
+    this.plugin.managers.camera.focusLoci(segmentLoci.loci);
     this.plugin.managers.interactivity.lociHighlights.highlightOnly(
       segmentLoci,
-      false,
     );
-    this.plugin.managers.camera.focusLoci(segmentLoci.loci);
+    this.plugin.managers.interactivity.lociSelects.deselectAll();
+    this.plugin.managers.interactivity.lociSelects.selectOnly(segmentLoci);
   }
 
   async showSegment(
@@ -284,7 +285,8 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
     if (!node) return;
 
-    await actionToggleAllFilteredSegments(node, "0", "lattice", []);
+    // await actionToggleAllFilteredSegments(node, "0", "lattice", []);
+    this.plugin.managers.interactivity.lociSelects.deselectAll();
   }
 
   async selectSegment(

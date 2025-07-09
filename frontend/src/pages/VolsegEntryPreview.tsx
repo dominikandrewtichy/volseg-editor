@@ -9,7 +9,7 @@ import { Segment } from "@/lib/client";
 import { volsegEntriesGetEntryByIdOptions } from "@/lib/client/@tanstack/react-query.gen";
 import { formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar } from "lucide-react";
+import { Calendar, RotateCcw } from "lucide-react";
 import { lazy, Suspense, useEffect } from "react";
 
 const MolstarViewer = lazy(() => import("../components/molstar/MolstarViewer"));
@@ -35,12 +35,6 @@ export function VolsegEntryPreview() {
   }, [entryId, viewer]);
 
   async function handleSegmentView(segment: Segment) {
-    await viewer.showSegment(
-      volsegEntryQuery.data?.annotations?.entry_id ?? "",
-      segment.segment_id,
-      segment.segmentation_id,
-      segment.kind,
-    );
     await viewer.focusSegment(
       volsegEntryQuery.data?.annotations?.entry_id ?? "",
       segment.segment_id,
@@ -93,17 +87,18 @@ export function VolsegEntryPreview() {
         <div className="flex flex-col">
           {volsegEntryQuery.data?.annotations && (
             <div className="">
-              <Tabs defaultValue="volumes" className="w-[500px] relative">
+              <Tabs defaultValue="segments" className="w-[500px] relative">
                 <TabsList>
-                  <TabsTrigger value="volumes">Volumes</TabsTrigger>
                   <TabsTrigger value="segments">Segments</TabsTrigger>
+                  <TabsTrigger value="volumes">Volumes</TabsTrigger>
                 </TabsList>
                 <Button className="absolute right-2 z-10" onClick={handleReset}>
                   Reset
+                  <RotateCcw />
                 </Button>
 
                 <TabsContent value="volumes" className="p-2 rounded-xl border">
-                  <ScrollArea className="h-[300px] pr-2">
+                  <ScrollArea className="h-[500px] pr-2">
                     <div className="space-y-3">
                       {volsegEntryQuery.data.annotations.volumes.length > 0 ? (
                         volsegEntryQuery.data.annotations.volumes.map(
@@ -126,11 +121,11 @@ export function VolsegEntryPreview() {
                                   {/* Add more volume metadata here if available */}
                                 </div>
                               </div>
-                              <div className="ml-4 shrink-0">
+                              {/* <div className="ml-4 shrink-0">
                                 <Button size="sm" variant="outline">
                                   View
                                 </Button>
-                              </div>
+                              </div> */}
                             </div>
                           ),
                         )
@@ -144,7 +139,7 @@ export function VolsegEntryPreview() {
                 </TabsContent>
 
                 <TabsContent value="segments" className="p-2 rounded-xl border">
-                  <ScrollArea className="h-[300px] pr-2">
+                  <ScrollArea className="h-[740px] pr-2">
                     <div className="space-y-3">
                       {volsegEntryQuery.data.annotations.segments.map(
                         (segment) => (

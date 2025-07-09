@@ -778,30 +778,30 @@ export class VolsegEntryData extends PluginBehavior.WithSubscribers<VolsegEntryP
       },
     );
 
-    this.subscribeObservable(
-      this.plugin.behaviors.interaction.click,
-      async (e) => {
-        if (e.current.loci.kind === "empty-loci") return;
-        const loci = e.current.loci;
-        const clickedSegmentId = this.getSegmentIdFromLoci(loci);
-        const clickedSegmentSegmentationId =
-          this.getSegmentationIdFromLoci(loci);
-        const segmentationKind = this.getSegmentationKindFromLoci(loci);
-        if (clickedSegmentSegmentationId === undefined) return;
-        if (clickedSegmentId === undefined) return;
-        if (segmentationKind === undefined) return;
-        const clickedSegmentKey = createSegmentKey(
-          clickedSegmentId,
-          clickedSegmentSegmentationId,
-          segmentationKind,
-        );
-        if (clickedSegmentKey === this.currentState.value.selectedSegment) {
-          actionSelectSegment(this, undefined);
-        } else {
-          actionSelectSegment(this, clickedSegmentKey);
-        }
-      },
-    );
+    // this.subscribeObservable(
+    //   this.plugin.behaviors.interaction.click,
+    //   async (e) => {
+    //     if (e.current.loci.kind === "empty-loci") return;
+    //     const loci = e.current.loci;
+    //     const clickedSegmentId = this.getSegmentIdFromLoci(loci);
+    //     const clickedSegmentSegmentationId =
+    //       this.getSegmentationIdFromLoci(loci);
+    //     const segmentationKind = this.getSegmentationKindFromLoci(loci);
+    //     if (clickedSegmentSegmentationId === undefined) return;
+    //     if (clickedSegmentId === undefined) return;
+    //     if (segmentationKind === undefined) return;
+    //     const clickedSegmentKey = createSegmentKey(
+    //       clickedSegmentId,
+    //       clickedSegmentSegmentationId,
+    //       segmentationKind,
+    //     );
+    //     if (clickedSegmentKey === this.currentState.value.selectedSegment) {
+    //       actionSelectSegment(this, undefined);
+    //     } else {
+    //       actionSelectSegment(this, clickedSegmentKey);
+    //     }
+    //   },
+    // );
 
     this.subscribeObservable(
       this.highlightRequest.pipe(
