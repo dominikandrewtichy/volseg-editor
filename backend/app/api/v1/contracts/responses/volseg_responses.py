@@ -9,8 +9,8 @@ class Segment(DebugModelName, BaseModel):
     name: str
     segmentation_id: str
     segment_id: int
-    kind: Literal["lattice", "mesh", "geometric"]
-    time: int = Field(default=0)
+    kind: Literal["lattice", "mesh", "primitive"]
+    time: int | list[int] = Field(default=0)
 
 
 class Volume(DebugModelName, BaseModel):
@@ -18,6 +18,7 @@ class Volume(DebugModelName, BaseModel):
 
 
 class Annotations(DebugModelName, BaseModel):
+    entry_id: str
     segments: list[Segment]
     volumes: list[Volume]
 

@@ -1,7 +1,11 @@
 import { VisibilityBadge } from "@/components/common/VisibilityBadge";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMolstar } from "@/contexts/MolstarProvider";
 import { useRequiredParam } from "@/hooks/useRequiredParam";
+import { Segment } from "@/lib/client";
 import { volsegEntriesGetEntryByIdOptions } from "@/lib/client/@tanstack/react-query.gen";
 import { formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -29,6 +33,26 @@ export function VolsegEntryPreview() {
     }
     loadVolseg();
   }, [entryId, viewer]);
+
+  async function handleSegmentView(segment: Segment) {
+    await viewer.showSegment(
+      volsegEntryQuery.data?.annotations?.entry_id ?? "",
+      segment.segment_id,
+      segment.segmentation_id,
+      segment.kind,
+    );
+    await viewer.focusSegment(
+      volsegEntryQuery.data?.annotations?.entry_id ?? "",
+      segment.segment_id,
+      segment.segmentation_id,
+    );
+  }
+
+  async function handleReset() {
+    await viewer.resetSegmentVisibility(
+      volsegEntryQuery.data?.annotations?.entry_id ?? "",
+    );
+  }
 
   return (
     <div className="container py-8">
@@ -60,10 +84,132 @@ export function VolsegEntryPreview() {
           <Skeleton className="h-5 w-64" />
         )}
       </div>
-      <div className="flex-1 relative h-[800px] mt-6">
-        <Suspense fallback={<Skeleton className="size-full" />}>
-          <MolstarViewer />
-        </Suspense>
+      <div className="flex flex-row gap-x-5 mt-6">
+        <div className="flex-1 relative h-[800px]">
+          <Suspense fallback={<Skeleton className="size-full" />}>
+            <MolstarViewer />
+          </Suspense>
+        </div>
+        <div className="flex flex-col">
+          {volsegEntryQuery.data?.annotations && (
+            <div className="">
+              <Tabs defaultValue="volumes" className="w-[500px] relative">
+                <TabsList>
+                  <TabsTrigger value="volumes">Volumes</TabsTrigger>
+                  <TabsTrigger value="segments">Segments</TabsTrigger>
+                </TabsList>
+                <Button className="absolute right-2 z-10" onClick={handleReset}>
+                  Reset
+                </Button>
+
+                <TabsContent value="volumes" className="p-2 rounded-xl border">
+                  <ScrollArea className="h-[300px] pr-2">
+                    <div className="space-y-3">
+                      {volsegEntryQuery.data.annotations.volumes.length > 0 ? (
+                        volsegEntryQuery.data.annotations.volumes.map(
+                          (volume, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center justify-between p-4 rounded-xl bg-muted/50 border"
+                            >
+                              <div className="flex-1">
+                                <div className="font-medium mb-2 text-sm">
+                                  Volume {volume.channelId ?? idx + 1}
+                                </div>
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                                  <div>
+                                    <span className="text-muted-foreground">
+                                      Channel ID
+                                    </span>
+                                    <div>{volume.channelId ?? "N/A"}</div>
+                                  </div>
+                                  {/* Add more volume metadata here if available */}
+                                </div>
+                              </div>
+                              <div className="ml-4 shrink-0">
+                                <Button size="sm" variant="outline">
+                                  View
+                                </Button>
+                              </div>
+                            </div>
+                          ),
+                        )
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          No volumes available.
+                        </p>
+                      )}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+
+                <TabsContent value="segments" className="p-2 rounded-xl border">
+                  <ScrollArea className="h-[300px] pr-2">
+                    <div className="space-y-3">
+                      {volsegEntryQuery.data.annotations.segments.map(
+                        (segment) => (
+                          <div
+                            key={segment.segment_id}
+                            className="flex items-center justify-between p-4 rounded-xl bg-muted/50 border"
+                          >
+                            <div className="flex-1">
+                              <div className="font-medium mb-2 text-sm">
+                                {segment.name}
+                              </div>
+                              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                                <div>
+                                  <span className="text-muted-foreground">
+                                    Segment ID
+                                  </span>
+                                  <div>{segment.segment_id}</div>
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground">
+                                    Segmentation
+                                  </span>
+                                  <div>{segment.segmentation_id}</div>
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground">
+                                    Kind
+                                  </span>
+                                  <div className="capitalize">
+                                    {segment.kind}
+                                  </div>
+                                </div>
+                                {segment.time !== undefined && (
+                                  <div>
+                                    <span className="text-muted-foreground">
+                                      Time
+                                    </span>
+                                    <div>
+                                      {Array.isArray(segment.time)
+                                        ? segment.time.join(", ")
+                                        : segment.time}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="ml-4 shrink-0">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleSegmentView(segment)}
+                              >
+                                View
+                              </Button>
+                            </div>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+              </Tabs>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,18 +1,28 @@
+import {
+  actionSelectSegment,
+  actionToggleAllFilteredSegments,
+  actionToggleSegment,
+  findNodesByTags,
+} from "@/volseg/src/common";
+import { CVSXSpec } from "@/volseg/src/extensions/cvsx-extension/behaviour";
+import { VolsegEntryData } from "@/volseg/src/extensions/volumes-and-segmentations/entry-root";
+import { SEGMENT_VISUAL_TAG } from "@/volseg/src/extensions/volumes-and-segmentations/entry-segmentation";
+import { createSegmentKey } from "@/volseg/src/extensions/volumes-and-segmentations/volseg-api/utils";
+import { OpenFiles } from "molstar/lib/commonjs/mol-plugin-state/actions/file";
 import { PluginStateSnapshotManager } from "molstar/lib/commonjs/mol-plugin-state/manager/snapshots";
 import { PluginUIContext } from "molstar/lib/commonjs/mol-plugin-ui/context";
 import {
   DefaultPluginUISpec,
   PluginUISpec,
 } from "molstar/lib/commonjs/mol-plugin-ui/spec";
-import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
-import { BehaviorSubject } from "rxjs";
-import { BaseReactiveModel } from "./base-model";
-import { CVSXSpec } from "@/volseg/src/extensions/cvsx-extension/behaviour";
-import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
-import { OpenFiles } from "molstar/lib/commonjs/mol-plugin-state/actions/file";
-import { UUID } from "molstar/lib/mol-util";
 import { PluginCommands } from "molstar/lib/commonjs/mol-plugin/commands";
-import { volsegEntriesGetSnapshotFile } from "../client";
+import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
+import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
+import { Volume } from "molstar/lib/commonjs/mol-model/volume";
+import { UUID } from "molstar/lib/commonjs/mol-util";
+import { BehaviorSubject } from "rxjs";
+import { Segment, volsegEntriesGetSnapshotFile } from "../client";
+import { BaseReactiveModel } from "./base-model";
 
 type InitializationState = "pending" | "initializing" | "success" | "error";
 
@@ -202,5 +212,88 @@ export class MolstarViewerModel extends BaseReactiveModel {
     } finally {
       this.state.isLoading.next(false);
     }
+  }
+
+  getVolsegEntryNode(entryId: string): VolsegEntryData | undefined {
+    for (const node of this.plugin.state.data.cells.values()) {
+      if (node.obj?.label === entryId) {
+        return node.obj.data;
+      }
+    }
+  }
+
+  makeLoci(segments: number[], segmentationId: string, model: VolsegEntryData) {
+    const visual = findNodesByTags(
+      this.plugin,
+      SEGMENT_VISUAL_TAG,
+      segmentationId,
+    )[0];
+    if (!visual) return undefined;
+    const repr = visual.obj?.data.repr;
+    const wholeLoci = repr.getAllLoci()[0];
+    if (!wholeLoci || !Volume.Segment.isLoci(wholeLoci)) return undefined;
+    return {
+      loci: Volume.Segment.Loci(wholeLoci.volume, segments),
+      repr: repr,
+    };
+  }
+
+  async focusSegment(
+    entry_id: string,
+    segmentId: number,
+    segmentationId: string,
+  ) {
+    const node = this.getVolsegEntryNode(entry_id);
+
+    if (!node) return;
+
+    const segmentLoci = this.makeLoci([segmentId], segmentationId, node);
+    if (!segmentLoci) return;
+    this.plugin.managers.interactivity.lociHighlights.highlight(
+      segmentLoci,
+      false,
+    );
+    this.plugin.managers.camera.focusLoci(segmentLoci.loci, false);
+  }
+
+  async showSegment(
+    entry_id: string,
+    segmentId: number,
+    segmentationId: string,
+    kind: Segment["kind"],
+  ) {
+    const key = createSegmentKey(segmentId, segmentationId, kind);
+    const node = this.getVolsegEntryNode(entry_id);
+
+    if (!node) return;
+
+    const segmentLoci = this.makeLoci([segmentId], segmentationId, node);
+    if (!segmentLoci) return;
+    // this.plugin.managers.camera.focusLoci(segmentLoci.loci, false);
+    // this.plugin.managers.interactivity.lociSelects.select(segmentLoci, false);
+
+    await actionToggleSegment(node, key);
+  }
+
+  async resetSegmentVisibility(entry_id: string) {
+    const node = this.getVolsegEntryNode(entry_id);
+
+    if (!node) return;
+
+    await actionToggleAllFilteredSegments(node, "0", "lattice", []);
+  }
+
+  async selectSegment(
+    entry_id: string,
+    segmentId: number,
+    segmentationId: string,
+    kind: Segment["kind"],
+  ) {
+    const key = createSegmentKey(segmentId, segmentationId, kind);
+    const node = this.getVolsegEntryNode(entry_id);
+
+    if (!node) return;
+
+    await actionSelectSegment(node, key);
   }
 }

@@ -172,18 +172,10 @@ class VolsegService:
         )
         decoded = annotations.decode("utf-8")
         annotations_json = json.loads(decoded)
+        entry_id = annotations_json["entry_id"]["source_db_id"]
 
         segments = []
         for segment in annotations_json["descriptions"].values():
-            print(
-                {
-                    "name": segment["name"],
-                    "segmentation_id": segment["target_id"]["segmentation_id"],
-                    "segment_id": segment["target_id"]["segment_id"],
-                    "kind": segment["target_kind"],
-                    "time": segment["time"],
-                }
-            )
             segments.append(
                 Segment.model_validate(
                     {
@@ -197,6 +189,7 @@ class VolsegService:
             )
         return Annotations.model_validate(
             {
+                "entry_id": entry_id,
                 "segments": segments,
                 "volumes": [Volume()],
             }

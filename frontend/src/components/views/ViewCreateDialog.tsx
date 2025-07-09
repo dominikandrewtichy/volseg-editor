@@ -21,7 +21,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Camera } from "lucide-react";
-import { PluginState } from "molstar/lib/mol-plugin/state";
+import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";

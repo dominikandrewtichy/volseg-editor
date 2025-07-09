@@ -3,6 +3,36 @@
 import { z } from "zod";
 
 /**
+ * Segment
+ */
+export const zSegment = z.object({
+  response_model: z.string().optional().default(""),
+  name: z.string(),
+  segmentation_id: z.string(),
+  segment_id: z.number().int(),
+  kind: z.enum(["lattice", "mesh", "primitive"]),
+  time: z.union([z.number().int(), z.array(z.number().int())]).optional(),
+});
+
+/**
+ * Volume
+ */
+export const zVolume = z.object({
+  response_model: z.string().optional().default(""),
+  channelId: z.number().int().optional().default(0),
+});
+
+/**
+ * Annotations
+ */
+export const zAnnotations = z.object({
+  response_model: z.string().optional().default(""),
+  entry_id: z.string(),
+  segments: z.array(zSegment),
+  volumes: z.array(zVolume),
+});
+
+/**
  * Body_volseg entries-upload_entry
  */
 export const zBodyVolsegEntriesUploadEntry = z.object({
@@ -155,6 +185,7 @@ export const zVolsegEntryResponse = z.object({
   is_public: z.boolean(),
   cvsx_url: z.union([z.string().max(2083), z.null()]),
   snapshot_url: z.union([z.string().max(2083), z.null()]),
+  annotations: z.union([zAnnotations, z.null()]).optional(),
 });
 
 export const zEntriesListPublicEntriesData = z.object({
