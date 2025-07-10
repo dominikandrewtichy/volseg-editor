@@ -73,6 +73,47 @@ export class MolstarViewerModel extends BaseReactiveModel {
     //     this.state.isLoading.next(states.some((x) => x == true));
     //   },
     // );
+    //   const root = document.documentElement;
+
+    //   const observer = new MutationObserver(() => {
+    //     const themeClass = [...root.classList].find(
+    //       (c) => c === "light" || c === "dark",
+    //     );
+    //     console.log(themeClass);
+    //     if (themeClass) {
+    //       this.updateTheme(themeClass);
+    //     }
+    //   });
+
+    //   observer.observe(root, {
+    //     attributes: true,
+    //     attributeFilter: ["class"],
+    //   });
+
+    //   // Run immediately on mount
+    //   const initialTheme = [...root.classList].find(
+    //     (c) => c === "light" || c === "dark",
+    //   );
+    //   console.log(initialTheme);
+    //   if (initialTheme) {
+    //     this.updateTheme(initialTheme);
+    //   }
+    // }
+
+    // async updateTheme(color: Exclude<Theme, "system">) {
+    //   if (!this.plugin.canvas3d) return;
+
+    //   const backgroundColor =
+    //     color === "light" ? Color(0xffffff) : Color(0x000000);
+
+    //   await PluginCommands.Canvas3D.SetSettings(this.plugin, {
+    //     settings: {
+    //       renderer: {
+    //         ...this.plugin.canvas3d.props.renderer,
+    //         backgroundColor: backgroundColor,
+    //       },
+    //     },
+    //   });
   }
 
   async init() {
