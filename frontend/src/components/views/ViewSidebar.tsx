@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertCircle, Camera } from "lucide-react";
-import { ViewCard } from "./ViewCard";
-import { useQuery } from "@tanstack/react-query";
 import { viewsListViewsForEntryOptions } from "@/lib/client/@tanstack/react-query.gen";
+import { useQuery } from "@tanstack/react-query";
+import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { ViewCard } from "./ViewCard";
 
 interface ViewsSidebarProps {
   entryId: string;
@@ -12,11 +11,7 @@ interface ViewsSidebarProps {
   onSaveView: () => void;
 }
 
-export function ViewsSidebar({
-  entryId,
-  onSaveView,
-  isEditable,
-}: ViewsSidebarProps) {
+export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
   const listViewsQuery = useQuery({
     ...viewsListViewsForEntryOptions({
       path: {
