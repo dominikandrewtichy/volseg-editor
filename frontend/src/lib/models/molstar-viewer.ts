@@ -19,9 +19,11 @@ import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
 import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
 import { Volume } from "molstar/lib/commonjs/mol-model/volume";
 import { UUID } from "molstar/lib/commonjs/mol-util";
-import { BehaviorSubject, skip } from "rxjs";
+import { BehaviorSubject, combineLatest, skip } from "rxjs";
 import { Segment, volsegEntriesGetSnapshotFile } from "../client";
 import { BaseReactiveModel } from "./base-model";
+import { StateSelection } from "molstar/lib/commonjs/mol-state";
+import { PluginStateObject } from "molstar/lib/commonjs/mol-plugin-state/objects";
 
 type InitializationState = "pending" | "initializing" | "success" | "error";
 
@@ -35,6 +37,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
     isExpanded: new BehaviorSubject<boolean>(false),
     segment: new BehaviorSubject<Segment | undefined>(undefined),
     volsegEntry: new BehaviorSubject<string | undefined>(undefined),
+    showSequenceView: new BehaviorSubject<boolean>(false),
   };
 
   constructor() {
@@ -63,11 +66,55 @@ export class MolstarViewerModel extends BaseReactiveModel {
     });
 
     this.subscribe(this.state.isInitialized, (isInitialized) => {
-      console.log("isInitialized", isInitialized);
       if (isInitialized) {
         this.mountAfterInit();
       }
     });
+
+    // show/hide sequence viewer if there is a structure with sequence loaded
+    this.subscribe(
+      combineLatest([
+        this.plugin.state.events.object.created,
+        this.plugin.state.events.object.updated,
+        this.plugin.state.events.object.removed,
+      ]),
+      () => {
+        const count = this.plugin.state.data.select(
+          StateSelection.Generators.rootsOfType(
+            PluginStateObject.Molecule.Structure,
+          ),
+        ).length;
+        this.state.showSequenceView.next(count > 0);
+      },
+    );
+
+    // this.subscribe(this.plugin.state.events.object.updated, ({ obj }) => {
+    //   if (obj && obj.type === PluginStateObject.Molecule.Structure.type) {
+    //     this.state.showSequenceView.next(true);
+    //   }
+    // });
+
+    // this.subscribe(this.plugin.state.events.object.created, ({ obj }) => {
+    //   if (obj && obj.type === PluginStateObject.Molecule.Structure.type) {
+    //     this.state.showSequenceView.next(true);
+    //   }
+    // });
+
+    // this.subscribe(this.plugin.state.events.object.removed, ({ obj }) => {
+    //   if (obj && obj.type === PluginStateObject.Molecule.Structure.type) {
+    //     this.state.showSequenceView.next(true);
+    //   }
+    // });
+
+    // this.subscribe(this.state.showSequenceView, (show) => {
+    //   const count = this.plugin.state.data.select(
+    //     StateSelection.Generators.rootsOfType(
+    //       PluginStateObject.Molecule.Structure,
+    //     ),
+    //   ).length;
+    //   console.log(show, count);
+    //   this.state.showSequenceView.next(count > 0);
+    // });
 
     // this.subscribe(this.plugin.events.log, (message) => {
     //   console.log(message);
@@ -127,8 +174,6 @@ export class MolstarViewerModel extends BaseReactiveModel {
   }
 
   mountAfterInit() {
-    console.log("mountAfterInit");
-
     this.subscribe(this.state.segment.pipe(skip(1)), (segment) => {
       if (!segment) {
         this.resetSegmentVisibility();
@@ -138,7 +183,6 @@ export class MolstarViewerModel extends BaseReactiveModel {
     });
 
     this.subscribe(this.state.volsegEntry.pipe(), async (entryId) => {
-      console.log("entryId", entryId);
       if (!entryId) {
         this.clear();
       } else {

@@ -12,6 +12,7 @@ import { useEffect } from "react";
 export function ViewerLayout({ viewer }: { viewer: MolstarViewerModel }) {
   const showControls = useBehavior(viewer.state.showControls);
   const isExpanded = useBehavior(viewer.state.isExpanded);
+  const showSequenceView = useBehavior(viewer.state.showSequenceView);
 
   useEffect(() => {
     viewer.mount();
@@ -58,15 +59,17 @@ export function ViewerLayout({ viewer }: { viewer: MolstarViewerModel }) {
             width: "100%",
           }}
         >
-          <div
-            style={{
-              position: "relative",
-              height: isExpanded ? "100px" : "80px",
-              width: "100%",
-            }}
-          >
-            <MolstarSequence viewer={viewer} />
-          </div>
+          {showSequenceView && (
+            <div
+              style={{
+                position: "relative",
+                height: isExpanded ? "100px" : "80px",
+                width: "100%",
+              }}
+            >
+              <MolstarSequence viewer={viewer} />
+            </div>
+          )}
           <div style={{ position: "relative", flex: 1 }}>
             <MolstarViewport viewer={viewer} />
           </div>

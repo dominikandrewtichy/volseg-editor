@@ -79,7 +79,6 @@ export default function UploadVolsegPage() {
     const file = e.target.files?.[0];
     if (file) {
       setCvsxFile(file);
-      console.log("Loadded?");
       const snapshot = await viewer.loadCvsxFile(file);
       const snapshotJson = JSON.stringify(snapshot);
       const snapshotBlob = new Blob([snapshotJson], {
@@ -87,7 +86,6 @@ export default function UploadVolsegPage() {
       });
       setSnapshot(snapshotBlob);
       form.setValue("snapshot_file", snapshotBlob);
-      console.log(snapshot);
       form.setValue("cvsx_file", file, {
         // shouldValidate: true,
       });
