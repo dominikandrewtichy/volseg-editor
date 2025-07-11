@@ -34,6 +34,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
     showControls: new BehaviorSubject<boolean>(false),
     isExpanded: new BehaviorSubject<boolean>(false),
     segment: new BehaviorSubject<Segment | undefined>(undefined),
+    volsegEntry: new BehaviorSubject<string | undefined>(undefined),
   };
 
   constructor() {
@@ -61,13 +62,13 @@ export class MolstarViewerModel extends BaseReactiveModel {
       this.state.isExpanded.next(this.plugin.layout.state.isExpanded);
     });
 
-    this.subscribe(this.state.segment.pipe(skip(1)), (segment) => {
-      if (!segment) {
-        this.resetSegmentVisibility();
-      } else {
-        this.focusSegment(segment);
+    this.subscribe(this.state.isInitialized, (isInitialized) => {
+      console.log("isInitialized", isInitialized);
+      if (isInitialized) {
+        this.mountAfterInit();
       }
     });
+
     // this.subscribe(this.plugin.events.log, (message) => {
     //   console.log(message);
     // });
@@ -123,6 +124,27 @@ export class MolstarViewerModel extends BaseReactiveModel {
     //       },
     //     },
     //   });
+  }
+
+  mountAfterInit() {
+    console.log("mountAfterInit");
+
+    this.subscribe(this.state.segment.pipe(skip(1)), (segment) => {
+      if (!segment) {
+        this.resetSegmentVisibility();
+      } else {
+        this.focusSegment(segment);
+      }
+    });
+
+    this.subscribe(this.state.volsegEntry.pipe(), async (entryId) => {
+      console.log("entryId", entryId);
+      if (!entryId) {
+        this.clear();
+      } else {
+        await this.loadVolseg(entryId);
+      }
+    });
   }
 
   async init() {

@@ -29,7 +29,7 @@ export function VolsegEntryPreviewPage() {
   });
 
   useEffect(() => {
-    viewer.loadVolseg(entryId);
+    viewer.state.volsegEntry.next(entryId);
   }, [entryId, viewer]);
 
   function handleSegmentView(segment: Segment) {

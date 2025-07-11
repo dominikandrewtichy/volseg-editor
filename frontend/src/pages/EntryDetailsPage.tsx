@@ -91,12 +91,8 @@ export function EntryDetailsPage({
   });
 
   useEffect(() => {
-    async function loadVolseg() {
-      const entryId = volsegMutation.data?.id;
-      if (!entryId) return;
-      await viewer.loadVolseg(entryId);
-    }
-    loadVolseg();
+    const entryId = volsegMutation.data?.id;
+    viewer.state.volsegEntry.next(entryId);
   }, [volsegMutation.data?.id, viewer]);
 
   if (entryQuery.isLoading) {
