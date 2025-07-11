@@ -37,7 +37,6 @@ jobs:
           context: ./backend
           file: ./backend/docker/dockerfile.prod
           push: true
-          no-cache: true
           tags: ${{ env.API_IMAGE_NAME }}:latest
       - name: Build and push migrations image
         uses: docker/build-push-action@v4
@@ -45,7 +44,6 @@ jobs:
           context: ./backend
           file: ./backend/docker/dockerfile.migrations.prod
           push: true
-          no-cache: true
           tags: ${{ env.MIGRATIONS_IMAGE_NAME }}:latest
       - name: Build and push seed image
         uses: docker/build-push-action@v4
@@ -53,7 +51,6 @@ jobs:
           context: ./backend
           file: ./backend/docker/dockerfile.seed.prod
           push: true
-          no-cache: true
           tags: ${{ env.SEED_IMAGE_NAME }}:latest
       - name: Build and push web image
         uses: docker/build-push-action@v4
@@ -61,7 +58,6 @@ jobs:
           context: ./frontend
           file: ./frontend/docker/dockerfile.prod
           push: true
-          no-cache: true
           tags: ${{ env.WEB_IMAGE_NAME }}:latest
 
   deploy-to-k8s:
