@@ -8,6 +8,7 @@ on:
 env:
   DEPLOYMENT_NAME: cellim-viewer
   K8S_NAMESPACE: tichy3-ns
+  IMAGE_TAG: ${{ github.sha }}
   API_IMAGE_NAME: cerit.io/frimen/cellim-viewer-api
   MIGRATIONS_IMAGE_NAME: cerit.io/frimen/cellim-viewer-migrations
   SEED_IMAGE_NAME: cerit.io/frimen/cellim-viewer-seed
@@ -37,28 +38,33 @@ jobs:
           context: ./backend
           file: ./backend/docker/dockerfile.prod
           push: true
-          tags: ${{ env.API_IMAGE_NAME }}:latest
+          tags: |
+            ${{ env.API_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
       - name: Build and push migrations image
         uses: docker/build-push-action@v4
         with:
           context: ./backend
           file: ./backend/docker/dockerfile.migrations.prod
           push: true
-          tags: ${{ env.MIGRATIONS_IMAGE_NAME }}:latest
+          tags: |
+            ${{ env.MIGRATIONS_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
       - name: Build and push seed image
         uses: docker/build-push-action@v4
         with:
           context: ./backend
           file: ./backend/docker/dockerfile.seed.prod
           push: true
-          tags: ${{ env.SEED_IMAGE_NAME }}:latest
+          tags: |
+            ${{ env.SEED_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
       - name: Build and push web image
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
           file: ./frontend/docker/dockerfile.prod
           push: true
-          tags: ${{ env.WEB_IMAGE_NAME }}:latest
+          tags: |
+            ${{ env.WEB_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
   deploy-to-k8s:
     needs: build-and-push
