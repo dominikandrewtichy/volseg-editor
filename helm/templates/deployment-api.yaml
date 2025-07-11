@@ -23,7 +23,7 @@ spec:
       containers:
         - name: {{ .Release.Name }}-api
           image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
-          pullPolicy: Always
+          imagePullPolicy: Always
           resources:
             requests:
               memory: 1Gi
