@@ -33,6 +33,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
     isLoading: new BehaviorSubject<boolean>(false),
     showControls: new BehaviorSubject<boolean>(false),
     isExpanded: new BehaviorSubject<boolean>(false),
+    segment: new BehaviorSubject<Segment | undefined>(undefined),
   };
 
   constructor() {
@@ -58,6 +59,14 @@ export class MolstarViewerModel extends BaseReactiveModel {
     this.subscribe(this.plugin.layout.events.updated, () => {
       this.state.showControls.next(this.plugin.layout.state.showControls);
       this.state.isExpanded.next(this.plugin.layout.state.isExpanded);
+    });
+
+    this.subscribe(this.state.segment, (segment) => {
+      if (!segment) {
+        this.resetSegmentVisibility();
+      } else {
+        this.focusSegment(segment);
+      }
     });
     // this.subscribe(this.plugin.events.log, (message) => {
     //   console.log(message);
@@ -278,16 +287,11 @@ export class MolstarViewerModel extends BaseReactiveModel {
     };
   }
 
-  async focusSegment(
-    entry_id: string,
-    segmentId: number,
-    segmentationId: string,
-  ) {
-    const node = this.getVolsegEntryNode(entry_id);
-
-    if (!node) return;
-
-    const segmentLoci = this.makeLoci([segmentId], segmentationId);
+  focusSegment(segment: Segment) {
+    const segmentLoci = this.makeLoci(
+      [segment.segment_id],
+      segment.segmentation_id,
+    );
 
     if (!segmentLoci) return;
 
@@ -299,18 +303,20 @@ export class MolstarViewerModel extends BaseReactiveModel {
     this.plugin.managers.interactivity.lociSelects.selectOnly(segmentLoci);
   }
 
-  async showSegment(
-    entry_id: string,
-    segmentId: number,
-    segmentationId: string,
-    kind: Segment["kind"],
-  ) {
-    const key = createSegmentKey(segmentId, segmentationId, kind);
+  async showSegment(entry_id: string, segment: Segment) {
+    const key = createSegmentKey(
+      segment.segment_id,
+      segment.segmentation_id,
+      segment.kind,
+    );
     const node = this.getVolsegEntryNode(entry_id);
 
     if (!node) return;
 
-    const segmentLoci = this.makeLoci([segmentId], segmentationId);
+    const segmentLoci = this.makeLoci(
+      [segment.segment_id],
+      segment.segmentation_id,
+    );
 
     if (!segmentLoci) return;
 
@@ -320,12 +326,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
     await actionShowSegments([key], node);
   }
 
-  async resetSegmentVisibility(entry_id: string) {
-    const node = this.getVolsegEntryNode(entry_id);
-
-    if (!node) return;
-
-    // await actionToggleAllFilteredSegments(node, "0", "lattice", []);
+  resetSegmentVisibility() {
     this.plugin.managers.interactivity.lociSelects.deselectAll();
     this.plugin.managers.interactivity.lociHighlights.clearHighlights();
     this.plugin.managers.camera.reset();
