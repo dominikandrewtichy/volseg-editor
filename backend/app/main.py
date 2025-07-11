@@ -8,6 +8,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.api.v1.api import v1_api_router
 from app.api.v1.tags import v1_api_tags_metadata
 from app.core.settings import get_settings
+from app.core.settings.api_settings import get_api_settings
 from app.database.session_manager import get_session_manager
 
 
@@ -44,7 +45,7 @@ app.include_router(v1_api_router)
 # middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=get_api_settings().CORS_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,

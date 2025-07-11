@@ -28,10 +28,10 @@ class ApiSettings(BaseAppSettings):
     WEB_SERVER_URL: str = os.getenv("WEB_SERVER_URL", "")
 
     # CORS
-    # CORS_ORIGINS: list[str] = [
-    #     API_SERVER_URL,  # for OpenAPI docs
-    #     WEB_SERVER_URL,  # for frontend
-    # ]
+    CORS_ORIGINS: list[str] = [
+        API_SERVER_URL,  # for OpenAPI docs
+        WEB_SERVER_URL,  # for frontend
+    ]
 
     # COOKIES
     COOKIE_SESSION_SECRET: str = os.getenv("COOKIE_SESSION_SECRET", "")
