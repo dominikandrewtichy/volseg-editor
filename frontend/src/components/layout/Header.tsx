@@ -1,11 +1,12 @@
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthProvider";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 export function Header() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
@@ -34,7 +35,9 @@ export function Header() {
           </Button>
         ) : (
           <Button variant="link" asChild>
-            <Link to="/login">Login</Link>
+            <Link to="/login" state={{ from: location }} replace>
+              Login
+            </Link>
           </Button>
         )}
       </nav>
