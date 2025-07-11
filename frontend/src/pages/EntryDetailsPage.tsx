@@ -17,11 +17,14 @@ import {
 } from "@/lib/client/@tanstack/react-query.gen";
 import { formatDate } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, CalendarIcon } from "lucide-react";
+import { AlertCircle, CalendarIcon, Camera, RotateCcw } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBehavior } from "@/hooks/useBehavior";
+import { SegmentsList } from "./VolsegEntryPreviewPage";
 
 const MolstarViewer = lazy(() => import("../components/molstar/MolstarViewer"));
 
@@ -40,6 +43,8 @@ export function EntryDetailsPage({
   const queryClient = useQueryClient();
 
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const currentSegment = useBehavior(viewer.state.segment);
+  const [tab, setTab] = useState<"views" | "segments">("views");
 
   const entryQuery = useQuery({
     ...entriesGetEntryByIdOptions({
@@ -220,14 +225,67 @@ export function EntryDetailsPage({
         <EntryDescription description={entryQuery.data.description} />
       )}
 
-      <div className="flex flex-1 overflow-hidden gap-x-3">
-        <aside className="overflow-hidden flex flex-col h-[80vh]">
-          <ViewsSidebar
-            entryId={entryId!}
-            isEditable={!!canEdit}
-            onSaveView={() => setShowSaveDialog(true)}
-          />
-        </aside>
+      <div className="flex flex-row gap-x-3 h-[600px]">
+        <Tabs
+          value={tab}
+          onValueChange={(val) => setTab(val as "views" | "segments")}
+          className="flex gap-x-3 w-[400px]"
+        >
+          <div className="flex justify-between items-center">
+            <TabsList className="flex">
+              <TabsTrigger value="views">Views</TabsTrigger>
+              <TabsTrigger value="segments">Segments</TabsTrigger>
+            </TabsList>
+
+            <div className="flex gap-2 ml-4">
+              {canEdit && tab === "views" && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setShowSaveDialog(true)}
+                >
+                  <Camera size={16} />
+                  Save View
+                </Button>
+              )}
+              {tab === "segments" &&
+                volsegMutation.data?.annotations?.segments && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => viewer.state.segment.next(undefined)}
+                  >
+                    <RotateCcw size={16} />
+                    Reset
+                  </Button>
+                )}
+            </div>
+          </div>
+
+          <TabsContent value="views" className="h-full overflow-auto">
+            <ViewsSidebar
+              entryId={entryId!}
+              isEditable={!!canEdit}
+              onSaveView={() => setShowSaveDialog(true)}
+            />
+          </TabsContent>
+
+          <TabsContent value="segments" className="h-full overflow-auto">
+            {volsegMutation.data?.annotations?.segments ? (
+              <SegmentsList
+                selectedSegment={currentSegment}
+                segments={volsegMutation.data.annotations.segments}
+                handleSegmentView={(segment) =>
+                  viewer.state.segment.next(segment)
+                }
+              />
+            ) : (
+              <div className="text-muted-foreground p-4">
+                No segments available
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
         <div className="flex-1 relative">
           <Suspense fallback={<Skeleton className="size-full" />}>
             <MolstarViewer />

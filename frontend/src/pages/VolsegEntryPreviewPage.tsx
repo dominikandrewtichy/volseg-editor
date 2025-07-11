@@ -70,7 +70,7 @@ export function VolsegEntryPreviewPage() {
           <Skeleton className="h-5 w-64" />
         )}
       </div>
-      <div className="flex flex-row gap-x-5 mt-6 h-[800px]">
+      <div className="flex flex-row gap-x-5 mt-6 h-[600px]">
         <div className="flex-1 relative">
           <Suspense fallback={<Skeleton className="size-full" />}>
             <MolstarViewer />
@@ -88,7 +88,7 @@ export function VolsegEntryPreviewPage() {
               <RotateCcw />
             </Button>
             <SegmentsList
-              className="p-3 rounded-xl border max-h-[800px] overflow-auto"
+              className="h-full overflow-auto"
               selectedSegment={currentSegment}
               segments={volsegEntryQuery.data.annotations.segments}
               handleSegmentView={handleSegmentView}
@@ -100,7 +100,7 @@ export function VolsegEntryPreviewPage() {
   );
 }
 
-function SegmentsList({
+export function SegmentsList({
   segments,
   selectedSegment,
   handleSegmentView,
@@ -112,7 +112,10 @@ function SegmentsList({
   handleSegmentView: (segment: Segment) => Promise<void> | void;
 }) {
   return (
-    <ScrollArea className={cn("", className)} {...props}>
+    <ScrollArea
+      className={cn("p-2 pr-3 rounded-xl border h-full", className)}
+      {...props}
+    >
       <div className="space-y-3">
         {segments.map((segment) => (
           <div

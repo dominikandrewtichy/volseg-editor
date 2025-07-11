@@ -46,39 +46,22 @@ export function ViewsSidebar({
   });
 
   return (
-    <div className="flex flex-col h-full w-96">
-      <div className="flex items-center justify-between mb-2 pr-4">
-        {/* <h2 className="text-xl font-bold">Saved Views</h2> */}
-        {isEditable && (
-          <Button
-            variant="secondary"
-            size="sm"
-            className="gap-1"
-            onClick={onSaveView}
-          >
-            <Camera size={16} />
-            <span>Save View</span>
-          </Button>
+    <ScrollArea className="p-2 pr-3 rounded-xl border h-full">
+      <div className="space-y-3">
+        {sortedViews.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>No views saved yet</p>
+          </div>
+        ) : (
+          <>
+            {sortedViews.map((view) => (
+              <div key={view.id} className="transition-transform">
+                <ViewCard view={view} isEditable={isEditable} />
+              </div>
+            ))}
+          </>
         )}
       </div>
-
-      <ScrollArea className="flex-1 min-h-0 pb-0 pr-4">
-        <div className="flex flex-col gap-y-3">
-          {sortedViews.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>No views saved yet</p>
-            </div>
-          ) : (
-            <>
-              {sortedViews.map((view) => (
-                <div key={view.id} className="transition-transform">
-                  <ViewCard view={view} isEditable={isEditable} />
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-      </ScrollArea>
-    </div>
+    </ScrollArea>
   );
 }

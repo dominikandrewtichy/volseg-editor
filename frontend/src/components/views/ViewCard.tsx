@@ -32,6 +32,7 @@ import {
 import { toast } from "sonner";
 import { EditViewDialog } from "./ViewEditDialog";
 import { useState } from "react";
+import { Label } from "../ui/label";
 
 interface ViewCardProps {
   view: ViewResponse;
@@ -111,7 +112,7 @@ export function ViewCard({ view, isEditable }: ViewCardProps) {
 
   return (
     <>
-      <Card className="transition-all relative hover:shadow-md">
+      <Card className="transition-all relative hover:shadow-md border-2 rounded-xl">
         <CardHeader>
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-x-2">
@@ -152,9 +153,9 @@ export function ViewCard({ view, isEditable }: ViewCardProps) {
         <div className="px-6 pb-2">
           <div className="aspect-video bg-secondary rounded-md overflow-hidden flex items-center justify-center relative">
             {view.is_thumbnail && (
-              <div className="absolute top-2 left-2 bg-primary-foreground text-white text-xs px-2 py-0.5 rounded-full z-10 shadow">
+              <Label className="absolute top-2 left-2 bg-secondary text-secondary-foreground text-xs px-2 py-0.5  rounded-2xl z-10">
                 Default
-              </div>
+              </Label>
             )}
             {view.thumbnail_url ? (
               <img

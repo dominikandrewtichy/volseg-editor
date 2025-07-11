@@ -19,7 +19,7 @@ import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
 import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
 import { Volume } from "molstar/lib/commonjs/mol-model/volume";
 import { UUID } from "molstar/lib/commonjs/mol-util";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, skip } from "rxjs";
 import { Segment, volsegEntriesGetSnapshotFile } from "../client";
 import { BaseReactiveModel } from "./base-model";
 
@@ -61,7 +61,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
       this.state.isExpanded.next(this.plugin.layout.state.isExpanded);
     });
 
-    this.subscribe(this.state.segment, (segment) => {
+    this.subscribe(this.state.segment.pipe(skip(1)), (segment) => {
       if (!segment) {
         this.resetSegmentVisibility();
       } else {
