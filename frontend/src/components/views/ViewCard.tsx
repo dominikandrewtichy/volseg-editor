@@ -153,7 +153,7 @@ export function ViewCard({ view, isEditable }: ViewCardProps) {
         <div className="px-6 pb-2">
           <div className="aspect-video bg-secondary rounded-md overflow-hidden flex items-center justify-center relative">
             {view.is_thumbnail && (
-              <Label className="absolute top-2 left-2 bg-secondary text-secondary-foreground text-xs px-2 py-0.5  rounded-2xl z-10">
+              <Label className="absolute top-2 left-2 bg-primary/50 text-primary-foreground text-xs px-2 py-0.5  rounded-2xl z-10">
                 Default
               </Label>
             )}

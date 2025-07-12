@@ -16,7 +16,7 @@ export function ThemeToggle() {
   const themes: { id: Theme; label: string }[] = [
     { id: "light", label: "Light" },
     { id: "dark", label: "Dark" },
-    { id: "system", label: "System" },
+    // { id: "system", label: "System" },
   ];
 
   return (

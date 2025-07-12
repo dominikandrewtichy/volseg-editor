@@ -80,6 +80,12 @@ export function ThemeProvider({
     const handleChange = () => {
       if (theme === "system") {
         applyTheme();
+
+        const systemTheme = getSystemTheme();
+        const event = new CustomEvent("theme-change", {
+          detail: { theme: systemTheme },
+        });
+        window.dispatchEvent(event);
       }
     };
 
@@ -97,6 +103,11 @@ export function ThemeProvider({
     setTheme: (theme: Theme) => {
       localStorage.setItem(storageKey, theme);
       setTheme(theme);
+
+      const event = new CustomEvent("theme-change", {
+        detail: { theme },
+      });
+      window.dispatchEvent(event);
     },
   };
 

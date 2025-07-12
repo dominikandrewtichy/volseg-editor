@@ -36,7 +36,7 @@ createRoot(document.getElementById("root")!).render(
     <Toaster />
     <BrowserRouter>
       <AuthProvider>
-        <ThemeProvider>
+        <ThemeProvider defaultTheme="dark">
           <App />
         </ThemeProvider>
       </AuthProvider>

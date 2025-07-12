@@ -24,11 +24,17 @@ import { Segment, volsegEntriesGetSnapshotFile } from "../client";
 import { BaseReactiveModel } from "./base-model";
 import { StateSelection } from "molstar/lib/commonjs/mol-state";
 import { PluginStateObject } from "molstar/lib/commonjs/mol-plugin-state/objects";
+import { Theme } from "@/contexts/ThemeProvider";
+import { Color } from "molstar/lib/commonjs/mol-util/color";
 
 type InitializationState = "pending" | "initializing" | "success" | "error";
 
 export class MolstarViewerModel extends BaseReactiveModel {
   public plugin: PluginUIContext;
+  private _theme = {
+    dark: Color(0x121212),
+    light: Color(0xffffff),
+  };
 
   public state = {
     isInitialized: new BehaviorSubject<InitializationState>("pending"),
@@ -43,14 +49,24 @@ export class MolstarViewerModel extends BaseReactiveModel {
   constructor() {
     super();
 
+    const currentTheme = this.getCurrentTheme();
+
     const defaultSpec = DefaultPluginUISpec();
     const spec: PluginUISpec = {
       ...defaultSpec,
       behaviors: [PluginSpec.Behavior(CVSXSpec), ...defaultSpec.behaviors],
       layout: {
         initial: {
+          ...defaultSpec.layout?.initial,
           isExpanded: this.state.isExpanded.value,
           showControls: this.state.showControls.value,
+        },
+      },
+      canvas3d: {
+        renderer: {
+          ...defaultSpec.canvas3d?.renderer,
+          backgroundColor:
+            currentTheme === "dark" ? this._theme.dark : this._theme.light,
         },
       },
     };
@@ -189,6 +205,20 @@ export class MolstarViewerModel extends BaseReactiveModel {
         await this.loadVolseg(entryId);
       }
     });
+
+    window.addEventListener("theme-change", async (e) => {
+      const newTheme = e.detail.theme;
+      await this.updateTheme(newTheme);
+    });
+
+    // set screenshots transparent
+    if (this.plugin.helpers.viewportScreenshot) {
+      const params = this.plugin.helpers.viewportScreenshot.values;
+      this.plugin.helpers.viewportScreenshot.behaviors.values.next({
+        ...params,
+        transparent: true,
+      });
+    }
   }
 
   async init() {
@@ -206,6 +236,33 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
   async clear(): Promise<void> {
     await this.plugin.clear();
+  }
+
+  getCurrentTheme(): Exclude<Theme, "system"> {
+    const theme = localStorage.getItem("theme");
+    if (theme) return theme as Exclude<Theme, "system">;
+
+    const root = document.documentElement;
+    if (root.classList.contains("dark")) return "dark";
+    if (root.classList.contains("light")) return "light";
+    return "dark";
+  }
+
+  async updateTheme(color: Exclude<Theme, "system">) {
+    if (!this.plugin.canvas3d) return;
+
+    const backgroundColor =
+      color === "dark" ? this._theme.dark : this._theme.light;
+
+    await PluginCommands.Canvas3D.SetSettings(this.plugin, {
+      settings: {
+        renderer: {
+          ...this.plugin.canvas3d.props.renderer,
+          backgroundColor: backgroundColor,
+        },
+      },
+    });
+    this.plugin.events.canvas3d.settingsUpdated.next(void 0);
   }
 
   async screenshot(): Promise<string> {
@@ -233,7 +290,11 @@ export class MolstarViewerModel extends BaseReactiveModel {
   }
 
   getSnapshot(): PluginState.Snapshot {
-    return this.plugin.state.getSnapshot();
+    return this.plugin.state.getSnapshot({
+      // don't save canvas (background color etc)
+      canvas3d: false,
+      canvas3dContext: false,
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
