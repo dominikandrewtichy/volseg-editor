@@ -206,7 +206,8 @@ export class MolstarViewerModel extends BaseReactiveModel {
       }
     });
 
-    window.addEventListener("theme-change", async (e) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.addEventListener("theme-change", async (e: any) => {
       const newTheme = e.detail.theme;
       await this.updateTheme(newTheme);
     });
