@@ -6,8 +6,8 @@ from app.core.settings.base_settings import BaseAppSettings
 
 class MinioSettings(BaseAppSettings):
     MINIO_ENDPOINT: str = os.getenv("MINIO_ENDPOINT", "")
-    MINIO_ACCESS_KEY: str = os.getenv("MINIO_ACCESS_KEY", "")
-    MINIO_SECRET_KEY: str = os.getenv("MINIO_SECRET_KEY", "")
+    MINIO_ROOT_USER: str = os.getenv("MINIO_ROOT_USER", "")
+    MINIO_ROOT_PASSWORD: str = os.getenv("MINIO_ROOT_PASSWORD", "")
     MINIO_SECURE: bool = False
     MINIO_BUCKET: str = "cellim-viewer"
 
