@@ -32,7 +32,7 @@ type InitializationState = "pending" | "initializing" | "success" | "error";
 export class MolstarViewerModel extends BaseReactiveModel {
   public plugin: PluginUIContext;
   private _theme = {
-    dark: Color(0x121212),
+    dark: Color(0x000000),
     light: Color(0xffffff),
   };
 
