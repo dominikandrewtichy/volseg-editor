@@ -24,7 +24,7 @@ class Annotations(DebugModelName, BaseModel):
 
 
 class VolsegEntryResponse(Timestamp, Uuid, DebugModelName, BaseModel):
-    name: str = Field(max_length=255)
+    name: str = Field(min_length=1, max_length=255)
     is_public: bool = Field()
     cvsx_url: str | None = Field(max_length=2083)
     snapshot_url: str | None = Field(max_length=2083)

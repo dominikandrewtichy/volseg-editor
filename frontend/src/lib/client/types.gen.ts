@@ -1286,7 +1286,7 @@ export type VolsegEntriesUploadEntryResponses = {
 export type VolsegEntriesUploadEntryResponse =
   VolsegEntriesUploadEntryResponses[keyof VolsegEntriesUploadEntryResponses];
 
-export type VolsegEntriesDeleteViewData = {
+export type VolsegEntriesDeleteEntryData = {
   body?: never;
   path: {
     /**
@@ -1298,26 +1298,26 @@ export type VolsegEntriesDeleteViewData = {
   url: "/api/v1/volseg/{volseg_entry_id}";
 };
 
-export type VolsegEntriesDeleteViewErrors = {
+export type VolsegEntriesDeleteEntryErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type VolsegEntriesDeleteViewError =
-  VolsegEntriesDeleteViewErrors[keyof VolsegEntriesDeleteViewErrors];
+export type VolsegEntriesDeleteEntryError =
+  VolsegEntriesDeleteEntryErrors[keyof VolsegEntriesDeleteEntryErrors];
 
-export type VolsegEntriesDeleteViewResponses = {
+export type VolsegEntriesDeleteEntryResponses = {
   /**
-   * Response Volseg Entries-Delete View
+   * Response Volseg Entries-Delete Entry
    * Successful Response
    */
   200: string;
 };
 
-export type VolsegEntriesDeleteViewResponse =
-  VolsegEntriesDeleteViewResponses[keyof VolsegEntriesDeleteViewResponses];
+export type VolsegEntriesDeleteEntryResponse =
+  VolsegEntriesDeleteEntryResponses[keyof VolsegEntriesDeleteEntryResponses];
 
 export type VolsegEntriesGetEntryByIdData = {
   body?: never;

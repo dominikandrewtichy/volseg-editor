@@ -31,6 +31,7 @@ export const Body_volseg_entries_upload_entrySchema = {
     name: {
       type: "string",
       maxLength: 255,
+      minLength: 1,
     },
     is_public: {
       type: "boolean",
@@ -119,6 +120,7 @@ export const EntryResponseSchema = {
     name: {
       type: "string",
       maxLength: 255,
+      minLength: 1,
       examples: ["Entry Name"],
     },
     description: {
@@ -492,6 +494,7 @@ export const ViewResponseSchema = {
     name: {
       type: "string",
       maxLength: 255,
+      minLength: 1,
     },
     description: {
       anyOf: [
@@ -609,6 +612,7 @@ export const VolsegEntryResponseSchema = {
     name: {
       type: "string",
       maxLength: 255,
+      minLength: 1,
     },
     is_public: {
       type: "boolean",

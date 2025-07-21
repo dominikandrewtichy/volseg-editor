@@ -88,9 +88,9 @@ import type {
   VolsegEntriesUploadEntryData,
   VolsegEntriesUploadEntryResponses,
   VolsegEntriesUploadEntryErrors,
-  VolsegEntriesDeleteViewData,
-  VolsegEntriesDeleteViewResponses,
-  VolsegEntriesDeleteViewErrors,
+  VolsegEntriesDeleteEntryData,
+  VolsegEntriesDeleteEntryResponses,
+  VolsegEntriesDeleteEntryErrors,
   VolsegEntriesGetEntryByIdData,
   VolsegEntriesGetEntryByIdResponses,
   VolsegEntriesGetEntryByIdErrors,
@@ -156,8 +156,8 @@ import {
   zVolsegEntriesListPublicEntriesResponse,
   zVolsegEntriesUploadEntryData,
   zVolsegEntriesUploadEntryResponse,
-  zVolsegEntriesDeleteViewData,
-  zVolsegEntriesDeleteViewResponse,
+  zVolsegEntriesDeleteEntryData,
+  zVolsegEntriesDeleteEntryResponse,
   zVolsegEntriesGetEntryByIdData,
   zVolsegEntriesGetEntryByIdResponse,
   zVolsegEntriesGetCvsxFileData,
@@ -837,21 +837,21 @@ export const volsegEntriesUploadEntry = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Delete View
+ * Delete Entry
  */
-export const volsegEntriesDeleteView = <ThrowOnError extends boolean = false>(
-  options: Options<VolsegEntriesDeleteViewData, ThrowOnError>,
+export const volsegEntriesDeleteEntry = <ThrowOnError extends boolean = false>(
+  options: Options<VolsegEntriesDeleteEntryData, ThrowOnError>,
 ) => {
   return (options.client ?? _heyApiClient).delete<
-    VolsegEntriesDeleteViewResponses,
-    VolsegEntriesDeleteViewErrors,
+    VolsegEntriesDeleteEntryResponses,
+    VolsegEntriesDeleteEntryErrors,
     ThrowOnError
   >({
     requestValidator: async (data) => {
-      return await zVolsegEntriesDeleteViewData.parseAsync(data);
+      return await zVolsegEntriesDeleteEntryData.parseAsync(data);
     },
     responseValidator: async (data) => {
-      return await zVolsegEntriesDeleteViewResponse.parseAsync(data);
+      return await zVolsegEntriesDeleteEntryResponse.parseAsync(data);
     },
     url: "/api/v1/volseg/{volseg_entry_id}",
     ...options,

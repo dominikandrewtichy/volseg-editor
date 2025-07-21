@@ -36,7 +36,7 @@ export const zAnnotations = z.object({
  * Body_volseg entries-upload_entry
  */
 export const zBodyVolsegEntriesUploadEntry = z.object({
-  name: z.string().max(255),
+  name: z.string().min(1).max(255),
   is_public: z.boolean(),
   cvsx_file: z.string(),
   snapshot_file: z.union([z.string(), z.null()]),
@@ -60,7 +60,7 @@ export const zEntryResponse = z.object({
   id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
-  name: z.string().max(255),
+  name: z.string().min(1).max(255),
   description: z.union([z.string(), z.null()]).optional(),
   thumbnail_url: z.union([z.string(), z.null()]).optional(),
   is_public: z.boolean(),
@@ -157,7 +157,7 @@ export const zViewResponse = z.object({
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
   entry_id: z.string().uuid(),
-  name: z.string().max(255),
+  name: z.string().min(1).max(255),
   description: z.union([z.string(), z.null()]),
   thumbnail_url: z.union([z.string().max(2083), z.null()]),
   snapshot_url: z.union([z.string().max(2083), z.null()]),
@@ -181,7 +181,7 @@ export const zVolsegEntryResponse = z.object({
   id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
-  name: z.string().max(255),
+  name: z.string().min(1).max(255),
   is_public: z.boolean(),
   cvsx_url: z.union([z.string().max(2083), z.null()]),
   snapshot_url: z.union([z.string().max(2083), z.null()]),
@@ -540,7 +540,7 @@ export const zVolsegEntriesUploadEntryData = z.object({
  */
 export const zVolsegEntriesUploadEntryResponse = zVolsegEntryResponse;
 
-export const zVolsegEntriesDeleteViewData = z.object({
+export const zVolsegEntriesDeleteEntryData = z.object({
   body: z.never().optional(),
   path: z.object({
     volseg_entry_id: z.string().uuid(),
@@ -549,10 +549,10 @@ export const zVolsegEntriesDeleteViewData = z.object({
 });
 
 /**
- * Response Volseg Entries-Delete View
+ * Response Volseg Entries-Delete Entry
  * Successful Response
  */
-export const zVolsegEntriesDeleteViewResponse = z.string().uuid();
+export const zVolsegEntriesDeleteEntryResponse = z.string().uuid();
 
 export const zVolsegEntriesGetEntryByIdData = z.object({
   body: z.never().optional(),

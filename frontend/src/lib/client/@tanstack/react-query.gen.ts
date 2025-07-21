@@ -31,7 +31,7 @@ import {
   authDemoLogin,
   volsegEntriesListPublicEntries,
   volsegEntriesUploadEntry,
-  volsegEntriesDeleteView,
+  volsegEntriesDeleteEntry,
   volsegEntriesGetEntryById,
   volsegEntriesGetCvsxFile,
   volsegEntriesGetSnapshotFile,
@@ -95,9 +95,9 @@ import type {
   VolsegEntriesUploadEntryData,
   VolsegEntriesUploadEntryError,
   VolsegEntriesUploadEntryResponse,
-  VolsegEntriesDeleteViewData,
-  VolsegEntriesDeleteViewError,
-  VolsegEntriesDeleteViewResponse,
+  VolsegEntriesDeleteEntryData,
+  VolsegEntriesDeleteEntryError,
+  VolsegEntriesDeleteEntryResponse,
   VolsegEntriesGetEntryByIdData,
   VolsegEntriesGetCvsxFileData,
   VolsegEntriesGetSnapshotFileData,
@@ -1110,22 +1110,22 @@ export const volsegEntriesUploadEntryMutation = (
 };
 
 /**
- * Delete View
+ * Delete Entry
  */
-export const volsegEntriesDeleteViewMutation = (
-  options?: Partial<Options<VolsegEntriesDeleteViewData>>,
+export const volsegEntriesDeleteEntryMutation = (
+  options?: Partial<Options<VolsegEntriesDeleteEntryData>>,
 ): UseMutationOptions<
-  VolsegEntriesDeleteViewResponse,
-  VolsegEntriesDeleteViewError,
-  Options<VolsegEntriesDeleteViewData>
+  VolsegEntriesDeleteEntryResponse,
+  VolsegEntriesDeleteEntryError,
+  Options<VolsegEntriesDeleteEntryData>
 > => {
   const mutationOptions: UseMutationOptions<
-    VolsegEntriesDeleteViewResponse,
-    VolsegEntriesDeleteViewError,
-    Options<VolsegEntriesDeleteViewData>
+    VolsegEntriesDeleteEntryResponse,
+    VolsegEntriesDeleteEntryError,
+    Options<VolsegEntriesDeleteEntryData>
   > = {
     mutationFn: async (localOptions) => {
-      const { data } = await volsegEntriesDeleteView({
+      const { data } = await volsegEntriesDeleteEntry({
         ...options,
         ...localOptions,
         throwOnError: true,

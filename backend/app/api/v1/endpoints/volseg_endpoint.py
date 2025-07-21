@@ -16,7 +16,7 @@ router = APIRouter(prefix="/volseg", tags=[Tags.volseg])
     response_model=VolsegEntryResponse,
 )
 async def upload_entry(
-    name: Annotated[str, Form(max_length=255)],
+    name: Annotated[str, Form(min_length=1, max_length=255)],
     is_public: Annotated[bool, Form()],
     cvsx_file: Annotated[UploadFile, File()],
     snapshot_file: Annotated[UploadFile | None, File()],
