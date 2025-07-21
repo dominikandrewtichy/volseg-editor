@@ -45,28 +45,18 @@ export function HomePage() {
   };
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-24">
       {/* Hero Section */}
       <section className="text-center space-y-6 mt-16">
         <h1 className="text-4xl md:text-5xl font-bold">CELLIM Viewer</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Advanced visualization platform for cellular and molecular data from
-          the CELLIM research group
+          Visualization platform for volume and segmentation data
         </p>
-        <div className="max-w-lg mx-auto mt-8">
-          <SearchBar
-            initialValue={search_term}
-            onSearch={handleSearch}
-            placeholder="Search by name or description..."
-          />
-        </div>
       </section>
 
       <section>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">
-            {search_term && `Search Results for "${search_term}"`}
-          </h2>
+          <h2 className="text-2xl font-semibold">Featured entries</h2>
           <Button variant="default" onClick={() => navigate("/entries/new")}>
             Create Entry
           </Button>
@@ -80,18 +70,6 @@ export function HomePage() {
             Error loading entries. Please try again.
           </div>
         )}
-        {data?.items.length === 0 && (
-          <div className="text-center py-12 bg-muted/30 rounded-lg">
-            {search_term && (
-              <div>
-                <p>No entries found matching "{search_term}"</p>
-                <Button variant="link" onClick={() => handleSearch("")}>
-                  Clear search
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
         {data?.items.length !== 0 && (
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
@@ -99,17 +77,6 @@ export function HomePage() {
                 <EntryPreview key={entry.id} entry={entry} />
               ))}
             </div>
-
-            {data && (
-              <PaginationControls
-                totalPages={data.total_pages}
-                totalItems={data.total_items}
-                currentPage={data.page}
-                perPage={data.per_page}
-                onPageChange={handlePageChange}
-                onPerPageChange={handlePerPageChange}
-              />
-            )}
           </>
         )}
       </section>
