@@ -4,4 +4,4 @@ set -e
 
 echo "Running Alembic migrations..."
 
-alembic -c alembic.ini upgrade head
+alembic -c app/database/alembic.ini upgrade head
