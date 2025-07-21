@@ -18,3 +18,8 @@ class TimestampMixin:
         default=utcnow,
         onupdate=utcnow,
     )
+    deleted_at: Mapped[datetime | None] = mapped_column(
+        TIMESTAMP(timezone=True),
+        default=None,
+        nullable=True,
+    )

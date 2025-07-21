@@ -234,6 +234,7 @@ class EntryService:
 
         return EntryResponse.model_validate(entry)
 
+    # TODO: add soft delete
     async def delete(
         self,
         *,

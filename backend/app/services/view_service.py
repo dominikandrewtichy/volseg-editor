@@ -227,6 +227,7 @@ class ViewService:
 
         return ViewResponse.model_validate(view)
 
+    # TODO: add soft delete
     async def delete(
         self,
         *,
