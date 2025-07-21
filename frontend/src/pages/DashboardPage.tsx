@@ -8,7 +8,7 @@ import {
   meListEntriesForUserQueryKey,
   meListVolsegEntriesForUserOptions,
   meListVolsegEntriesForUserQueryKey,
-  volsegEntriesDeleteViewMutation,
+  volsegEntriesDeleteEntryMutation,
 } from "@/lib/client/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2Icon } from "lucide-react";
@@ -44,7 +44,7 @@ export function DashboardPage() {
   });
 
   const volsegEntryDeleteMutation = useMutation({
-    ...volsegEntriesDeleteViewMutation(),
+    ...volsegEntriesDeleteEntryMutation(),
     onSuccess: () => {
       toast.success("Volseg entry deleted");
       queryClient.invalidateQueries({
