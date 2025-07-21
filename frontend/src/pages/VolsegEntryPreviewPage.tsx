@@ -76,25 +76,26 @@ export function VolsegEntryPreviewPage() {
             <MolstarViewer />
           </Suspense>
         </div>
-        {volsegEntryQuery.data?.annotations && (
-          <div className="flex flex-col gap-y-3 h-full">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="w-fit"
-              onClick={handleReset}
-            >
-              Reset
-              <RotateCcw />
-            </Button>
-            <SegmentsList
-              className="h-full overflow-auto"
-              selectedSegment={currentSegment}
-              segments={volsegEntryQuery.data.annotations.segments}
-              handleSegmentView={handleSegmentView}
-            />
-          </div>
-        )}
+        {volsegEntryQuery.data?.annotations &&
+          volsegEntryQuery.data.annotations.segments.length > 0 && (
+            <div className="flex flex-col gap-y-3 h-full">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-fit"
+                onClick={handleReset}
+              >
+                Reset
+                <RotateCcw />
+              </Button>
+              <SegmentsList
+                className="h-full overflow-auto"
+                selectedSegment={currentSegment}
+                segments={volsegEntryQuery.data.annotations.segments}
+                handleSegmentView={handleSegmentView}
+              />
+            </div>
+          )}
       </div>
     </div>
   );
@@ -111,6 +112,10 @@ export function SegmentsList({
   selectedSegment: Segment | undefined;
   handleSegmentView: (segment: Segment) => Promise<void> | void;
 }) {
+  if (segments.length < 1) {
+    return null;
+  }
+
   return (
     <ScrollArea
       className={cn("p-2 pr-3 rounded-xl border h-full", className)}
