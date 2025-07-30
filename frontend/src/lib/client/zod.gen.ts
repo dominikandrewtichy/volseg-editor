@@ -149,6 +149,13 @@ export const zViewCreateRequest = z.object({
 });
 
 /**
+ * ViewReorderRequest
+ */
+export const zViewReorderRequest = z.object({
+  view_ids: z.array(z.string().uuid()).min(1),
+});
+
+/**
  * ViewResponse
  */
 export const zViewResponse = z.object({
@@ -383,6 +390,20 @@ export const zViewsGetViewThumbnailImageData = z.object({
   }),
   query: z.never().optional(),
 });
+
+export const zViewsReorderEntryViewsData = z.object({
+  body: zViewReorderRequest,
+  path: z.object({
+    entry_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
+/**
+ * Response Views-Reorder Entry Views
+ * Successful Response
+ */
+export const zViewsReorderEntryViewsResponse = z.array(zViewResponse);
 
 export const zMeListEntriesForUserData = z.object({
   body: z.never().optional(),

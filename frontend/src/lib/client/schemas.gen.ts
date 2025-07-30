@@ -466,6 +466,21 @@ export const ViewCreateRequestSchema = {
   required: ["name", "is_thumbnail"],
 } as const;
 
+export const ViewReorderRequestSchema = {
+  properties: {
+    view_ids: {
+      items: {
+        type: "string",
+        format: "uuid",
+      },
+      type: "array",
+      minItems: 1,
+    },
+  },
+  type: "object",
+  required: ["view_ids"],
+} as const;
+
 export const ViewResponseSchema = {
   properties: {
     response_model: {

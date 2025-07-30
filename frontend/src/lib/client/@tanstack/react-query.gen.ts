@@ -17,6 +17,7 @@ import {
   viewsUpdateView,
   viewsGetViewSnapshot,
   viewsGetViewThumbnailImage,
+  viewsReorderEntryViews,
   meListEntriesForUser,
   meListVolsegEntriesForUser,
   shareLinksGetShareLink,
@@ -74,6 +75,9 @@ import type {
   ViewsUpdateViewResponse,
   ViewsGetViewSnapshotData,
   ViewsGetViewThumbnailImageData,
+  ViewsReorderEntryViewsData,
+  ViewsReorderEntryViewsError,
+  ViewsReorderEntryViewsResponse,
   MeListEntriesForUserData,
   MeListEntriesForUserError,
   MeListEntriesForUserResponse,
@@ -650,6 +654,33 @@ export const viewsGetViewThumbnailImageOptions = (
     },
     queryKey: viewsGetViewThumbnailImageQueryKey(options),
   });
+};
+
+/**
+ * Reorder views for a specific entry
+ */
+export const viewsReorderEntryViewsMutation = (
+  options?: Partial<Options<ViewsReorderEntryViewsData>>,
+): UseMutationOptions<
+  ViewsReorderEntryViewsResponse,
+  ViewsReorderEntryViewsError,
+  Options<ViewsReorderEntryViewsData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    ViewsReorderEntryViewsResponse,
+    ViewsReorderEntryViewsError,
+    Options<ViewsReorderEntryViewsData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await viewsReorderEntryViews({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
 };
 
 export const meListEntriesForUserQueryKey = (

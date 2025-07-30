@@ -321,6 +321,16 @@ export type ViewCreateRequest = {
 };
 
 /**
+ * ViewReorderRequest
+ */
+export type ViewReorderRequest = {
+  /**
+   * View Ids
+   */
+  view_ids: Array<string>;
+};
+
+/**
  * ViewResponse
  */
 export type ViewResponse = {
@@ -937,6 +947,39 @@ export type ViewsGetViewThumbnailImageResponses = {
    */
   200: unknown;
 };
+
+export type ViewsReorderEntryViewsData = {
+  body: ViewReorderRequest;
+  path: {
+    /**
+     * Entry Id
+     */
+    entry_id: string;
+  };
+  query?: never;
+  url: "/api/v1/entries/{entry_id}/views/reorder";
+};
+
+export type ViewsReorderEntryViewsErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type ViewsReorderEntryViewsError =
+  ViewsReorderEntryViewsErrors[keyof ViewsReorderEntryViewsErrors];
+
+export type ViewsReorderEntryViewsResponses = {
+  /**
+   * Response Views-Reorder Entry Views
+   * Successful Response
+   */
+  200: Array<ViewResponse>;
+};
+
+export type ViewsReorderEntryViewsResponse =
+  ViewsReorderEntryViewsResponses[keyof ViewsReorderEntryViewsResponses];
 
 export type MeListEntriesForUserData = {
   body?: never;

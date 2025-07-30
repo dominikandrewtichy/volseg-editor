@@ -52,6 +52,9 @@ import type {
   ViewsGetViewThumbnailImageData,
   ViewsGetViewThumbnailImageResponses,
   ViewsGetViewThumbnailImageErrors,
+  ViewsReorderEntryViewsData,
+  ViewsReorderEntryViewsResponses,
+  ViewsReorderEntryViewsErrors,
   MeListEntriesForUserData,
   MeListEntriesForUserResponses,
   MeListEntriesForUserErrors,
@@ -133,6 +136,8 @@ import {
   zViewsUpdateViewResponse,
   zViewsGetViewSnapshotData,
   zViewsGetViewThumbnailImageData,
+  zViewsReorderEntryViewsData,
+  zViewsReorderEntryViewsResponse,
   zMeListEntriesForUserData,
   zMeListEntriesForUserResponse,
   zMeListVolsegEntriesForUserData,
@@ -527,6 +532,32 @@ export const viewsGetViewThumbnailImage = <
     },
     url: "/api/v1/entries/{entry_id}/views/{view_id}/thumbnail",
     ...options,
+  });
+};
+
+/**
+ * Reorder views for a specific entry
+ */
+export const viewsReorderEntryViews = <ThrowOnError extends boolean = false>(
+  options: Options<ViewsReorderEntryViewsData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).patch<
+    ViewsReorderEntryViewsResponses,
+    ViewsReorderEntryViewsErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) => {
+      return await zViewsReorderEntryViewsData.parseAsync(data);
+    },
+    responseValidator: async (data) => {
+      return await zViewsReorderEntryViewsResponse.parseAsync(data);
+    },
+    url: "/api/v1/entries/{entry_id}/views/reorder",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });
 };
 

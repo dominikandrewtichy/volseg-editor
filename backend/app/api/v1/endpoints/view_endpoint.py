@@ -1,11 +1,15 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Body, File, Path, Response
+from fastapi import APIRouter, Body, Depends, File, Path, Response
 from fastapi.responses import JSONResponse
 from starlette import status
 
-from app.api.v1.contracts.requests.view_requests import ViewCreateRequest, ViewUpdateRequest
+from app.api.v1.contracts.requests.view_requests import (
+    ViewCreateRequest,
+    ViewReorderRequest,
+    ViewUpdateRequest,
+)
 from app.api.v1.contracts.responses.view_responses import ViewResponse
 from app.api.v1.deps import (
     DbSessionDep,
@@ -123,6 +127,25 @@ async def update_view(
         view_id=view_id,
         updates=request,
         user=current_user,
+    )
+
+
+@router.patch(
+    "/reorder",
+    status_code=status.HTTP_200_OK,
+    response_model=list[ViewResponse],
+    summary="Reorder views for a specific entry",
+)
+async def reorder_entry_views(
+    entry_id: UUID,
+    request: ViewReorderRequest,
+    current_user: RequireUserDep,
+    view_service: ViewServiceDep,
+) -> list[ViewResponse]:
+    return await view_service.reorder_views(
+        user=current_user,
+        entry_id=entry_id,
+        view_ids_in_order=request.view_ids,
     )
 
 
