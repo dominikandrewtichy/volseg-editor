@@ -55,5 +55,17 @@
     "workbench.preferredLightColorTheme": "Solarized Light",
     "files.associations": {
         "**/helm/templates/**/*.yaml": "yaml",
-    }
+    },
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "cellim-viewer",
+            "database": "cellim_viewer",
+            "username": "postgres",
+            "password": "postgres"
+        }
+    ]
 }
