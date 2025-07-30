@@ -55,7 +55,7 @@ export default function UploadVolsegPage() {
   const form = useForm<VolsegEntriesUploadEntry>({
     resolver: zodResolver(zVolsegEntriesUploadEntry),
     defaultValues: {
-      name: undefined,
+      name: "",
       is_public: false,
       cvsx_file: undefined,
     },
