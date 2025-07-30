@@ -21,7 +21,7 @@ api:
 minio:
   storageClass: nfs-csi
   env:
-    endpoint: cellim-viewer-minio-service.tichy3-ns.svc.cluster.local:9000
+    endpoint: cellim-viewer-minio-service.cellim-viewer-dev-tichy3-ns.svc.cluster.local:9000
   secrets:
     accessKey: minioadmin
     secretKey: minioadmin
