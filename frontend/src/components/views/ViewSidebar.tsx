@@ -9,6 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { ViewCard } from "./ViewCard";
 import React, { useState } from "react"; // Import React and useState
 import { cn } from "@/lib/utils";
+import { ViewResponse } from "@/lib/client";
 
 interface ViewsSidebarProps {
   entryId: string;
@@ -89,7 +90,7 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
 
   if (!listViewsQuery.data) return null;
 
-  const currentViews = listViewsQuery.data;
+  const currentViews = listViewsQuery.data as ViewResponse[];
 
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,
@@ -171,7 +172,7 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
           </div>
         ) : (
           <>
-            {currentViews.map((view) => (
+            {currentViews.map((view, index) => (
               <div
                 key={view.id}
                 draggable={isEditable}
@@ -188,7 +189,11 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
                   dragOverId === view.id && draggedId !== view.id && "z-10",
                 )}
               >
-                <ViewCard view={view} isEditable={isEditable} />
+                <ViewCard
+                  view={view}
+                  isEditable={isEditable}
+                  order={index + 1}
+                />
               </div>
             ))}
           </>

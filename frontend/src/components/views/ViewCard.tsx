@@ -37,9 +37,10 @@ import { Label } from "../ui/label";
 interface ViewCardProps {
   view: ViewResponse;
   isEditable: boolean;
+  order: number;
 }
 
-export function ViewCard({ view, isEditable }: ViewCardProps) {
+export function ViewCard({ view, isEditable, order }: ViewCardProps) {
   const { viewer } = useMolstar();
   const queryClient = useQueryClient();
 
@@ -116,7 +117,9 @@ export function ViewCard({ view, isEditable }: ViewCardProps) {
         <CardHeader>
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-x-2">
-              <CardTitle className="text-base">{view.name}</CardTitle>
+              <CardTitle className="text-base">
+                {order}. {view.name}
+              </CardTitle>
             </div>
             {isEditable && (
               <DropdownMenu>
