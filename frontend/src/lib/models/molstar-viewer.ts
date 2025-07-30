@@ -212,12 +212,16 @@ export class MolstarViewerModel extends BaseReactiveModel {
       await this.updateTheme(newTheme);
     });
 
-    // set screenshots transparent
+    // Set screenshot parameters
     if (this.plugin.helpers.viewportScreenshot) {
       const params = this.plugin.helpers.viewportScreenshot.values;
       this.plugin.helpers.viewportScreenshot.behaviors.values.next({
         ...params,
         transparent: true,
+        resolution: {
+          name: "hd",
+          params: {},
+        },
       });
     }
   }
