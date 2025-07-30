@@ -14,14 +14,40 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2Icon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 
 export function DashboardPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const perPage = 1;
+
   const entriesResult = useQuery({
     ...meListEntriesForUserOptions({
-      query: {},
+      query: {
+        page,
+        per_page: perPage,
+        search_term: search || undefined,
+      },
     }),
   });
 
@@ -104,50 +130,119 @@ export function DashboardPage() {
         <CardContent className="py-4 px-6">
           <h2 className="text-xl font-semibold mb-4">Your Entries</h2>
 
-          {entriesResult.isLoading && <p>Loading entries...</p>}
+          {entriesResult.isLoading ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Created At</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array.from({ length: perPage }).map((_, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell>
+                      <Skeleton className="h-4 w-32" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-48" />
+                    </TableCell>
+                    <TableCell className="text-right space-x-2">
+                      <Skeleton className="h-8 w-16 inline-block" />
+                      <Skeleton className="h-8 w-8 inline-block" />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : entriesResult.isError ? (
+            <p className="text-destructive">Failed to load entries.</p>
+          ) : entriesResult.data && entriesResult.data.items.length > 0 ? (
+            <>{/* render full table with data */}</>
+          ) : (
+            <p>No entries found.</p>
+          )}
           {entriesResult.isError && (
             <p className="text-destructive">Failed to load entries.</p>
           )}
 
           {entriesResult.data && entriesResult.data.items.length > 0 ? (
-            <ul className="space-y-3">
-              {entriesResult.data.items.map((entry) => (
-                <li
-                  key={entry.id}
-                  className="border rounded p-4 bg-background shadow-sm flex items-center justify-between"
-                >
-                  <div>
-                    <p className="font-medium">
-                      {entry.name || "Untitled Entry"}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(entry.created_at).toLocaleString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <div className="flex flex-row gap-x-2">
-                    <Button
-                      variant="secondary"
-                      onClick={() => navigate(`/entries/${entry.id}`)}
-                    >
-                      View
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      onClick={() => handleDeleteEntry(entry)}
-                    >
-                      <Trash2Icon />
-                    </Button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <>
+              <div className="mb-4">
+                <Input
+                  type="search"
+                  placeholder="Search entries..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1); // reset to first page when searching
+                  }}
+                  className="max-w-sm"
+                />
+              </div>
+
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {entriesResult.data.items.map((entry) => (
+                    <TableRow key={entry.id}>
+                      <TableCell>{entry.name || "Untitled Entry"}</TableCell>
+                      <TableCell>
+                        {new Date(entry.created_at).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button
+                          variant="secondary"
+                          onClick={() => navigate(`/entries/${entry.id}`)}
+                        >
+                          View
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => handleDeleteEntry(entry)}
+                        >
+                          <Trash2Icon className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              <Pagination className="mt-4">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      disabled={page <= 1}
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <span className="text-sm px-4">
+                      Page {page} of {entriesResult.data.total_pages}
+                    </span>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        setPage((p) =>
+                          p < entriesResult.data.total_pages ? p + 1 : p,
+                        )
+                      }
+                      disabled={page >= entriesResult.data.total_pages}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </>
           ) : (
             !entriesResult.isLoading && <p>No entries found.</p>
           )}
@@ -167,44 +262,42 @@ export function DashboardPage() {
 
           {volsegEntriesListUserQuery.data &&
           volsegEntriesListUserQuery.data.length > 0 ? (
-            <ul className="space-y-3">
-              {volsegEntriesListUserQuery.data.map((entry) => (
-                <li
-                  key={entry.id}
-                  className="border rounded p-4 bg-background shadow-sm flex items-center justify-between"
-                >
-                  <div>
-                    <p className="font-medium">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Created At</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {volsegEntriesListUserQuery.data.map((entry) => (
+                  <TableRow key={entry.id}>
+                    <TableCell>
                       {entry.name || "Untitled Volseg Entry"}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(entry.created_at).toLocaleString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <div className="flex flex-row gap-x-2">
-                    <Button
-                      variant="secondary"
-                      onClick={() => navigate(`/volseg-entries/${entry.id}`)}
-                    >
-                      View
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      onClick={() => handleDeleteVolsegEntry(entry)}
-                    >
-                      <Trash2Icon />
-                    </Button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(entry.created_at).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right space-x-2">
+                      <Button
+                        variant="secondary"
+                        onClick={() => navigate(`/volseg-entries/${entry.id}`)}
+                      >
+                        View
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => handleDeleteVolsegEntry(entry)}
+                      >
+                        <Trash2Icon className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           ) : (
             !volsegEntriesListUserQuery.isLoading && (
               <p>No volseg entries found.</p>
