@@ -222,7 +222,7 @@ export function DashboardPage() {
                   <PaginationItem>
                     <PaginationPrevious
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page <= 1}
+                      isActive={page <= 1}
                     />
                   </PaginationItem>
                   <PaginationItem>
@@ -237,7 +237,7 @@ export function DashboardPage() {
                           p < entriesResult.data.total_pages ? p + 1 : p,
                         )
                       }
-                      disabled={page >= entriesResult.data.total_pages}
+                      isActive={page >= entriesResult.data.total_pages}
                     />
                   </PaginationItem>
                 </PaginationContent>

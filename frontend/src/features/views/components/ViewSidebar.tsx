@@ -53,12 +53,13 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
         viewsListViewsForEntryOptions({ path: { entry_id: entryId! } })
           .queryKey,
         newOrder.body.view_ids.map((id: string) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return (previousViews as any[]).find((view) => view.id === id);
         }),
       );
       return { previousViews };
     },
-    onError: (err, newOrder, context) => {
+    onError: (_err, _newOrder, context) => {
       if (context?.previousViews) {
         queryClient.setQueryData(
           viewsListViewsForEntryOptions({ path: { entry_id: entryId! } })
@@ -145,7 +146,7 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
 
     const insertIndex =
       dropPosition === "above" ? targetIndex : targetIndex + 1;
-    reorderedViews.splice(insertIndex, 0, draggedView);
+    reorderedViews.splice(insertIndex, 0, draggedView!);
 
     reorderViewsMutation.mutate({
       path: { entry_id: entryId! },
@@ -157,7 +158,7 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
     setDropPosition(null);
   };
 
-  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragEnd = () => {
     setDraggedId(null);
     setDragOverId(null);
     setDropPosition(null);

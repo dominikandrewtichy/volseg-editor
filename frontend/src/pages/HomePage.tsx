@@ -1,13 +1,13 @@
 import { EntryPreview } from "@/features/entries/components/EntryPreview";
 import { Button } from "@/components/ui/button";
-import { EntryResponse, PaginatedResponseEntryResponse } from "@/lib/client";
+import { PaginatedResponseEntryResponse } from "@/lib/client";
 import { entriesListPublicEntriesOptions } from "@/lib/client/@tanstack/react-query.gen";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 
 export function HomePage() {
   const navigate = useNavigate();
-  const { data, error, isLoading, isSuccess, isError } = useQuery({
+  const { data, isLoading, isSuccess, isError } = useQuery({
     ...entriesListPublicEntriesOptions({
       query: {},
     }),
