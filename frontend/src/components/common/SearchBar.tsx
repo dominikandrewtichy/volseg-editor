@@ -5,7 +5,7 @@ import { Search, XIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Form, FormField, FormItem } from "../ui/form";
+import { Form, FormField, FormItem } from "@/components/ui/form";
 
 interface SearchBarProps {
   initialValue?: string;

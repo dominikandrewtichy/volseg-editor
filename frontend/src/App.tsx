@@ -1,14 +1,14 @@
 import { Route, Routes } from "react-router";
-import { ProtectedRoute } from "./components/auth/ProtectedRoute";
-import { Layout } from "./components/layout/Layout";
-import { EntryCreatePage } from "./pages/CreateEntryPage";
+import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
+import { Layout } from "./layout/Layout";
+import { EntryCreatePage } from "./features/entries/pages/CreateEntryPage";
 import { DashboardPage } from "./pages/DashboardPage";
-import { EntryDetailsPage } from "./pages/EntryDetailsPage";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
-import UploadVolseg from "./pages/UploadVolsegPage";
-import { VolsegEntryPreviewPage } from "./pages/VolsegEntryPreviewPage";
-import { MolstarProvider } from "./contexts/MolstarProvider";
+import UploadVolseg from "./features/volseg-entries/components/UploadVolsegPage";
+import { VolsegEntryPreviewPage } from "./features/volseg-entries/components/VolsegEntryPreviewPage";
+import { MolstarProvider } from "./features/molstar/MolstarProvider";
+import { EntryDetailsPage } from "./features/entries/pages/EntryDetailsPage";
 
 export function App() {
   return (
@@ -34,7 +34,6 @@ export function App() {
         />
 
         <Route element={<ProtectedRoute />}>
-          {/* <Route path="/share/:share_link_id" element={<ShareEntryPage />} /> */}
           <Route path="/entries/new" element={<EntryCreatePage />} />
           <Route
             path="/upload"

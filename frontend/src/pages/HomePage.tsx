@@ -1,4 +1,4 @@
-import { EntryPreview } from "@/components/entries/EntryPreview";
+import { EntryPreview } from "@/features/entries/components/EntryPreview";
 import { Button } from "@/components/ui/button";
 import { EntryResponse, PaginatedResponseEntryResponse } from "@/lib/client";
 import { entriesListPublicEntriesOptions } from "@/lib/client/@tanstack/react-query.gen";

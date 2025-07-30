@@ -10,12 +10,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { InfoIcon } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router";
-import einfraLogo from "../assets/einfra_logo.svg";
-import lifeScienceLogo from "../assets/lifescience_logo.png";
+import einfraLogo from "../assets/logos/einfra_logo.svg";
+import lifeScienceLogo from "../assets/logos/lifescience_logo.png";
 
 type LoginProviderKey = "einfra" | "lifescience";
 
