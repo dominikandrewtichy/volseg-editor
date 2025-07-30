@@ -133,6 +133,7 @@ export function ViewCard({ view, isEditable, order }: ViewCardProps) {
                 src={`${import.meta.env.VITE_API_URL}/api/v1/entries/${view.entry_id}/views/${view.id}/thumbnail`}
                 alt={`${view.name} thumbnail`}
                 className="w-full h-full object-cover"
+                draggable={false}
               />
             ) : (
               <ImageIcon className="h-8 w-8 text-muted-foreground" />
