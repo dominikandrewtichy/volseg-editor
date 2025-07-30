@@ -7,6 +7,7 @@ on:
 
 env:
   DEPLOYMENT_NAME: cellim-viewer-dev
+  API_URL: https://api.cellim-viewer-dev.dyn.cloud.e-infra.cz
   K8S_NAMESPACE: cellim-viewer-dev-tichy3-ns
   IMAGE_TAG: ${{ github.sha }}
   API_IMAGE_NAME: cerit.io/frimen/cellim-viewer-api
@@ -38,6 +39,8 @@ jobs:
           context: ./backend
           file: ./backend/docker/dockerfile.prod
           push: true
+          build-args: |
+            VITE_API_URL=${{ env.API_URL }}
           tags: |
             ${{ env.API_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
@@ -47,6 +50,8 @@ jobs:
           context: ./backend
           file: ./backend/docker/dockerfile.migrations.prod
           push: true
+          build-args: |
+            VITE_API_URL=${{ env.API_URL }}
           tags: |
             ${{ env.MIGRATIONS_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
       - name: Build and push seed image
@@ -55,6 +60,8 @@ jobs:
           context: ./backend
           file: ./backend/docker/dockerfile.seed.prod
           push: true
+          build-args: |
+            VITE_API_URL=${{ env.API_URL }}
           tags: |
             ${{ env.SEED_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
       - name: Build and push web image
@@ -63,6 +70,8 @@ jobs:
           context: ./frontend
           file: ./frontend/docker/dockerfile.prod
           push: true
+          build-args: |
+            VITE_API_URL=${{ env.API_URL }}
           tags: |
             ${{ env.WEB_IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
