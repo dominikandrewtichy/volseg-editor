@@ -3,7 +3,7 @@ name: Build and deploy
 on:
   push:
     branches:
-      - main
+      - dev
 
 env:
   DEPLOYMENT_NAME: cellim-viewer-dev
