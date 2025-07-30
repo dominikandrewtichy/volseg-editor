@@ -7,8 +7,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { ViewCard } from "./ViewCard";
-import { toast } from "sonner";
 import React, { useState } from "react"; // Import React and useState
+import { cn } from "@/lib/utils";
 
 interface ViewsSidebarProps {
   entryId: string;
@@ -27,6 +27,9 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
     enabled: !!entryId,
   });
 
+  const [dropPosition, setDropPosition] = useState<"above" | "below" | null>(
+    null,
+  );
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
@@ -106,11 +109,15 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
     e: React.DragEvent<HTMLDivElement>,
     viewId: string,
   ) => {
-    e.preventDefault(); // Necessary to allow dropping
-    if (!isEditable || draggedId === viewId) {
-      return;
-    }
+    e.preventDefault();
+    if (!isEditable || draggedId === viewId) return;
+
+    const targetRect = e.currentTarget.getBoundingClientRect();
+    const mouseY = e.clientY;
+    const midpoint = targetRect.top + targetRect.height / 2;
+
     setDragOverId(viewId);
+    setDropPosition(mouseY < midpoint ? "above" : "below");
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
@@ -119,30 +126,25 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
       return;
     }
     setDragOverId(null);
+    setDropPosition(null);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetId: string) => {
     e.preventDefault();
-    if (!isEditable || !draggedId || draggedId === targetId) {
-      setDraggedId(null);
-      setDragOverId(null);
-      return;
-    }
+    if (!isEditable || !draggedId || draggedId === targetId) return;
 
     const draggedIndex = currentViews.findIndex(
       (view) => view.id === draggedId,
     );
     const targetIndex = currentViews.findIndex((view) => view.id === targetId);
+    if (draggedIndex === -1 || targetIndex === -1) return;
 
-    if (draggedIndex === -1 || targetIndex === -1) {
-      setDraggedId(null);
-      setDragOverId(null);
-      return;
-    }
-
-    const reorderedViews = Array.from(currentViews);
+    const reorderedViews = [...currentViews];
     const [draggedView] = reorderedViews.splice(draggedIndex, 1);
-    reorderedViews.splice(targetIndex, 0, draggedView);
+
+    const insertIndex =
+      dropPosition === "above" ? targetIndex : targetIndex + 1;
+    reorderedViews.splice(insertIndex, 0, draggedView);
 
     reorderViewsMutation.mutate({
       path: { entry_id: entryId! },
@@ -151,11 +153,13 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
 
     setDraggedId(null);
     setDragOverId(null);
+    setDropPosition(null);
   };
 
   const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
     setDraggedId(null);
     setDragOverId(null);
+    setDropPosition(null);
   };
 
   return (
@@ -170,31 +174,19 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
             {currentViews.map((view) => (
               <div
                 key={view.id}
-                draggable={isEditable} // Only draggable if editable
+                draggable={isEditable}
                 onDragStart={(e) => handleDragStart(e, view.id)}
                 onDragOver={(e) => handleDragOver(e, view.id)}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, view.id)}
                 onDragEnd={handleDragEnd}
-                className={`transition-all ${isEditable ? "cursor-grab active:cursor-grabbing" : ""} ${draggedId === view.id ? "opacity-50 border-dashed border-2 border-primary" : ""} ${dragOverId === view.id && draggedId !== view.id ? "border-2 border-primary-foreground scale-[1.01]" : ""}`}
-                style={{
-                  // Optional: add a specific style to indicate where the item will drop
-                  // if dragOverId is above or below the current item
-                  borderTop:
-                    dragOverId === view.id &&
-                    draggedId !== null &&
-                    currentViews.findIndex((v) => v.id === draggedId) >
-                      currentViews.findIndex((v) => v.id === view.id)
-                      ? "2px solid var(--primary)"
-                      : "",
-                  borderBottom:
-                    dragOverId === view.id &&
-                    draggedId !== null &&
-                    currentViews.findIndex((v) => v.id === draggedId) <
-                      currentViews.findIndex((v) => v.id === view.id)
-                      ? "2px solid var(--primary)"
-                      : "",
-                }}
+                className={cn(
+                  "transition-all duration-100 ease-in-out transform rounded-xl bg-background",
+                  isEditable && "cursor-grab active:cursor-grabbing",
+                  draggedId === view.id &&
+                    "scale-95 opacity-40 shadow-md border-dashed border-2 border-primary",
+                  dragOverId === view.id && draggedId !== view.id && "z-10",
+                )}
               >
                 <ViewCard view={view} isEditable={isEditable} />
               </div>
