@@ -22,7 +22,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: {{ .Release.Name }}-api
-          image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
+          image: {{ .Values.api.image.repository }}:{{ .Values.global.image.tag }}
           imagePullPolicy: Always
           resources:
             requests:

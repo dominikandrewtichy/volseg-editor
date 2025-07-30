@@ -17,7 +17,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: {{ .Release.Name }}-seed
-          image: {{ .Values.seed.image.repository }}:{{ .Values.seed.image.tag }}
+          image: {{ .Values.seed.image.repository }}:{{ .Values.global.image.tag }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-postgres-config

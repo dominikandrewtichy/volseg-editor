@@ -97,8 +97,4 @@ jobs:
           helm upgrade --install --wait \
           ${{ env.DEPLOYMENT_NAME }} ./helm \
           --namespace ${{ env.K8S_NAMESPACE }} \
-          --set api.image.tag=${{ github.sha }} \
-          --set web.image.tag=${{ github.sha }} \
-          --set migrations.image.tag=${{ github.sha }} \
-          --set seed.image.tag=${{ github.sha }}
-
+          --set global.image.tag=${{ github.sha }} \

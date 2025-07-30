@@ -1,9 +1,12 @@
 namespace: cellim-viewer-tichy3-ns
 
+global:
+  image:
+    tag: latest
+
 api:
   image:
     repository: cerit.io/frimen/cellim-viewer-api
-    tag: latest
   env:
     apiServerUrl: https://api.cellim-viewer.dyn.cloud.e-infra.cz
     webServerUrl: https://web.cellim-viewer.dyn.cloud.e-infra.cz
@@ -35,14 +38,11 @@ postgres:
 migrations:
   image:
     repository: cerit.io/frimen/cellim-viewer-migrations
-    tag: latest
 
 seed:
   image:
     repository: cerit.io/frimen/cellim-viewer-seed
-    tag: latest
 
 web:
   image:
     repository: cerit.io/frimen/cellim-viewer-web
-    tag: latest
