@@ -4,18 +4,18 @@ import { Link } from "react-router";
 import { Button } from "../ui/button";
 import { EntryResponse } from "@/lib/client";
 import { useQuery } from "@tanstack/react-query";
-import { viewsListViewsForEntryOptions } from "@/lib/client/@tanstack/react-query.gen";
+import { entriesGetEntryThumbnailViewOptions } from "@/lib/client/@tanstack/react-query.gen";
 
 export function EntryPreview({ entry }: { entry: EntryResponse }) {
-  const viewsQuery = useQuery({
-    ...viewsListViewsForEntryOptions({
+  const entryThumbnailQuery = useQuery({
+    ...entriesGetEntryThumbnailViewOptions({
       path: {
         entry_id: entry.id,
       },
     }),
   });
 
-  const entryThumbnail = viewsQuery.data?.filter((entry) => entry.is_thumbnail);
+  const entryThumbnail = entryThumbnailQuery.data;
 
   return (
     <Card
@@ -23,10 +23,10 @@ export function EntryPreview({ entry }: { entry: EntryResponse }) {
       className="overflow-hidden hover:shadow-lg transition-shadow min-h-72"
     >
       <div className="aspect-video bg-secondary overflow-hidden flex items-center justify-center">
-        {entryThumbnail && viewsQuery.data && entryThumbnail.length > 0 ? (
+        {entryThumbnail ? (
           <img
-            src={`${import.meta.env.VITE_API_URL}/api/v1/entries/${entry.id}/views/${viewsQuery.data[0]!.id}/thumbnail`}
-            alt={`${entryThumbnail[0]!.name} thumbnail`}
+            src={`${import.meta.env.VITE_API_URL}/api/v1/entries/${entry.id}/views/${entryThumbnail.id}/thumbnail`}
+            alt={`${entryThumbnail.name} thumbnail`}
             className="w-full h-full object-cover"
           />
         ) : (

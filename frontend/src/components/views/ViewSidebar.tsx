@@ -36,8 +36,8 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
   if (!listViewsQuery.data) return;
 
   const sortedViews = [...listViewsQuery.data].sort((a, b) => {
-    if (a.is_thumbnail === b.is_thumbnail) return 0;
-    return a.is_thumbnail ? -1 : 1;
+    if (a.id === b.id) return 0;
+    return a.id < b.id ? -1 : 1;
   });
 
   return (
