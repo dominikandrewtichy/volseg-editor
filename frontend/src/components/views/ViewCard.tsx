@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { EditViewDialog } from "./ViewEditDialog";
 import { useState } from "react";
 import { Label } from "../ui/label";
+import { ViewCardActions } from "./ViewCardActions";
 
 interface ViewCardProps {
   view: ViewResponse;
@@ -121,34 +122,13 @@ export function ViewCard({ view, isEditable, order }: ViewCardProps) {
                 {order}. {view.name}
               </CardTitle>
             </div>
-            {isEditable && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <MoreVertical size={14} />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setEditOpen(true)}>
-                    <Edit size={14} className="mr-2" />
-                    Edit
-                  </DropdownMenuItem>
-                  {!view.is_thumbnail && (
-                    <DropdownMenuItem onClick={onSetAsThumbnail}>
-                      <CameraIcon size={14} className="mr-2" />
-                      Set As Thumbnail
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem
-                    onClick={onDelete}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 size={14} className="mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            <ViewCardActions
+              onSetAsThumbnail={onSetAsThumbnail}
+              onEdit={() => setEditOpen(true)}
+              onDelete={onDelete}
+              isEditable={isEditable}
+              isThumbnail={view.is_thumbnail}
+            />
           </div>
         </CardHeader>
 

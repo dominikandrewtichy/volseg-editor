@@ -133,8 +133,8 @@ export function ViewCreateDialog({
 
     if (open) {
       form.reset({
-        name: undefined,
-        description: undefined,
+        name: "",
+        description: "",
         is_thumbnail: false,
       });
 

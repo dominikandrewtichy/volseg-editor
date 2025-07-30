@@ -1,10 +1,11 @@
+// src/components/entries/EntryPreview.tsx
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { ImageIcon } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "../ui/button";
 import { EntryResponse } from "@/lib/client";
 import { useQuery } from "@tanstack/react-query";
 import { entriesGetEntryThumbnailViewOptions } from "@/lib/client/@tanstack/react-query.gen";
+import { EntryThumbnail } from "./EntryThumbnail"; // Import the new component
 
 export function EntryPreview({ entry }: { entry: EntryResponse }) {
   const entryThumbnailQuery = useQuery({
@@ -23,15 +24,11 @@ export function EntryPreview({ entry }: { entry: EntryResponse }) {
       className="overflow-hidden hover:shadow-lg transition-shadow min-h-72"
     >
       <div className="aspect-video bg-secondary overflow-hidden flex items-center justify-center">
-        {entryThumbnail && entryThumbnail.id ? (
-          <img
-            src={`${import.meta.env.VITE_API_URL}/api/v1/entries/${entry.id}/views/${entryThumbnail.id}/thumbnail`}
-            alt={`${entryThumbnail.name} thumbnail`}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <ImageIcon className="h-8 w-8 text-muted-foreground" />
-        )}
+        <EntryThumbnail
+          entryId={entry.id}
+          viewId={entryThumbnail?.id}
+          viewName={entryThumbnail?.name}
+        />
       </div>
       <CardContent className="flex flex-col flex-grow">
         <h3 className="font-bold text-lg mb-2">{entry.name}</h3>
