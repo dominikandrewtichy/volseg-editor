@@ -1,15 +1,15 @@
-namespace: cellim-viewer-tichy3-ns
+namespace: cellim-viewer-dev-tichy3-ns
 
 api:
   image:
     repository: cerit.io/frimen/cellim-viewer-api
     tag: latest
   env:
-    apiServerUrl: https://api.cellim-viewer.dyn.cloud.e-infra.cz
-    webServerUrl: https://web.cellim-viewer.dyn.cloud.e-infra.cz
+    apiServerUrl: https://api.cellim-viewer-dev.dyn.cloud.e-infra.cz
+    webServerUrl: https://web.cellim-viewer-dev.dyn.cloud.e-infra.cz
     oidcClientId: 89d5c38f-02e7-4b3c-ba58-57a6c351b5f2
     oidcIssuerUrl: https://login.e-infra.cz/oidc
-    oidcRedirectUri: https://api.cellim-viewer.dyn.cloud.e-infra.cz/api/v1/auth/callback
+    oidcRedirectUri: https://api.cellim-viewer-dev.dyn.cloud.e-infra.cz/api/v1/auth/callback
   secrets:
     cookiesSessionSecret: soemthing0secret
     jwtSecretKey: seomthign-secret
