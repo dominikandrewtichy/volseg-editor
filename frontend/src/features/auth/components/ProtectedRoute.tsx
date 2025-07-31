@@ -14,8 +14,6 @@ export function ProtectedRoute() {
     ...authVerifyAuthOptions(),
   });
 
-  // console.log("ProtectedRoute", isLoading || isRefetching, !!isAuthenticated);
-
   if (isLoading || isRefetching) {
     return null;
   }

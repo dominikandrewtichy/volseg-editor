@@ -165,7 +165,7 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
   };
 
   return (
-    <ScrollArea className="p-2 pr-3 rounded-xl border h-full">
+    <ScrollArea className="h-full p-3 border rounded-md">
       <div className="space-y-3">
         {currentViews.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
@@ -186,7 +186,7 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
                   "transition-all duration-100 ease-in-out transform rounded-xl bg-background",
                   isEditable && "cursor-grab active:cursor-grabbing",
                   draggedId === view.id &&
-                    "scale-95 opacity-40 shadow-md border-dashed border-2 border-primary",
+                    "scale-95 opacity-40 shadow-md border-dashed border-2 border-primary rounded-md",
                   dragOverId === view.id && draggedId !== view.id && "z-10",
                 )}
               >

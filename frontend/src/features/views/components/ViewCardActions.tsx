@@ -22,6 +22,10 @@ export function ViewCardActions({
   onDelete,
   onSetAsThumbnail,
 }: ViewCardActionsProps) {
+  if (!isEditable) {
+    return <></>;
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,24 +35,20 @@ export function ViewCardActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {isEditable && (
-          <>
-            <DropdownMenuItem onClick={onEdit}>
-              <Edit className="mr-2 h-4 w-4" />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete}>
-              <Trash2 className="mr-2 h-4 w-4 text-red-500" />
-              <span className="text-red-500">Delete</span>
-            </DropdownMenuItem>
-            {!isThumbnail && (
-              <DropdownMenuItem onClick={onSetAsThumbnail}>
-                <CameraIcon size={14} className="mr-2" />
-                Set As Thumbnail
-              </DropdownMenuItem>
-            )}
-          </>
+        <DropdownMenuItem onClick={onEdit}>
+          <Edit className="mr-2 h-4 w-4" />
+          <span>Edit</span>
+        </DropdownMenuItem>
+        {!isThumbnail && (
+          <DropdownMenuItem onClick={onSetAsThumbnail}>
+            <CameraIcon size={14} className="mr-2" />
+            Set As Thumbnail
+          </DropdownMenuItem>
         )}
+        <DropdownMenuItem onClick={onDelete}>
+          <Trash2 className="mr-2 h-4 w-4 text-red-500" />
+          <span className="text-red-500">Delete</span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

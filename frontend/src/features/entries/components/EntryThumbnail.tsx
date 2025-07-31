@@ -1,4 +1,3 @@
-// src/components/entries/EntryThumbnail.tsx
 import { ImageIcon } from "lucide-react";
 
 interface EntryThumbnailProps {
