@@ -165,7 +165,7 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
   };
 
   return (
-    <ScrollArea className="h-full p-3 border rounded-md">
+    <ScrollArea className="h-full p-3 border rounded-md overflow-clip">
       <div className="space-y-3">
         {currentViews.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">

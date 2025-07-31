@@ -9,8 +9,6 @@ import {
 import { useMolstar } from "@/features/molstar/hooks/useMolstar";
 import { ViewResponse } from "@/lib/client";
 import {
-  viewsDeleteViewMutation,
-  viewsGetViewByIdQueryKey,
   viewsGetViewSnapshotOptions,
   viewsListViewsForEntryQueryKey,
   viewsUpdateViewMutation,
@@ -19,10 +17,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ViewCardActions } from "./ViewCardActions";
+import { ViewDeleteDialog } from "./ViewDeleteDialog";
 import { ViewDescription } from "./ViewDescription";
 import { EditViewDialog } from "./ViewEditDialog";
 import { ViewThumbnail } from "./ViewThumbnail";
-import { ViewDeleteDialog } from "./ViewDeleteDialog";
 
 interface ViewCardProps {
   view: ViewResponse;

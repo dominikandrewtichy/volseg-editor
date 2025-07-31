@@ -22,6 +22,7 @@ import { useMolstar } from "@/features/molstar/hooks/useMolstar";
 import {
   EntryResponse,
   ViewCreateRequest,
+  ViewsCreateViewData,
   zViewCreateRequest,
 } from "@/lib/client";
 import {
@@ -57,6 +58,7 @@ export function ViewCreateDialog({
     undefined,
   );
 
+  // ignore file types
   const zViewCreateRequestExtend = zViewCreateRequest.extend({
     snapshot_json: z.any(),
     thumbnail_image: z.any(),
@@ -73,10 +75,20 @@ export function ViewCreateDialog({
     },
   });
 
+  function isViewsCreateViewData(data: unknown): data is ViewsCreateViewData {
+    return typeof data === "object" && data !== null && "body" in data;
+  }
+
   const createViewMutation = useMutation({
     ...viewsCreateViewMutation({
-      requestValidator: async (data: any) => {
-        return await zViewCreateRequestExtend.parseAsync(data.body);
+      // override default validator
+      requestValidator: async (data: unknown) => {
+        if (isViewsCreateViewData(data)) {
+          return await zViewCreateRequestExtend.parseAsync(data.body);
+        }
+        throw new Error(
+          "Invalid request: data is not of type ViewsCreateViewData",
+        );
       },
     }),
     onSuccess: (newView) => {
@@ -107,10 +119,6 @@ export function ViewCreateDialog({
         thumbnail_image: thumbnailImage,
       },
     });
-  }
-
-  function handleCancel() {
-    setOpen(false);
   }
 
   useEffect(() => {
@@ -229,7 +237,7 @@ export function ViewCreateDialog({
                 variant="secondary"
                 type="button"
                 disabled={createViewMutation.isPending}
-                onClick={handleCancel}
+                onClick={() => setOpen(false)}
               >
                 Cancel
               </Button>
