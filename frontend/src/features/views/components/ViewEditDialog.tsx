@@ -103,9 +103,7 @@ export function EditViewDialog({ view, open, setOpen }: EditViewDialogProps) {
           >
             <DialogHeader>
               <DialogTitle>Edit View</DialogTitle>
-              <DialogDescription>
-                Update the name and description for this view
-              </DialogDescription>
+              <DialogDescription></DialogDescription>
             </DialogHeader>
 
             <div className="space-y-2">
