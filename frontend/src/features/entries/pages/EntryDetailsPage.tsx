@@ -47,7 +47,12 @@ export function EntryDetailsPage({
   const currentSegment = useBehavior(viewer.state.segment);
   const [tab, setTab] = useState<"views" | "segments">("views");
 
-  const entryQuery = useQuery({
+  const {
+    data: entry,
+    error,
+    isLoading,
+    isError,
+  } = useQuery({
     ...entriesGetEntryByIdOptions({
       path: {
         entry_id: entryId!,
@@ -57,20 +62,18 @@ export function EntryDetailsPage({
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(entryQuery.data?.name ?? "");
-  const [description, setDescription] = useState(
-    entryQuery.data?.description ?? "",
-  );
-  const [isPublic, setIsPublic] = useState(entryQuery.data?.is_public ?? false);
+  const [name, setName] = useState(entry?.name ?? "");
+  const [description, setDescription] = useState(entry?.description ?? "");
+  const [isPublic, setIsPublic] = useState(entry?.is_public ?? false);
 
   const volsegMutation = useQuery({
     ...volsegEntriesGetEntryByIdOptions({
       path: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        volseg_entry_id: entryQuery.data?.volseg_entry_id!,
+        volseg_entry_id: entry?.volseg_entry_id!,
       },
     }),
-    enabled: !!entryQuery.data?.volseg_entry_id,
+    enabled: !!entry?.volseg_entry_id,
   });
 
   const entryMutation = useMutation({
@@ -96,7 +99,7 @@ export function EntryDetailsPage({
     viewer.state.volsegEntry.next(entryId);
   }, [volsegMutation.data?.id, viewer]);
 
-  if (entryQuery.isLoading) {
+  if (isLoading) {
     return (
       <div className="container py-8">
         <div className="text-center py-8">Loading entry data...</div>
@@ -104,13 +107,13 @@ export function EntryDetailsPage({
     );
   }
 
-  if (entryQuery.isError) {
+  if (isError) {
     return (
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>
-          {entryQuery.error.message || "Failed to load data"}
+          {error.message || "Failed to load data"}
         </AlertDescription>
       </Alert>
     );
@@ -129,7 +132,7 @@ export function EntryDetailsPage({
     });
   }
 
-  if (!entryQuery.data) {
+  if (!entry) {
     return null;
   }
 
@@ -146,13 +149,13 @@ export function EntryDetailsPage({
               />
             ) : (
               <h1 className="text-3xl font-bold border-b border-background">
-                {entryQuery.data.name}
+                {entry.name}
               </h1>
             )}
 
             <div className="flex items-center text-sm text-muted-foreground mt-2">
               <CalendarIcon className="h-4 w-4 mr-2" />
-              Created on {formatDate(entryQuery.data.created_at)}
+              Created on {formatDate(entry.created_at)}
             </div>
           </div>
 
@@ -167,7 +170,7 @@ export function EntryDetailsPage({
                 <Label htmlFor="public">Public</Label>
               </div>
             ) : (
-              <VisibilityBadge isPublic={entryQuery.data.is_public} />
+              <VisibilityBadge isPublic={entry.is_public} />
             )}
             {canEdit && (
               <div className="flex gap-2">
@@ -180,9 +183,9 @@ export function EntryDetailsPage({
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setName(entryQuery.data.name);
-                        setDescription(entryQuery.data.description || "");
-                        setIsPublic(entryQuery.data.is_public || false);
+                        setName(entry.name);
+                        setDescription(entry.description || "");
+                        setIsPublic(entry.is_public || false);
                         setIsEditing(false);
                       }}
                     >
@@ -195,9 +198,9 @@ export function EntryDetailsPage({
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setName(entryQuery.data.name);
-                        setDescription(entryQuery.data.description || "");
-                        setIsPublic(entryQuery.data.is_public || false);
+                        setName(entry.name);
+                        setDescription(entry.description || "");
+                        setIsPublic(entry.is_public || false);
                         setIsEditing(true);
                       }}
                     >
@@ -219,7 +222,7 @@ export function EntryDetailsPage({
           onChange={(e) => setDescription(e.target.value)}
         />
       ) : (
-        <EntryDescription description={entryQuery.data.description} />
+        <EntryDescription description={entry.description} />
       )}
 
       <div className="flex flex-row gap-x-3 h-[600px]">
@@ -292,7 +295,7 @@ export function EntryDetailsPage({
 
       {canEdit && (
         <ViewCreateDialog
-          entry={entryQuery.data}
+          entry={entry}
           open={showSaveDialog}
           setOpen={setShowSaveDialog}
         />
