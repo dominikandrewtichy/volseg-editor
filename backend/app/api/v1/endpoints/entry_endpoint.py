@@ -93,7 +93,7 @@ async def get_entry_share_link(
 )
 async def get_entry_thumbnail_view(
     entry_id: Annotated[UUID, Path(title="Entry ID")],
-    current_user: RequireUserDep,
+    current_user: OptionalUserDep,
     entry_service: EntryServiceDep,
 ):
     return await entry_service.get_entry_thumbnail_view(

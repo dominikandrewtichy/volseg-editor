@@ -31,6 +31,7 @@ export function ViewsSidebar({ entryId, isEditable }: ViewsSidebarProps) {
           <>
             {views?.map((view, index) => (
               <DraggableViewCard
+                key={view.id}
                 view={view}
                 order={index}
                 isEditable={isEditable}
