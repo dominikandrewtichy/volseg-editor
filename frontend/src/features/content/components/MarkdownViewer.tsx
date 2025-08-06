@@ -6,6 +6,7 @@ import parse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import {
+  logNodes,
   rehypeActionHandler,
   remarkActionSyntax,
 } from "../lib/remarkActionSyntax";
@@ -24,6 +25,7 @@ export function MarkdownViewer({ markdown }: MarkdownViewerProps) {
       // TODO: remove autolinks
       .use(remarkRehype, { passThrough: ["action"] })
       .use(rehypeActionHandler)
+      .use(logNodes)
       .use(rehypeReact, {
         Fragment,
         jsx,

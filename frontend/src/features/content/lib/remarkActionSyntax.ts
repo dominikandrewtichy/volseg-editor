@@ -46,24 +46,20 @@ export function remarkActionSyntax() {
         const calls = splitFunctionCalls(rawActions);
         const actions = calls
           .map((call) => {
-            const match = /^([a-zA-Z0-9_]+)\((.*)\)$/.exec(call);
+            const match = /^([a-zA-Z0-9_]+)\(([\s\S]*)\)$/.exec(call);
             if (!match) return null;
 
             const [, name, rawParams] = match;
-            if (!rawParams) return null;
+            if (!rawParams) return;
 
-            // Split parameters, preserving quoted strings
-            const params = splitFunctionCalls(rawParams).map((p) => {
-              const trimmed = p.trim();
-              // Try to parse number or boolean or leave as string
-              try {
-                return JSON.parse(trimmed);
-              } catch {
-                return trimmed;
-              }
-            });
+            let paramValue: any;
+            try {
+              paramValue = JSON.parse(rawParams);
+            } catch {
+              paramValue = rawParams.trim();
+            }
 
-            return { name, parameters: params };
+            return { name, parameters: paramValue };
           })
           .filter(Boolean);
 

@@ -7,14 +7,14 @@ export type InjectedDeps = {
 };
 
 export type ActionFunction = (
-  params: any[],
+  params: any,
   deps: InjectedDeps,
 ) => void | Promise<void>;
 
 export type ActionFunctionEntry = {
   name: string;
   description?: string;
-  schema: ZodSchema<any[]>;
+  schema: ZodSchema<any>;
   handler: ActionFunction;
 };
 
@@ -51,11 +51,14 @@ registerActionFunction({
 registerActionFunction({
   name: "loadPdb",
   description: "Loads a PDB structure",
-  schema: z.tuple([z.string()]).refine((params) => params.length === 1, {
-    message: "loadPdb must receive exactly 1 parameter: pdbId",
-  }),
-  handler: async ([pdbId], { viewer }) => {
-    await viewer.loadPdb(pdbId);
+  schema: z.any(),
+  handler: async (params, { viewer }) => {
+    console.log("params", params);
+    if (Array.isArray(params)) {
+      await viewer.loadPdb(params[0]);
+    } else {
+      await viewer.loadPdb(params.id, params.clearViewer);
+    }
   },
 });
 

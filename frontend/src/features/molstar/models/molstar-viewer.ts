@@ -471,12 +471,12 @@ export class MolstarViewerModel extends BaseReactiveModel {
     this.plugin.managers.camera.reset();
   }
 
-  async loadPdb(pdbId: string) {
+  async loadPdb(pdbId: string, clearViewer: boolean = true) {
     try {
       if (this.state.isLoading.value) return;
       this.state.isLoading.next(true);
 
-      await this.clear();
+      if (clearViewer) await this.clear();
 
       const url = `https://www.ebi.ac.uk/pdbe/entry-files/download/${pdbId}.bcif`;
 
