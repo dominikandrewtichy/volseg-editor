@@ -1,15 +1,12 @@
-import type { Element } from "hast";
-import { getActionFunction } from "../lib/actionRegistry";
 import { Button } from "@/components/ui/button";
-import { ZodError } from "zod";
-import { useState } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Loader2Icon, ZapIcon } from "lucide-react";
 import { useMolstar } from "@/features/molstar/hooks/useMolstar";
+import { cn } from "@/lib/utils";
+import type { Element } from "hast";
+import { Loader2Icon, ZapIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { ZodError } from "zod";
+import { getActionFunction } from "../lib/actionRegistry";
 
 export function ActionButton({ node }: { node: Element }) {
   const { viewer } = useMolstar();
@@ -44,8 +41,7 @@ export function ActionButton({ node }: { node: Element }) {
           const msg = err.errors.map((e) => e.message).join("\n");
           setError(msg);
         } else {
-          setError("Unknown error");
-          console.error(err);
+          setError(err instanceof Error ? err.message : "Unknown error");
         }
         setLoading(false);
         return;
@@ -55,34 +51,24 @@ export function ActionButton({ node }: { node: Element }) {
     setLoading(false);
   };
 
-  return (
-    <>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleClick}
-            className=""
-            disabled={loading}
-          >
-            {loading ? (
-              <Loader2Icon className="animate-spin h-4 w-4" />
-            ) : (
-              <ZapIcon className="h-4 w-4" />
-            )}
-            {label}
-          </Button>
-        </TooltipTrigger>
-        {/* <TooltipContent>Run action</TooltipContent> */}
-      </Tooltip>
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
 
-      {/* Error Message */}
-      {error && (
-        <div className="text-red-500 text-sm mt-1 whitespace-pre-wrap">
-          {error}
-        </div>
+  return (
+    <Button
+      variant={!!error ? "destructive" : "secondary"}
+      size="sm"
+      className={cn(error && "border-red-500")}
+      onClick={handleClick}
+      disabled={loading}
+    >
+      {loading ? (
+        <Loader2Icon className="animate-spin h-4 w-4" />
+      ) : (
+        <ZapIcon className="h-4 w-4" />
       )}
-    </>
+      {label}
+    </Button>
   );
 }

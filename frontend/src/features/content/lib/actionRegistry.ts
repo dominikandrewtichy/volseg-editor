@@ -50,25 +50,32 @@ registerActionFunction({
 
 registerActionFunction({
   name: "loadPdb",
-  description: "Loads a PDB file from a URL",
-  schema: z
-    .tuple([z.string().url("The parameter must be a valid URL")])
-    .refine((params) => params.length === 1, {
-      message: "loadPdb must receive exactly one URL parameter",
-    }),
-  handler: async ([url], { viewer }) => {
-    await viewer.loadPdb(url);
+  description: "Loads a PDB structure",
+  schema: z.tuple([z.string()]).refine((params) => params.length === 1, {
+    message: "loadPdb must receive exactly 1 parameter: pdbId",
+  }),
+  handler: async ([pdbId], { viewer }) => {
+    await viewer.loadPdb(pdbId);
+  },
+});
+
+registerActionFunction({
+  name: "loadAlphaFoldDB",
+  description: "Loads an AlphaFoldDB structure",
+  schema: z.tuple([z.string()]).refine((params) => params.length === 1, {
+    message: "loadAlphaFoldDB must receive exactly 1 parameter: uniprotId",
+  }),
+  handler: async ([uniprotId], { viewer }) => {
+    await viewer.loadAlphaFoldDB(uniprotId);
   },
 });
 
 registerActionFunction({
   name: "loadView",
   description: "Loads a View by ID",
-  schema: z
-    .tuple([z.string().uuid("The parameter must be a valid UUID v4")])
-    .refine((params) => params.length === 1, {
-      message: "loadView must receive exactly one UUID parameter",
-    }),
+  schema: z.tuple([z.string()]).refine((params) => params.length === 1, {
+    message: "loadView must receive exactly 1 parameter",
+  }),
   handler: async ([viewId], { viewer }) => {
     const { data } = await viewsGetViewSnapshot({
       path: {
@@ -76,5 +83,16 @@ registerActionFunction({
       },
     });
     await viewer.loadSnapshot(data);
+  },
+});
+
+registerActionFunction({
+  name: "loadCvsx",
+  description: "Loads a CVSX file",
+  schema: z.tuple([z.string()]).refine((params) => params.length === 1, {
+    message: "loadView must receive exactly 1 parameter",
+  }),
+  handler: async ([entryId], { viewer }) => {
+    await viewer.loadVolseg(entryId);
   },
 });

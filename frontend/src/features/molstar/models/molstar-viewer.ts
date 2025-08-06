@@ -1,3 +1,6 @@
+import { Theme } from "@/features/theme/ThemeContext";
+import { Segment, volsegEntriesGetSnapshotFile } from "@/lib/client";
+import { BaseReactiveModel } from "@/lib/models/base-model";
 import {
   actionSelectSegment,
   actionShowSegments,
@@ -7,8 +10,15 @@ import { CVSXSpec } from "@/volseg/src/extensions/cvsx-extension/behaviour";
 import { VolsegEntryData } from "@/volseg/src/extensions/volumes-and-segmentations/entry-root";
 import { SEGMENT_VISUAL_TAG } from "@/volseg/src/extensions/volumes-and-segmentations/entry-segmentation";
 import { createSegmentKey } from "@/volseg/src/extensions/volumes-and-segmentations/volseg-api/utils";
+import { Volume } from "molstar/lib/commonjs/mol-model/volume";
 import { OpenFiles } from "molstar/lib/commonjs/mol-plugin-state/actions/file";
 import { PluginStateSnapshotManager } from "molstar/lib/commonjs/mol-plugin-state/manager/snapshots";
+import { PluginStateObject } from "molstar/lib/commonjs/mol-plugin-state/objects";
+import {
+  Download,
+  ParseCif,
+} from "molstar/lib/commonjs/mol-plugin-state/transforms/data";
+import { TrajectoryFromMmCif } from "molstar/lib/commonjs/mol-plugin-state/transforms/model";
 import { PluginUIContext } from "molstar/lib/commonjs/mol-plugin-ui/context";
 import {
   DefaultPluginUISpec,
@@ -17,30 +27,10 @@ import {
 import { PluginCommands } from "molstar/lib/commonjs/mol-plugin/commands";
 import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
 import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
-import { Volume } from "molstar/lib/commonjs/mol-model/volume";
-import { UUID } from "molstar/lib/commonjs/mol-util";
-import {
-  asyncScheduler,
-  BehaviorSubject,
-  combineLatest,
-  debounceTime,
-  filter,
-  merge,
-  skip,
-  throttleTime,
-  withLatestFrom,
-} from "rxjs";
 import { StateSelection } from "molstar/lib/commonjs/mol-state";
-import { PluginStateObject } from "molstar/lib/commonjs/mol-plugin-state/objects";
+import { UUID } from "molstar/lib/commonjs/mol-util";
 import { Color } from "molstar/lib/commonjs/mol-util/color";
-import { BaseReactiveModel } from "@/lib/models/base-model";
-import { Segment, volsegEntriesGetSnapshotFile } from "@/lib/client";
-import { Theme } from "@/features/theme/ThemeContext";
-import {
-  Download,
-  ParseCif,
-} from "molstar/lib/commonjs/mol-plugin-state/transforms/data";
-import { TrajectoryFromMmCif } from "molstar/lib/commonjs/mol-plugin-state/transforms/model";
+import { BehaviorSubject, debounceTime, merge, skip } from "rxjs";
 
 type InitializationState = "pending" | "initializing" | "success" | "error";
 
@@ -347,7 +337,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
     const snapshot = response.data as PluginState.Snapshot;
 
     await this.plugin.state.setSnapshot(snapshot);
-    await this.plugin.managers.camera.reset();
+    this.plugin.managers.camera.reset();
 
     this.state.isLoading.next(false);
   }
@@ -480,28 +470,70 @@ export class MolstarViewerModel extends BaseReactiveModel {
     this.plugin.managers.camera.reset();
   }
 
-  async loadPdb(url: string) {
-    await this.clear();
-    const dataNode = await this.plugin
-      .build()
-      .toRoot()
-      .apply(Download, { url: url, isBinary: true })
-      .commit();
-    const cifNode = await this.plugin
-      .build()
-      .to(dataNode)
-      .apply(ParseCif)
-      .commit();
-    const trajectoryNode = await this.plugin
-      .build()
-      .to(cifNode)
-      .apply(TrajectoryFromMmCif)
-      .commit();
-    await this.plugin.builders.structure.hierarchy.applyPreset(
-      trajectoryNode,
-      "default",
-      { representationPreset: "auto" },
-    );
+  async loadPdb(pdbId: string) {
+    try {
+      await this.clear();
+
+      const url = `https://www.ebi.ac.uk/pdbe/entry-files/download/${pdbId}.bcif`;
+
+      const rawData = await this.plugin.builders.data.download({
+        url,
+        isBinary: true,
+      });
+
+      const trajectory = await this.plugin.builders.structure.parseTrajectory(
+        rawData,
+        "mmcif",
+      );
+
+      const model = await this.plugin.builders.structure.hierarchy.applyPreset(
+        trajectory,
+        "default",
+      );
+
+      if (model?.structure?.cell?.status === "error") {
+        throw new Error("Failed to load PDB structure");
+      }
+    } catch (error) {
+      console.log("Error loading PDB:", error);
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to load PDB structure",
+      );
+    }
+  }
+
+  async loadAlphaFoldDB(uniprotId: string) {
+    try {
+      await this.clear();
+
+      const url = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
+
+      const response = await fetch(url);
+      const structure = await response.text();
+
+      const rawData = await this.plugin.builders.data.rawData({
+        data: structure,
+      });
+
+      const trajectory = await this.plugin.builders.structure.parseTrajectory(
+        rawData,
+        "mmcif",
+      );
+
+      const model = await this.plugin.builders.structure.hierarchy.applyPreset(
+        trajectory,
+        "default",
+      );
+
+      if (model?.structure?.cell?.status === "error") {
+        throw new Error("Failed to load PDB structure");
+      }
+    } catch (error) {
+      console.log("Error loading PDB:", error);
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to load PDB structure",
+      );
+    }
   }
 
   async selectSegment(

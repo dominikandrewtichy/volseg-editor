@@ -242,7 +242,7 @@ export function ViewCreateDialog({
                 Cancel
               </Button>
               <Button type="submit" disabled={createViewMutation.isPending}>
-                {createViewMutation.isPending ? "Creating..." : "Create Entry"}
+                {createViewMutation.isPending ? "Creating..." : "Create View"}
               </Button>
             </DialogFooter>
           </form>
