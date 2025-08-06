@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useMolstar } from "@/features/molstar/hooks/useMolstar";
-import { ViewResponse } from "@/lib/client";
+import { ViewResponse, viewsGetViewSnapshot } from "@/lib/client";
 import {
   viewsGetViewSnapshotOptions,
   viewsListViewsForEntryQueryKey,
@@ -35,16 +35,6 @@ export function ViewCard({ view, isEditable, order }: ViewCardProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const viewSnapshot = useQuery({
-    ...viewsGetViewSnapshotOptions({
-      path: {
-        entry_id: view.entry_id,
-        view_id: view.id,
-      },
-    }),
-    enabled: false, // don't run on mount
-  });
-
   const updateViewMutation = useMutation({
     ...viewsUpdateViewMutation(),
     onSuccess: (view) => {
@@ -58,7 +48,12 @@ export function ViewCard({ view, isEditable, order }: ViewCardProps) {
   });
 
   async function loadView() {
-    const { data } = await viewSnapshot.refetch();
+    const { data } = await viewsGetViewSnapshot({
+      path: {
+        entry_id: view.entry_id,
+        view_id: view.id,
+      },
+    });
     await viewer.loadSnapshot(data);
   }
 
@@ -82,11 +77,11 @@ export function ViewCard({ view, isEditable, order }: ViewCardProps) {
             {order}. {view.name}
           </CardTitle>
           <ViewCardActions
+            view={view}
             onEdit={() => setEditOpen(true)}
             onDelete={() => setDeleteOpen(true)}
             onSetAsThumbnail={setAsThumbnail}
             isEditable={isEditable}
-            isThumbnail={view.is_thumbnail}
           />
         </CardHeader>
 

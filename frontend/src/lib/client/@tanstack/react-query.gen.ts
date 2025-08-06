@@ -12,11 +12,11 @@ import {
   entriesGetEntryThumbnailView,
   viewsListViewsForEntry,
   viewsCreateView,
-  viewsDeleteView,
   viewsGetViewById,
-  viewsUpdateView,
   viewsGetViewSnapshot,
   viewsGetViewThumbnailImage,
+  viewsDeleteView,
+  viewsUpdateView,
   viewsReorderEntryViews,
   meListEntriesForUser,
   meListVolsegEntriesForUser,
@@ -66,15 +66,15 @@ import type {
   ViewsCreateViewData,
   ViewsCreateViewError,
   ViewsCreateViewResponse,
+  ViewsGetViewByIdData,
+  ViewsGetViewSnapshotData,
+  ViewsGetViewThumbnailImageData,
   ViewsDeleteViewData,
   ViewsDeleteViewError,
   ViewsDeleteViewResponse,
-  ViewsGetViewByIdData,
   ViewsUpdateViewData,
   ViewsUpdateViewError,
   ViewsUpdateViewResponse,
-  ViewsGetViewSnapshotData,
-  ViewsGetViewThumbnailImageData,
   ViewsReorderEntryViewsData,
   ViewsReorderEntryViewsError,
   ViewsReorderEntryViewsResponse,
@@ -530,33 +530,6 @@ export const viewsCreateViewMutation = (
   return mutationOptions;
 };
 
-/**
- * Delete View
- */
-export const viewsDeleteViewMutation = (
-  options?: Partial<Options<ViewsDeleteViewData>>,
-): UseMutationOptions<
-  ViewsDeleteViewResponse,
-  ViewsDeleteViewError,
-  Options<ViewsDeleteViewData>
-> => {
-  const mutationOptions: UseMutationOptions<
-    ViewsDeleteViewResponse,
-    ViewsDeleteViewError,
-    Options<ViewsDeleteViewData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await viewsDeleteView({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
 export const viewsGetViewByIdQueryKey = (
   options: Options<ViewsGetViewByIdData>,
 ) => createQueryKey("viewsGetViewById", options);
@@ -579,33 +552,6 @@ export const viewsGetViewByIdOptions = (
     },
     queryKey: viewsGetViewByIdQueryKey(options),
   });
-};
-
-/**
- * Update View
- */
-export const viewsUpdateViewMutation = (
-  options?: Partial<Options<ViewsUpdateViewData>>,
-): UseMutationOptions<
-  ViewsUpdateViewResponse,
-  ViewsUpdateViewError,
-  Options<ViewsUpdateViewData>
-> => {
-  const mutationOptions: UseMutationOptions<
-    ViewsUpdateViewResponse,
-    ViewsUpdateViewError,
-    Options<ViewsUpdateViewData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await viewsUpdateView({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
 };
 
 export const viewsGetViewSnapshotQueryKey = (
@@ -654,6 +600,60 @@ export const viewsGetViewThumbnailImageOptions = (
     },
     queryKey: viewsGetViewThumbnailImageQueryKey(options),
   });
+};
+
+/**
+ * Delete View
+ */
+export const viewsDeleteViewMutation = (
+  options?: Partial<Options<ViewsDeleteViewData>>,
+): UseMutationOptions<
+  ViewsDeleteViewResponse,
+  ViewsDeleteViewError,
+  Options<ViewsDeleteViewData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    ViewsDeleteViewResponse,
+    ViewsDeleteViewError,
+    Options<ViewsDeleteViewData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await viewsDeleteView({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Update View
+ */
+export const viewsUpdateViewMutation = (
+  options?: Partial<Options<ViewsUpdateViewData>>,
+): UseMutationOptions<
+  ViewsUpdateViewResponse,
+  ViewsUpdateViewError,
+  Options<ViewsUpdateViewData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    ViewsUpdateViewResponse,
+    ViewsUpdateViewError,
+    Options<ViewsUpdateViewData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await viewsUpdateView({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
 };
 
 /**

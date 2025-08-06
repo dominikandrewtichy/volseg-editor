@@ -114,7 +114,9 @@ class ViewService:
         return ViewResponse.model_validate(view)
 
     async def get_view_snapshot(
-        self, user: User | None, entry_id: UUID, view_id: UUID
+        self,
+        user: User | None,
+        view_id: UUID,
     ) -> JSONResponse:
         view: View = await self._get_view_by_id(view_id)
 

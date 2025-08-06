@@ -330,6 +330,36 @@ export const zViewsCreateViewData = z.object({
  */
 export const zViewsCreateViewResponse = zViewResponse;
 
+export const zViewsGetViewByIdData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    view_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
+/**
+ * Successful Response
+ */
+export const zViewsGetViewByIdResponse = zViewResponse;
+
+export const zViewsGetViewSnapshotData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    view_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
+export const zViewsGetViewThumbnailImageData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+    view_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
 export const zViewsDeleteViewData = z.object({
   body: z.never().optional(),
   path: z.object({
@@ -345,20 +375,6 @@ export const zViewsDeleteViewData = z.object({
  */
 export const zViewsDeleteViewResponse = z.string().uuid();
 
-export const zViewsGetViewByIdData = z.object({
-  body: z.never().optional(),
-  path: z.object({
-    entry_id: z.string().uuid(),
-    view_id: z.string().uuid(),
-  }),
-  query: z.never().optional(),
-});
-
-/**
- * Successful Response
- */
-export const zViewsGetViewByIdResponse = zViewResponse;
-
 export const zViewsUpdateViewData = z.object({
   body: zViewUpdateRequest,
   path: z.object({
@@ -372,24 +388,6 @@ export const zViewsUpdateViewData = z.object({
  * Successful Response
  */
 export const zViewsUpdateViewResponse = zViewResponse;
-
-export const zViewsGetViewSnapshotData = z.object({
-  body: z.never().optional(),
-  path: z.object({
-    entry_id: z.string().uuid(),
-    view_id: z.string().uuid(),
-  }),
-  query: z.never().optional(),
-});
-
-export const zViewsGetViewThumbnailImageData = z.object({
-  body: z.never().optional(),
-  path: z.object({
-    entry_id: z.string().uuid(),
-    view_id: z.string().uuid(),
-  }),
-  query: z.never().optional(),
-});
 
 export const zViewsReorderEntryViewsData = z.object({
   body: zViewReorderRequest,

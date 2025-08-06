@@ -14,6 +14,8 @@ export function ViewerLayout({ viewer }: { viewer: MolstarViewerModel }) {
   const isExpanded = useBehavior(viewer.state.isExpanded);
   const showSequenceView = useBehavior(viewer.state.showSequenceView);
 
+  console.log("rerenderin", showSequenceView);
+
   useEffect(() => {
     viewer.mount();
     return () => viewer.dispose();

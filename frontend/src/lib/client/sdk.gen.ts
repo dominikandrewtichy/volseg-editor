@@ -37,21 +37,21 @@ import type {
   ViewsCreateViewData,
   ViewsCreateViewResponses,
   ViewsCreateViewErrors,
-  ViewsDeleteViewData,
-  ViewsDeleteViewResponses,
-  ViewsDeleteViewErrors,
   ViewsGetViewByIdData,
   ViewsGetViewByIdResponses,
   ViewsGetViewByIdErrors,
-  ViewsUpdateViewData,
-  ViewsUpdateViewResponses,
-  ViewsUpdateViewErrors,
   ViewsGetViewSnapshotData,
   ViewsGetViewSnapshotResponses,
   ViewsGetViewSnapshotErrors,
   ViewsGetViewThumbnailImageData,
   ViewsGetViewThumbnailImageResponses,
   ViewsGetViewThumbnailImageErrors,
+  ViewsDeleteViewData,
+  ViewsDeleteViewResponses,
+  ViewsDeleteViewErrors,
+  ViewsUpdateViewData,
+  ViewsUpdateViewResponses,
+  ViewsUpdateViewErrors,
   ViewsReorderEntryViewsData,
   ViewsReorderEntryViewsResponses,
   ViewsReorderEntryViewsErrors,
@@ -128,14 +128,14 @@ import {
   zViewsListViewsForEntryResponse,
   zViewsCreateViewData,
   zViewsCreateViewResponse,
-  zViewsDeleteViewData,
-  zViewsDeleteViewResponse,
   zViewsGetViewByIdData,
   zViewsGetViewByIdResponse,
-  zViewsUpdateViewData,
-  zViewsUpdateViewResponse,
   zViewsGetViewSnapshotData,
   zViewsGetViewThumbnailImageData,
+  zViewsDeleteViewData,
+  zViewsDeleteViewResponse,
+  zViewsUpdateViewData,
+  zViewsUpdateViewResponse,
   zViewsReorderEntryViewsData,
   zViewsReorderEntryViewsResponse,
   zMeListEntriesForUserData,
@@ -426,28 +426,6 @@ export const viewsCreateView = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Delete View
- */
-export const viewsDeleteView = <ThrowOnError extends boolean = false>(
-  options: Options<ViewsDeleteViewData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).delete<
-    ViewsDeleteViewResponses,
-    ViewsDeleteViewErrors,
-    ThrowOnError
-  >({
-    requestValidator: async (data) => {
-      return await zViewsDeleteViewData.parseAsync(data);
-    },
-    responseValidator: async (data) => {
-      return await zViewsDeleteViewResponse.parseAsync(data);
-    },
-    url: "/api/v1/entries/{entry_id}/views/{view_id}",
-    ...options,
-  });
-};
-
-/**
  * Get View By Id
  */
 export const viewsGetViewById = <ThrowOnError extends boolean = false>(
@@ -463,6 +441,68 @@ export const viewsGetViewById = <ThrowOnError extends boolean = false>(
     },
     responseValidator: async (data) => {
       return await zViewsGetViewByIdResponse.parseAsync(data);
+    },
+    url: "/api/v1/views/{view_id}",
+    ...options,
+  });
+};
+
+/**
+ * Get View Snapshot
+ */
+export const viewsGetViewSnapshot = <ThrowOnError extends boolean = false>(
+  options: Options<ViewsGetViewSnapshotData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).get<
+    ViewsGetViewSnapshotResponses,
+    ViewsGetViewSnapshotErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) => {
+      return await zViewsGetViewSnapshotData.parseAsync(data);
+    },
+    url: "/api/v1/views/{view_id}/snapshot",
+    ...options,
+  });
+};
+
+/**
+ * Get View Thumbnail Image
+ */
+export const viewsGetViewThumbnailImage = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ViewsGetViewThumbnailImageData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).get<
+    ViewsGetViewThumbnailImageResponses,
+    ViewsGetViewThumbnailImageErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) => {
+      return await zViewsGetViewThumbnailImageData.parseAsync(data);
+    },
+    url: "/api/v1/entries/{entry_id}/views/{view_id}/thumbnail",
+    ...options,
+  });
+};
+
+/**
+ * Delete View
+ */
+export const viewsDeleteView = <ThrowOnError extends boolean = false>(
+  options: Options<ViewsDeleteViewData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).delete<
+    ViewsDeleteViewResponses,
+    ViewsDeleteViewErrors,
+    ThrowOnError
+  >({
+    requestValidator: async (data) => {
+      return await zViewsDeleteViewData.parseAsync(data);
+    },
+    responseValidator: async (data) => {
+      return await zViewsDeleteViewResponse.parseAsync(data);
     },
     url: "/api/v1/entries/{entry_id}/views/{view_id}",
     ...options,
@@ -492,46 +532,6 @@ export const viewsUpdateView = <ThrowOnError extends boolean = false>(
       "Content-Type": "application/json",
       ...options.headers,
     },
-  });
-};
-
-/**
- * Get View Snapshot
- */
-export const viewsGetViewSnapshot = <ThrowOnError extends boolean = false>(
-  options: Options<ViewsGetViewSnapshotData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).get<
-    ViewsGetViewSnapshotResponses,
-    ViewsGetViewSnapshotErrors,
-    ThrowOnError
-  >({
-    requestValidator: async (data) => {
-      return await zViewsGetViewSnapshotData.parseAsync(data);
-    },
-    url: "/api/v1/entries/{entry_id}/views/{view_id}/snapshot",
-    ...options,
-  });
-};
-
-/**
- * Get View Thumbnail Image
- */
-export const viewsGetViewThumbnailImage = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ViewsGetViewThumbnailImageData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).get<
-    ViewsGetViewThumbnailImageResponses,
-    ViewsGetViewThumbnailImageErrors,
-    ThrowOnError
-  >({
-    requestValidator: async (data) => {
-      return await zViewsGetViewThumbnailImageData.parseAsync(data);
-    },
-    url: "/api/v1/entries/{entry_id}/views/{view_id}/thumbnail",
-    ...options,
   });
 };
 

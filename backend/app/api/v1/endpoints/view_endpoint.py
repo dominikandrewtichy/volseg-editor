@@ -19,11 +19,11 @@ from app.api.v1.deps import (
 )
 from app.api.v1.tags import Tags
 
-router = APIRouter(prefix="/entries/{entry_id}/views", tags=[Tags.views])
+router = APIRouter(prefix="", tags=[Tags.views])
 
 
 @router.post(
-    "",
+    "/entries/{entry_id}/views",
     status_code=status.HTTP_201_CREATED,
     response_model=ViewResponse,
 )
@@ -41,15 +41,13 @@ async def create_view(
 
 
 @router.get(
-    "/{view_id}",
+    "/views/{view_id}",
     status_code=status.HTTP_200_OK,
     response_model=ViewResponse,
 )
 async def get_view_by_id(
-    entry_id: Annotated[UUID, Path(title="Entry ID")],
     view_id: Annotated[UUID, Path(title="View ID")],
     view_service: ViewServiceDep,
-    session: DbSessionDep,
     current_user: OptionalUserDep,
 ):
     return await view_service.get_view(
@@ -59,25 +57,23 @@ async def get_view_by_id(
 
 
 @router.get(
-    "/{view_id}/snapshot",
+    "/views/{view_id}/snapshot",
     status_code=status.HTTP_200_OK,
     response_class=JSONResponse,
 )
 async def get_view_snapshot(
-    entry_id: Annotated[UUID, Path(title="Entry ID")],
     view_id: Annotated[UUID, Path(title="View ID")],
     current_user: OptionalUserDep,
     view_service: ViewServiceDep,
 ):
     return await view_service.get_view_snapshot(
         user=current_user,
-        entry_id=entry_id,
         view_id=view_id,
     )
 
 
 @router.get(
-    "/{view_id}/thumbnail",
+    "/entries/{entry_id}/views/{view_id}/thumbnail",
     status_code=status.HTTP_200_OK,
     response_class=Response,
 )
@@ -95,7 +91,7 @@ async def get_view_thumbnail_image(
 
 
 @router.get(
-    "",
+    "/entries/{entry_id}/views",
     status_code=status.HTTP_200_OK,
     response_model=list[ViewResponse],
 )
@@ -111,7 +107,7 @@ async def list_views_for_entry(
 
 
 @router.put(
-    "/{view_id}",
+    "/entries/{entry_id}/views/{view_id}",
     status_code=status.HTTP_200_OK,
     response_model=ViewResponse,
 )
@@ -131,7 +127,7 @@ async def update_view(
 
 
 @router.patch(
-    "/reorder",
+    "/entries/{entry_id}/views/reorder",
     status_code=status.HTTP_200_OK,
     response_model=list[ViewResponse],
     summary="Reorder views for a specific entry",
@@ -150,7 +146,7 @@ async def reorder_entry_views(
 
 
 @router.delete(
-    "/{view_id}",
+    "/entries/{entry_id}/views/{view_id}",
     status_code=status.HTTP_200_OK,
     response_model=UUID,
 )

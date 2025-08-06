@@ -19,13 +19,28 @@ import { PluginSpec } from "molstar/lib/commonjs/mol-plugin/spec";
 import { PluginState } from "molstar/lib/commonjs/mol-plugin/state";
 import { Volume } from "molstar/lib/commonjs/mol-model/volume";
 import { UUID } from "molstar/lib/commonjs/mol-util";
-import { BehaviorSubject, combineLatest, skip } from "rxjs";
+import {
+  asyncScheduler,
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  filter,
+  merge,
+  skip,
+  throttleTime,
+  withLatestFrom,
+} from "rxjs";
 import { StateSelection } from "molstar/lib/commonjs/mol-state";
 import { PluginStateObject } from "molstar/lib/commonjs/mol-plugin-state/objects";
 import { Color } from "molstar/lib/commonjs/mol-util/color";
 import { BaseReactiveModel } from "@/lib/models/base-model";
 import { Segment, volsegEntriesGetSnapshotFile } from "@/lib/client";
 import { Theme } from "@/features/theme/ThemeContext";
+import {
+  Download,
+  ParseCif,
+} from "molstar/lib/commonjs/mol-plugin-state/transforms/data";
+import { TrajectoryFromMmCif } from "molstar/lib/commonjs/mol-plugin-state/transforms/model";
 
 type InitializationState = "pending" | "initializing" | "success" | "error";
 
@@ -89,18 +104,19 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
     // show/hide sequence viewer if there is a structure with sequence loaded
     this.subscribe(
-      combineLatest([
+      merge(
         this.plugin.state.events.object.created,
         this.plugin.state.events.object.updated,
         this.plugin.state.events.object.removed,
-      ]),
+      ).pipe(debounceTime(250)),
       () => {
         const count = this.plugin.state.data.select(
           StateSelection.Generators.rootsOfType(
             PluginStateObject.Molecule.Structure,
           ),
         ).length;
-        this.state.showSequenceView.next(count > 0);
+        const show = count > 0;
+        this.state.showSequenceView.next(show);
       },
     );
 
@@ -462,6 +478,30 @@ export class MolstarViewerModel extends BaseReactiveModel {
     this.plugin.managers.interactivity.lociSelects.deselectAll();
     this.plugin.managers.interactivity.lociHighlights.clearHighlights();
     this.plugin.managers.camera.reset();
+  }
+
+  async loadPdb(url: string) {
+    await this.clear();
+    const dataNode = await this.plugin
+      .build()
+      .toRoot()
+      .apply(Download, { url: url, isBinary: true })
+      .commit();
+    const cifNode = await this.plugin
+      .build()
+      .to(dataNode)
+      .apply(ParseCif)
+      .commit();
+    const trajectoryNode = await this.plugin
+      .build()
+      .to(cifNode)
+      .apply(TrajectoryFromMmCif)
+      .commit();
+    await this.plugin.builders.structure.hierarchy.applyPreset(
+      trajectoryNode,
+      "default",
+      { representationPreset: "auto" },
+    );
   }
 
   async selectSegment(
