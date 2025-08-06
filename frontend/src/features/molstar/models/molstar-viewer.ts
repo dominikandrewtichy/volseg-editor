@@ -325,21 +325,22 @@ export class MolstarViewerModel extends BaseReactiveModel {
   }
 
   async loadVolseg(entryId: string) {
-    if (this.state.isLoading.value) return;
+    try {
+      if (this.state.isLoading.value) return;
 
-    this.state.isLoading.next(true);
+      this.state.isLoading.next(true);
+      const response = await volsegEntriesGetSnapshotFile({
+        path: {
+          volseg_entry_id: entryId,
+        },
+      });
+      const snapshot = response.data as PluginState.Snapshot;
 
-    const response = await volsegEntriesGetSnapshotFile({
-      path: {
-        volseg_entry_id: entryId,
-      },
-    });
-    const snapshot = response.data as PluginState.Snapshot;
-
-    await this.plugin.state.setSnapshot(snapshot);
-    this.plugin.managers.camera.reset();
-
-    this.state.isLoading.next(false);
+      await this.plugin.state.setSnapshot(snapshot);
+      this.plugin.managers.camera.reset();
+    } finally {
+      this.state.isLoading.next(false);
+    }
   }
 
   async loadFile(file: File): Promise<boolean> {
@@ -472,6 +473,9 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
   async loadPdb(pdbId: string) {
     try {
+      if (this.state.isLoading.value) return;
+      this.state.isLoading.next(true);
+
       await this.clear();
 
       const url = `https://www.ebi.ac.uk/pdbe/entry-files/download/${pdbId}.bcif`;
@@ -499,11 +503,16 @@ export class MolstarViewerModel extends BaseReactiveModel {
       throw new Error(
         error instanceof Error ? error.message : "Failed to load PDB structure",
       );
+    } finally {
+      this.state.isLoading.next(false);
     }
   }
 
   async loadAlphaFoldDB(uniprotId: string) {
     try {
+      if (this.state.isLoading.value) return;
+      this.state.isLoading.next(true);
+
       await this.clear();
 
       const url = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
@@ -533,6 +542,8 @@ export class MolstarViewerModel extends BaseReactiveModel {
       throw new Error(
         error instanceof Error ? error.message : "Failed to load PDB structure",
       );
+    } finally {
+      this.state.isLoading.next(false);
     }
   }
 
