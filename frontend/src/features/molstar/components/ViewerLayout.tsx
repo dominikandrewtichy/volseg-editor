@@ -8,13 +8,12 @@ import {
 import { SequenceView } from "molstar/lib/commonjs/mol-plugin-ui/sequence";
 import { useEffect } from "react";
 import { MolstarViewerModel } from "../models/molstar-viewer";
+import { cn } from "@/lib/utils";
 
 export function ViewerLayout({ viewer }: { viewer: MolstarViewerModel }) {
   const showControls = useBehavior(viewer.state.showControls);
   const isExpanded = useBehavior(viewer.state.isExpanded);
   const showSequenceView = useBehavior(viewer.state.showSequenceView);
-
-  console.log("rerenderin", showSequenceView);
 
   useEffect(() => {
     viewer.mount();
@@ -23,69 +22,38 @@ export function ViewerLayout({ viewer }: { viewer: MolstarViewerModel }) {
 
   return (
     <div
-      style={{
-        position: isExpanded ? "fixed" : "relative",
-        inset: isExpanded ? 0 : "auto",
-        width: "100%",
-        height: "100%",
-        zIndex: isExpanded ? 51 : "auto",
-      }}
+      className={cn(
+        "size-full",
+        isExpanded ? "fixed" : "relative",
+        isExpanded ? "inset-0" : "inset-auto",
+        isExpanded ? "z-50" : "z-auto",
+      )}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          height: "100%",
-          width: "100%",
-        }}
-      >
+      <div className="flex flex-row size-full">
         {showControls && (
-          <div
-            style={{
-              position: "relative",
-              maxWidth: "330px",
-              height: "100%",
-              flex: 1,
-            }}
-          >
+          <div className="relative flex-1 max-w-[330px] h-full">
             <MolstarLeftPanelControlsView viewer={viewer} />
           </div>
         )}
 
-        <div
-          style={{
-            display: "flex",
-            flex: 1,
-            flexDirection: "column",
-            height: "100%",
-            width: "100%",
-          }}
-        >
+        <div className="flex flex-col flex-1 size-full">
           {showSequenceView && (
             <div
-              style={{
-                position: "relative",
-                height: isExpanded ? "100px" : "80px",
-                width: "100%",
-              }}
+              className={cn(
+                "relative w-full",
+                isExpanded ? "h-[100px]" : "h-[80px]",
+              )}
             >
               <MolstarSequence viewer={viewer} />
             </div>
           )}
-          <div style={{ position: "relative", flex: 1 }}>
+          <div className="relative flex-1">
             <MolstarViewport viewer={viewer} />
           </div>
         </div>
 
         {showControls && (
-          <div
-            style={{
-              position: "relative",
-              maxWidth: "300px",
-              height: "100%",
-              flex: 1,
-            }}
-          >
+          <div className="relative flex-1 max-w-[300px] h-full">
             <MolstarControlsView viewer={viewer} />
           </div>
         )}
