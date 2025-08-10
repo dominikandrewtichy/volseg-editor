@@ -513,8 +513,6 @@ export class MolstarViewerModel extends BaseReactiveModel {
       if (this.state.isLoading.value) return;
       this.state.isLoading.next(true);
 
-      await this.clear();
-
       const url = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
 
       const response = await fetch(url);

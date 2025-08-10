@@ -18,12 +18,14 @@ import {
   entriesUpdateEntryMutation,
   volsegEntriesGetEntryByIdOptions,
 } from "@/lib/client/@tanstack/react-query.gen";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, CalendarIcon, Camera, RotateCcw } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+import { useRef } from "react";
 
 const MolstarViewer = lazy(
   () => import("@/features/molstar/components/MolstarViewer"),
@@ -215,7 +217,7 @@ export function EntryDetailsPage({
       </div>
 
       {isEditing ? (
-        <textarea
+        <TabTextArea
           className="w-full p-2 border rounded-md text-sm font-mono mb-8"
           rows={20}
           value={description}
@@ -301,5 +303,74 @@ export function EntryDetailsPage({
         />
       )}
     </div>
+  );
+}
+
+export function TabTextArea({
+  className,
+  ...props
+}: React.ComponentProps<"textarea">) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Tab") {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
+
+      e.preventDefault();
+
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const value = textarea.value;
+
+      const selectedText = value.slice(start, end);
+      const isMultiLine = selectedText.includes("\n");
+
+      if (isMultiLine) {
+        // Split lines and indent or unindent
+        const lines = value.slice(start, end).split("\n");
+
+        let modifiedLines;
+        if (e.shiftKey) {
+          // Unindent
+          modifiedLines = lines.map((line) =>
+            line.startsWith("\t")
+              ? line.slice(1)
+              : line.startsWith("    ")
+                ? line.slice(4)
+                : line,
+          );
+        } else {
+          // Indent
+          modifiedLines = lines.map((line) => "\t" + line);
+        }
+
+        const newText = modifiedLines.join("\n");
+
+        // Replace selected lines with modified lines
+        textarea.value = value.slice(0, start) + newText + value.slice(end);
+
+        // Adjust new selection range
+        const lineDiff = newText.length - selectedText.length;
+        textarea.selectionStart = start;
+        textarea.selectionEnd = end + lineDiff;
+      } else {
+        // Single-line or no selection: insert tab
+        const tab = "\t";
+        textarea.value = value.slice(0, start) + tab + value.slice(end);
+        textarea.selectionStart = textarea.selectionEnd = start + tab.length;
+      }
+    }
+  };
+
+  return (
+    <Textarea
+      ref={textareaRef}
+      onKeyDown={handleKeyDown}
+      placeholder="Try typing and tabbing like in a code editor..."
+      rows={10}
+      className={cn("", className)}
+      {...props}
+    />
   );
 }

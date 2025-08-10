@@ -51,9 +51,17 @@ registerActionFunction({
 registerActionFunction({
   name: "loadPdb",
   description: "Loads a PDB structure",
-  schema: z.any(),
+  schema: z.object({
+    id: z.string(),
+    clearViewer: z.boolean(),
+  }),
   handler: async (params, { viewer }) => {
-    console.log("params", params);
+    console.log(
+      "params",
+      params.id,
+      params.clearViewer,
+      typeof params === "object",
+    );
     if (Array.isArray(params)) {
       await viewer.loadPdb(params[0]);
     } else {
@@ -65,11 +73,11 @@ registerActionFunction({
 registerActionFunction({
   name: "loadAlphaFoldDB",
   description: "Loads an AlphaFoldDB structure",
-  schema: z.tuple([z.string()]).refine((params) => params.length === 1, {
-    message: "loadAlphaFoldDB must receive exactly 1 parameter: uniprotId",
+  schema: z.object({
+    id: z.string(),
   }),
-  handler: async ([uniprotId], { viewer }) => {
-    await viewer.loadAlphaFoldDB(uniprotId);
+  handler: async ({ id }, { viewer }) => {
+    await viewer.loadAlphaFoldDB(id);
   },
 });
 
