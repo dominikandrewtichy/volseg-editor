@@ -8,7 +8,7 @@ on:
 env:
   DEPLOYMENT_NAME: cellim-viewer
   API_URL: https://api.cellim-viewer.dyn.cloud.e-infra.cz
-  K8S_NAMESPACE: cellim-viewer-dev-tichy3-ns
+  K8S_NAMESPACE: cellim-viewer-tichy3-ns
   IMAGE_TAG: ${{ github.sha }}
   API_IMAGE_NAME: cerit.io/frimen/cellim-viewer-api
   MIGRATIONS_IMAGE_NAME: cerit.io/frimen/cellim-viewer-migrations
