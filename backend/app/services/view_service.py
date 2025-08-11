@@ -44,6 +44,16 @@ class ViewService:
         thumbnail_url: str | None = None
         snapshot_url: str | None = None
 
+        # Determine the next order_index
+        result = await self.session.execute(
+            select(View.order_index)
+            .where(View.entry_id == entry_id)
+            .order_by(View.order_index.desc())
+            .limit(1)
+        )
+        last_order_index = result.scalar_one_or_none()
+        new_order_index = (last_order_index or 0) + 1
+
         # Save snapshot
         if request.snapshot_json:
             try:
@@ -81,6 +91,7 @@ class ViewService:
             snapshot_url=snapshot_url,
             thumbnail_url=thumbnail_url,
             entry=entry,
+            order_index=new_order_index,
         )
         self.session.add(new_view)
         await self.session.commit()
@@ -103,7 +114,9 @@ class ViewService:
         return ViewResponse.model_validate(view)
 
     async def get_view_snapshot(
-        self, user: User | None, entry_id: UUID, view_id: UUID
+        self,
+        user: User | None,
+        view_id: UUID,
     ) -> JSONResponse:
         view: View = await self._get_view_by_id(view_id)
 
@@ -180,9 +193,12 @@ class ViewService:
     async def list_views_for_entry(self, user: User | None, entry_id: UUID) -> list[ViewResponse]:
         entry: Entry = await self.entry_service._get_entry_by_id(entry_id)
 
-        # Get entry's views
+        # Get entry's views, ordered by order_index
         result = await self.session.execute(
-            select(View).where(View.entry_id == entry_id).options(selectinload(View.entry)),
+            select(View)
+            .where(View.entry_id == entry_id)
+            .options(selectinload(View.entry))
+            .order_by(View.order_index)
         )
         views: list[View] = result.scalars().all()
 
@@ -227,6 +243,51 @@ class ViewService:
 
         return ViewResponse.model_validate(view)
 
+    async def reorder_views(
+        self,
+        user: User,
+        entry_id: UUID,
+        view_ids_in_order: list[UUID],
+    ) -> list[ViewResponse]:
+        entry: Entry = await self.entry_service._get_entry_by_id(entry_id)
+        self._check_permissions(entry, user)
+
+        # Fetch all views for the entry to ensure they belong to it
+        result = await self.session.execute(
+            select(View).where(View.entry_id == entry_id).options(selectinload(View.entry))
+        )
+        existing_views_map = {str(view.id): view for view in result.scalars().all()}
+
+        if len(view_ids_in_order) != len(existing_views_map):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Mismatched number of views. All views must be present in the reorder request.",
+            )
+
+        updated_views = []
+        for index, view_id in enumerate(view_ids_in_order):
+            if str(view_id) not in existing_views_map:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"View with ID {view_id} not found for this entry.",
+                )
+            view = existing_views_map[str(view_id)]
+            view.order_index = index  # Assign new order based on list index
+            self.session.add(view)
+            updated_views.append(view)
+
+        await self.session.commit()
+
+        # Re-fetch views to ensure they are returned in the new order and refreshed
+        result = await self.session.execute(
+            select(View)
+            .where(View.entry_id == entry_id)
+            .options(selectinload(View.entry))
+            .order_by(View.order_index)
+        )
+        return [ViewResponse.model_validate(view) for view in result.scalars().all()]
+
+    # TODO: add soft delete
     async def delete(
         self,
         *,
@@ -257,7 +318,21 @@ class ViewService:
         await self.session.delete(view)
         await self.session.commit()
 
+        # After deleting, re-index the remaining views to ensure contiguous order_index values
+        await self._reindex_views_after_delete(entry_id)
+
         return view_id
+
+    async def _reindex_views_after_delete(self, entry_id: UUID) -> None:
+        result = await self.session.execute(
+            select(View).where(View.entry_id == entry_id).order_by(View.order_index)
+        )
+        views = result.scalars().all()
+        for index, view in enumerate(views):
+            if view.order_index != index:
+                view.order_index = index
+                self.session.add(view)
+        await self.session.commit()
 
     async def _set_entry_as_default_thumbnail(self, view: View) -> None:
         await self.session.execute(

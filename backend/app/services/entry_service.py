@@ -100,7 +100,7 @@ class EntryService:
         self,
         *,
         entry_id: UUID,
-        user: User,
+        user: User | None,
     ) -> ViewResponse:
         entry: Entry = await self._get_entry_by_id(entry_id)
 
@@ -234,6 +234,7 @@ class EntryService:
 
         return EntryResponse.model_validate(entry)
 
+    # TODO: add soft delete
     async def delete(
         self,
         *,

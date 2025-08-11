@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import File, Form, UploadFile
 from pydantic import BaseModel, Field
 
@@ -24,3 +25,7 @@ class ViewUpdateRequest(BaseModel):
     is_thumbnail: bool | None = Field(default=None)
 
     model_config = {"extra": "forbid"}
+
+
+class ViewReorderRequest(BaseModel):
+    view_ids: list[UUID] = Field(..., min_length=1)

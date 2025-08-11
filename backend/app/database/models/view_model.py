@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.models.base_model import Base
@@ -15,6 +15,7 @@ class View(Base, UuidMixin, TimestampMixin):
     snapshot_url: Mapped[str | None] = mapped_column(String(2083), default=None)
     thumbnail_url: Mapped[str | None] = mapped_column(String(2083), default=None)
     is_thumbnail: Mapped[bool] = mapped_column(default=False)
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
 
     entry_id: Mapped[UUID] = mapped_column(ForeignKey("entries.id", ondelete="CASCADE"))
 

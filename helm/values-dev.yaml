@@ -1,0 +1,48 @@
+namespace: cellim-viewer-dev-tichy3-ns
+
+global:
+  image:
+    tag: latest
+
+api:
+  image:
+    repository: cerit.io/frimen/cellim-viewer-api
+  env:
+    apiServerUrl: https://api.cellim-viewer-dev.dyn.cloud.e-infra.cz
+    webServerUrl: https://web.cellim-viewer-dev.dyn.cloud.e-infra.cz
+    oidcClientId: 89d5c38f-02e7-4b3c-ba58-57a6c351b5f2
+    oidcIssuerUrl: https://login.e-infra.cz/oidc
+    oidcRedirectUri: https://api.cellim-viewer-dev.dyn.cloud.e-infra.cz/api/v1/auth/callback
+  secrets:
+    cookiesSessionSecret: soemthing0secret
+    jwtSecretKey: seomthign-secret
+    oidcClientSecret: b4c92b21-ee7d-410e-bf0b-8c032425e02c6ae9e7d5-80ac-4fa0-a7c6-2125e41b949b
+
+minio:
+  storageClass: nfs-csi
+  env:
+    endpoint: cellim-viewer-dev-minio-service.cellim-viewer-dev-tichy3-ns.svc.cluster.local:9000
+  secrets:
+    accessKey: minioadmin
+    secretKey: minioadmin
+
+postgres:
+  name: postgres-cluster
+  storageClass: nfs-csi
+  image: 
+    repository: ghcr.io/cloudnative-pg/postgresql
+    tag: "17"
+  env:
+    db: cellim_viewer
+
+migrations:
+  image:
+    repository: cerit.io/frimen/cellim-viewer-migrations
+
+seed:
+  image:
+    repository: cerit.io/frimen/cellim-viewer-seed
+
+web:
+  image:
+    repository: cerit.io/frimen/cellim-viewer-web

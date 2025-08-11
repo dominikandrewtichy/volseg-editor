@@ -31,6 +31,7 @@ export const Body_volseg_entries_upload_entrySchema = {
     name: {
       type: "string",
       maxLength: 255,
+      minLength: 1,
     },
     is_public: {
       type: "boolean",
@@ -119,6 +120,7 @@ export const EntryResponseSchema = {
     name: {
       type: "string",
       maxLength: 255,
+      minLength: 1,
       examples: ["Entry Name"],
     },
     description: {
@@ -464,6 +466,21 @@ export const ViewCreateRequestSchema = {
   required: ["name", "is_thumbnail"],
 } as const;
 
+export const ViewReorderRequestSchema = {
+  properties: {
+    view_ids: {
+      items: {
+        type: "string",
+        format: "uuid",
+      },
+      type: "array",
+      minItems: 1,
+    },
+  },
+  type: "object",
+  required: ["view_ids"],
+} as const;
+
 export const ViewResponseSchema = {
   properties: {
     response_model: {
@@ -492,6 +509,7 @@ export const ViewResponseSchema = {
     name: {
       type: "string",
       maxLength: 255,
+      minLength: 1,
     },
     description: {
       anyOf: [
@@ -609,6 +627,7 @@ export const VolsegEntryResponseSchema = {
     name: {
       type: "string",
       maxLength: 255,
+      minLength: 1,
     },
     is_public: {
       type: "boolean",

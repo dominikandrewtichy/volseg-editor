@@ -69,7 +69,8 @@ uvx pre-commit install
 
 Add new migration
 ```shell
-docker exec cellim-viewer-api alembic revision --autogenerate -m "message"
+docker exec cellim-viewer-api alembic -c app/database/alembic.ini revision --autogenerate -m "message"
+docker cp cellim-viewer-api:/app/app/database/alembic/versions/ ./backend/app/database/alembic/
 ```
 
 Apply migrations

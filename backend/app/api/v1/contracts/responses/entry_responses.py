@@ -6,7 +6,7 @@ from app.api.v1.contracts.responses.common import DebugModelName, Timestamp, Uui
 
 
 class EntryResponse(Timestamp, Uuid, DebugModelName, BaseModel):
-    name: str = Field(max_length=255, examples=["Entry Name"])
+    name: str = Field(min_length=1, max_length=255, examples=["Entry Name"])
     description: str | None = Field(default=None, examples=["Markdown description."])
     thumbnail_url: str | None = Field(default=None, examples=["URL for entry thumbnail preview"])
     is_public: bool

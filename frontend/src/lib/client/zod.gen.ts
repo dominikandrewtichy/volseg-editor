@@ -36,7 +36,7 @@ export const zAnnotations = z.object({
  * Body_volseg entries-upload_entry
  */
 export const zBodyVolsegEntriesUploadEntry = z.object({
-  name: z.string().max(255),
+  name: z.string().min(1).max(255),
   is_public: z.boolean(),
   cvsx_file: z.string(),
   snapshot_file: z.union([z.string(), z.null()]),
@@ -60,7 +60,7 @@ export const zEntryResponse = z.object({
   id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
-  name: z.string().max(255),
+  name: z.string().min(1).max(255),
   description: z.union([z.string(), z.null()]).optional(),
   thumbnail_url: z.union([z.string(), z.null()]).optional(),
   is_public: z.boolean(),
@@ -149,6 +149,13 @@ export const zViewCreateRequest = z.object({
 });
 
 /**
+ * ViewReorderRequest
+ */
+export const zViewReorderRequest = z.object({
+  view_ids: z.array(z.string().uuid()).min(1),
+});
+
+/**
  * ViewResponse
  */
 export const zViewResponse = z.object({
@@ -157,7 +164,7 @@ export const zViewResponse = z.object({
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
   entry_id: z.string().uuid(),
-  name: z.string().max(255),
+  name: z.string().min(1).max(255),
   description: z.union([z.string(), z.null()]),
   thumbnail_url: z.union([z.string().max(2083), z.null()]),
   snapshot_url: z.union([z.string().max(2083), z.null()]),
@@ -181,7 +188,7 @@ export const zVolsegEntryResponse = z.object({
   id: z.string().uuid(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
-  name: z.string().max(255),
+  name: z.string().min(1).max(255),
   is_public: z.boolean(),
   cvsx_url: z.union([z.string().max(2083), z.null()]),
   snapshot_url: z.union([z.string().max(2083), z.null()]),
@@ -323,6 +330,36 @@ export const zViewsCreateViewData = z.object({
  */
 export const zViewsCreateViewResponse = zViewResponse;
 
+export const zViewsGetViewByIdData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    view_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
+/**
+ * Successful Response
+ */
+export const zViewsGetViewByIdResponse = zViewResponse;
+
+export const zViewsGetViewSnapshotData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    view_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
+export const zViewsGetViewThumbnailImageData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    entry_id: z.string().uuid(),
+    view_id: z.string().uuid(),
+  }),
+  query: z.never().optional(),
+});
+
 export const zViewsDeleteViewData = z.object({
   body: z.never().optional(),
   path: z.object({
@@ -338,20 +375,6 @@ export const zViewsDeleteViewData = z.object({
  */
 export const zViewsDeleteViewResponse = z.string().uuid();
 
-export const zViewsGetViewByIdData = z.object({
-  body: z.never().optional(),
-  path: z.object({
-    entry_id: z.string().uuid(),
-    view_id: z.string().uuid(),
-  }),
-  query: z.never().optional(),
-});
-
-/**
- * Successful Response
- */
-export const zViewsGetViewByIdResponse = zViewResponse;
-
 export const zViewsUpdateViewData = z.object({
   body: zViewUpdateRequest,
   path: z.object({
@@ -366,23 +389,19 @@ export const zViewsUpdateViewData = z.object({
  */
 export const zViewsUpdateViewResponse = zViewResponse;
 
-export const zViewsGetViewSnapshotData = z.object({
-  body: z.never().optional(),
+export const zViewsReorderEntryViewsData = z.object({
+  body: zViewReorderRequest,
   path: z.object({
     entry_id: z.string().uuid(),
-    view_id: z.string().uuid(),
   }),
   query: z.never().optional(),
 });
 
-export const zViewsGetViewThumbnailImageData = z.object({
-  body: z.never().optional(),
-  path: z.object({
-    entry_id: z.string().uuid(),
-    view_id: z.string().uuid(),
-  }),
-  query: z.never().optional(),
-});
+/**
+ * Response Views-Reorder Entry Views
+ * Successful Response
+ */
+export const zViewsReorderEntryViewsResponse = z.array(zViewResponse);
 
 export const zMeListEntriesForUserData = z.object({
   body: z.never().optional(),
@@ -540,7 +559,7 @@ export const zVolsegEntriesUploadEntryData = z.object({
  */
 export const zVolsegEntriesUploadEntryResponse = zVolsegEntryResponse;
 
-export const zVolsegEntriesDeleteViewData = z.object({
+export const zVolsegEntriesDeleteEntryData = z.object({
   body: z.never().optional(),
   path: z.object({
     volseg_entry_id: z.string().uuid(),
@@ -549,10 +568,10 @@ export const zVolsegEntriesDeleteViewData = z.object({
 });
 
 /**
- * Response Volseg Entries-Delete View
+ * Response Volseg Entries-Delete Entry
  * Successful Response
  */
-export const zVolsegEntriesDeleteViewResponse = z.string().uuid();
+export const zVolsegEntriesDeleteEntryResponse = z.string().uuid();
 
 export const zVolsegEntriesGetEntryByIdData = z.object({
   body: z.never().optional(),

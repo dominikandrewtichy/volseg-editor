@@ -321,6 +321,16 @@ export type ViewCreateRequest = {
 };
 
 /**
+ * ViewReorderRequest
+ */
+export type ViewReorderRequest = {
+  /**
+   * View Ids
+   */
+  view_ids: Array<string>;
+};
+
+/**
  * ViewResponse
  */
 export type ViewResponse = {
@@ -763,57 +773,16 @@ export type ViewsCreateViewResponses = {
 export type ViewsCreateViewResponse =
   ViewsCreateViewResponses[keyof ViewsCreateViewResponses];
 
-export type ViewsDeleteViewData = {
-  body?: never;
-  path: {
-    /**
-     * Entry ID
-     */
-    entry_id: string;
-    /**
-     * View ID
-     */
-    view_id: string;
-  };
-  query?: never;
-  url: "/api/v1/entries/{entry_id}/views/{view_id}";
-};
-
-export type ViewsDeleteViewErrors = {
-  /**
-   * Validation Error
-   */
-  422: HttpValidationError;
-};
-
-export type ViewsDeleteViewError =
-  ViewsDeleteViewErrors[keyof ViewsDeleteViewErrors];
-
-export type ViewsDeleteViewResponses = {
-  /**
-   * Response Views-Delete View
-   * Successful Response
-   */
-  200: string;
-};
-
-export type ViewsDeleteViewResponse =
-  ViewsDeleteViewResponses[keyof ViewsDeleteViewResponses];
-
 export type ViewsGetViewByIdData = {
   body?: never;
   path: {
     /**
-     * Entry ID
-     */
-    entry_id: string;
-    /**
      * View ID
      */
     view_id: string;
   };
   query?: never;
-  url: "/api/v1/entries/{entry_id}/views/{view_id}";
+  url: "/api/v1/views/{view_id}";
 };
 
 export type ViewsGetViewByIdErrors = {
@@ -836,56 +805,16 @@ export type ViewsGetViewByIdResponses = {
 export type ViewsGetViewByIdResponse =
   ViewsGetViewByIdResponses[keyof ViewsGetViewByIdResponses];
 
-export type ViewsUpdateViewData = {
-  body: ViewUpdateRequest;
-  path: {
-    /**
-     * Entry ID
-     */
-    entry_id: string;
-    /**
-     * View ID
-     */
-    view_id: string;
-  };
-  query?: never;
-  url: "/api/v1/entries/{entry_id}/views/{view_id}";
-};
-
-export type ViewsUpdateViewErrors = {
-  /**
-   * Validation Error
-   */
-  422: HttpValidationError;
-};
-
-export type ViewsUpdateViewError =
-  ViewsUpdateViewErrors[keyof ViewsUpdateViewErrors];
-
-export type ViewsUpdateViewResponses = {
-  /**
-   * Successful Response
-   */
-  200: ViewResponse;
-};
-
-export type ViewsUpdateViewResponse =
-  ViewsUpdateViewResponses[keyof ViewsUpdateViewResponses];
-
 export type ViewsGetViewSnapshotData = {
   body?: never;
   path: {
     /**
-     * Entry ID
-     */
-    entry_id: string;
-    /**
      * View ID
      */
     view_id: string;
   };
   query?: never;
-  url: "/api/v1/entries/{entry_id}/views/{view_id}/snapshot";
+  url: "/api/v1/views/{view_id}/snapshot";
 };
 
 export type ViewsGetViewSnapshotErrors = {
@@ -937,6 +866,112 @@ export type ViewsGetViewThumbnailImageResponses = {
    */
   200: unknown;
 };
+
+export type ViewsDeleteViewData = {
+  body?: never;
+  path: {
+    /**
+     * Entry ID
+     */
+    entry_id: string;
+    /**
+     * View ID
+     */
+    view_id: string;
+  };
+  query?: never;
+  url: "/api/v1/entries/{entry_id}/views/{view_id}";
+};
+
+export type ViewsDeleteViewErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type ViewsDeleteViewError =
+  ViewsDeleteViewErrors[keyof ViewsDeleteViewErrors];
+
+export type ViewsDeleteViewResponses = {
+  /**
+   * Response Views-Delete View
+   * Successful Response
+   */
+  200: string;
+};
+
+export type ViewsDeleteViewResponse =
+  ViewsDeleteViewResponses[keyof ViewsDeleteViewResponses];
+
+export type ViewsUpdateViewData = {
+  body: ViewUpdateRequest;
+  path: {
+    /**
+     * Entry ID
+     */
+    entry_id: string;
+    /**
+     * View ID
+     */
+    view_id: string;
+  };
+  query?: never;
+  url: "/api/v1/entries/{entry_id}/views/{view_id}";
+};
+
+export type ViewsUpdateViewErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type ViewsUpdateViewError =
+  ViewsUpdateViewErrors[keyof ViewsUpdateViewErrors];
+
+export type ViewsUpdateViewResponses = {
+  /**
+   * Successful Response
+   */
+  200: ViewResponse;
+};
+
+export type ViewsUpdateViewResponse =
+  ViewsUpdateViewResponses[keyof ViewsUpdateViewResponses];
+
+export type ViewsReorderEntryViewsData = {
+  body: ViewReorderRequest;
+  path: {
+    /**
+     * Entry Id
+     */
+    entry_id: string;
+  };
+  query?: never;
+  url: "/api/v1/entries/{entry_id}/views/reorder";
+};
+
+export type ViewsReorderEntryViewsErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
+
+export type ViewsReorderEntryViewsError =
+  ViewsReorderEntryViewsErrors[keyof ViewsReorderEntryViewsErrors];
+
+export type ViewsReorderEntryViewsResponses = {
+  /**
+   * Response Views-Reorder Entry Views
+   * Successful Response
+   */
+  200: Array<ViewResponse>;
+};
+
+export type ViewsReorderEntryViewsResponse =
+  ViewsReorderEntryViewsResponses[keyof ViewsReorderEntryViewsResponses];
 
 export type MeListEntriesForUserData = {
   body?: never;
@@ -1286,7 +1321,7 @@ export type VolsegEntriesUploadEntryResponses = {
 export type VolsegEntriesUploadEntryResponse =
   VolsegEntriesUploadEntryResponses[keyof VolsegEntriesUploadEntryResponses];
 
-export type VolsegEntriesDeleteViewData = {
+export type VolsegEntriesDeleteEntryData = {
   body?: never;
   path: {
     /**
@@ -1298,26 +1333,26 @@ export type VolsegEntriesDeleteViewData = {
   url: "/api/v1/volseg/{volseg_entry_id}";
 };
 
-export type VolsegEntriesDeleteViewErrors = {
+export type VolsegEntriesDeleteEntryErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type VolsegEntriesDeleteViewError =
-  VolsegEntriesDeleteViewErrors[keyof VolsegEntriesDeleteViewErrors];
+export type VolsegEntriesDeleteEntryError =
+  VolsegEntriesDeleteEntryErrors[keyof VolsegEntriesDeleteEntryErrors];
 
-export type VolsegEntriesDeleteViewResponses = {
+export type VolsegEntriesDeleteEntryResponses = {
   /**
-   * Response Volseg Entries-Delete View
+   * Response Volseg Entries-Delete Entry
    * Successful Response
    */
   200: string;
 };
 
-export type VolsegEntriesDeleteViewResponse =
-  VolsegEntriesDeleteViewResponses[keyof VolsegEntriesDeleteViewResponses];
+export type VolsegEntriesDeleteEntryResponse =
+  VolsegEntriesDeleteEntryResponses[keyof VolsegEntriesDeleteEntryResponses];
 
 export type VolsegEntriesGetEntryByIdData = {
   body?: never;

@@ -2,12 +2,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { App } from "./App.tsx";
-import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
-import { AuthProvider } from "./contexts/AuthProvider.tsx";
+import { ThemeProvider } from "./features/theme/ThemeProvider.tsx";
 import { client } from "./lib/client/client.gen.ts";
 import { BrowserRouter } from "react-router";
 
 import "./index.css";
+import { AuthProvider } from "./features/auth/AuthProvider.tsx";
 
 client.setConfig({
   baseUrl: import.meta.env.VITE_API_URL,

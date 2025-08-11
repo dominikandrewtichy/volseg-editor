@@ -288,6 +288,7 @@ class VolsegService:
                 detail=f"{e}",
             )
 
+    # TODO: add soft delete
     async def delete(
         self,
         user: User,

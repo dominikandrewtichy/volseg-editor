@@ -21,7 +21,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: {{ .Release.Name }}-web
-          image: {{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}
+          image: {{ .Values.web.image.repository }}:{{ .Values.global.image.tag }}
           imagePullPolicy: Always
           ports:
             - containerPort: 80

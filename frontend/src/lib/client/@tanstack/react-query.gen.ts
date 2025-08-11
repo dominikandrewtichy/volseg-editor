@@ -12,11 +12,12 @@ import {
   entriesGetEntryThumbnailView,
   viewsListViewsForEntry,
   viewsCreateView,
-  viewsDeleteView,
   viewsGetViewById,
-  viewsUpdateView,
   viewsGetViewSnapshot,
   viewsGetViewThumbnailImage,
+  viewsDeleteView,
+  viewsUpdateView,
+  viewsReorderEntryViews,
   meListEntriesForUser,
   meListVolsegEntriesForUser,
   shareLinksGetShareLink,
@@ -31,7 +32,7 @@ import {
   authDemoLogin,
   volsegEntriesListPublicEntries,
   volsegEntriesUploadEntry,
-  volsegEntriesDeleteView,
+  volsegEntriesDeleteEntry,
   volsegEntriesGetEntryById,
   volsegEntriesGetCvsxFile,
   volsegEntriesGetSnapshotFile,
@@ -65,15 +66,18 @@ import type {
   ViewsCreateViewData,
   ViewsCreateViewError,
   ViewsCreateViewResponse,
+  ViewsGetViewByIdData,
+  ViewsGetViewSnapshotData,
+  ViewsGetViewThumbnailImageData,
   ViewsDeleteViewData,
   ViewsDeleteViewError,
   ViewsDeleteViewResponse,
-  ViewsGetViewByIdData,
   ViewsUpdateViewData,
   ViewsUpdateViewError,
   ViewsUpdateViewResponse,
-  ViewsGetViewSnapshotData,
-  ViewsGetViewThumbnailImageData,
+  ViewsReorderEntryViewsData,
+  ViewsReorderEntryViewsError,
+  ViewsReorderEntryViewsResponse,
   MeListEntriesForUserData,
   MeListEntriesForUserError,
   MeListEntriesForUserResponse,
@@ -95,9 +99,9 @@ import type {
   VolsegEntriesUploadEntryData,
   VolsegEntriesUploadEntryError,
   VolsegEntriesUploadEntryResponse,
-  VolsegEntriesDeleteViewData,
-  VolsegEntriesDeleteViewError,
-  VolsegEntriesDeleteViewResponse,
+  VolsegEntriesDeleteEntryData,
+  VolsegEntriesDeleteEntryError,
+  VolsegEntriesDeleteEntryResponse,
   VolsegEntriesGetEntryByIdData,
   VolsegEntriesGetCvsxFileData,
   VolsegEntriesGetSnapshotFileData,
@@ -526,33 +530,6 @@ export const viewsCreateViewMutation = (
   return mutationOptions;
 };
 
-/**
- * Delete View
- */
-export const viewsDeleteViewMutation = (
-  options?: Partial<Options<ViewsDeleteViewData>>,
-): UseMutationOptions<
-  ViewsDeleteViewResponse,
-  ViewsDeleteViewError,
-  Options<ViewsDeleteViewData>
-> => {
-  const mutationOptions: UseMutationOptions<
-    ViewsDeleteViewResponse,
-    ViewsDeleteViewError,
-    Options<ViewsDeleteViewData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await viewsDeleteView({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
 export const viewsGetViewByIdQueryKey = (
   options: Options<ViewsGetViewByIdData>,
 ) => createQueryKey("viewsGetViewById", options);
@@ -575,33 +552,6 @@ export const viewsGetViewByIdOptions = (
     },
     queryKey: viewsGetViewByIdQueryKey(options),
   });
-};
-
-/**
- * Update View
- */
-export const viewsUpdateViewMutation = (
-  options?: Partial<Options<ViewsUpdateViewData>>,
-): UseMutationOptions<
-  ViewsUpdateViewResponse,
-  ViewsUpdateViewError,
-  Options<ViewsUpdateViewData>
-> => {
-  const mutationOptions: UseMutationOptions<
-    ViewsUpdateViewResponse,
-    ViewsUpdateViewError,
-    Options<ViewsUpdateViewData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await viewsUpdateView({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
 };
 
 export const viewsGetViewSnapshotQueryKey = (
@@ -650,6 +600,87 @@ export const viewsGetViewThumbnailImageOptions = (
     },
     queryKey: viewsGetViewThumbnailImageQueryKey(options),
   });
+};
+
+/**
+ * Delete View
+ */
+export const viewsDeleteViewMutation = (
+  options?: Partial<Options<ViewsDeleteViewData>>,
+): UseMutationOptions<
+  ViewsDeleteViewResponse,
+  ViewsDeleteViewError,
+  Options<ViewsDeleteViewData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    ViewsDeleteViewResponse,
+    ViewsDeleteViewError,
+    Options<ViewsDeleteViewData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await viewsDeleteView({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Update View
+ */
+export const viewsUpdateViewMutation = (
+  options?: Partial<Options<ViewsUpdateViewData>>,
+): UseMutationOptions<
+  ViewsUpdateViewResponse,
+  ViewsUpdateViewError,
+  Options<ViewsUpdateViewData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    ViewsUpdateViewResponse,
+    ViewsUpdateViewError,
+    Options<ViewsUpdateViewData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await viewsUpdateView({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Reorder views for a specific entry
+ */
+export const viewsReorderEntryViewsMutation = (
+  options?: Partial<Options<ViewsReorderEntryViewsData>>,
+): UseMutationOptions<
+  ViewsReorderEntryViewsResponse,
+  ViewsReorderEntryViewsError,
+  Options<ViewsReorderEntryViewsData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    ViewsReorderEntryViewsResponse,
+    ViewsReorderEntryViewsError,
+    Options<ViewsReorderEntryViewsData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await viewsReorderEntryViews({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
 };
 
 export const meListEntriesForUserQueryKey = (
@@ -1110,22 +1141,22 @@ export const volsegEntriesUploadEntryMutation = (
 };
 
 /**
- * Delete View
+ * Delete Entry
  */
-export const volsegEntriesDeleteViewMutation = (
-  options?: Partial<Options<VolsegEntriesDeleteViewData>>,
+export const volsegEntriesDeleteEntryMutation = (
+  options?: Partial<Options<VolsegEntriesDeleteEntryData>>,
 ): UseMutationOptions<
-  VolsegEntriesDeleteViewResponse,
-  VolsegEntriesDeleteViewError,
-  Options<VolsegEntriesDeleteViewData>
+  VolsegEntriesDeleteEntryResponse,
+  VolsegEntriesDeleteEntryError,
+  Options<VolsegEntriesDeleteEntryData>
 > => {
   const mutationOptions: UseMutationOptions<
-    VolsegEntriesDeleteViewResponse,
-    VolsegEntriesDeleteViewError,
-    Options<VolsegEntriesDeleteViewData>
+    VolsegEntriesDeleteEntryResponse,
+    VolsegEntriesDeleteEntryError,
+    Options<VolsegEntriesDeleteEntryData>
   > = {
     mutationFn: async (localOptions) => {
-      const { data } = await volsegEntriesDeleteView({
+      const { data } = await volsegEntriesDeleteEntry({
         ...options,
         ...localOptions,
         throwOnError: true,

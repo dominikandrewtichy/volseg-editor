@@ -17,7 +17,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: {{ .Release.Name }}-migrations
-          image: {{ .Values.migrations.image.repository }}:{{ .Values.migrations.image.tag }}
+          image: {{ .Values.migrations.image.repository }}:{{ .Values.global.image.tag }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-postgres-config

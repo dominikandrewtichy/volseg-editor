@@ -61,6 +61,7 @@ class UserService:
         user: User | None = result.scalar()
         return user
 
+    # TODO: add soft delete
     async def delete_user(self) -> User:
         pass  # TODO
 

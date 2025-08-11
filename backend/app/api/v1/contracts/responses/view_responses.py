@@ -7,7 +7,7 @@ from app.api.v1.contracts.responses.common import DebugModelName, Timestamp, Uui
 
 class ViewResponse(Timestamp, Uuid, DebugModelName, BaseModel):
     entry_id: UUID = Field()
-    name: str = Field(max_length=255)
+    name: str = Field(min_length=1, max_length=255)
     description: str | None = Field()
     # TODO: update with HttpUrl
     thumbnail_url: str | None = Field(max_length=2083)
