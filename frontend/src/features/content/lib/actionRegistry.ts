@@ -44,7 +44,8 @@ registerActionFunction({
   handler: (param) =>
     console.log(
       "Sum:",
-      param.reduce((prev, current) => prev + current, 0),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      param.reduce((prev: any, current: any) => prev + current, 0),
     ),
 });
 

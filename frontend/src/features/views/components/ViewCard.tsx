@@ -9,11 +9,10 @@ import {
 import { useMolstar } from "@/features/molstar/hooks/useMolstar";
 import { ViewResponse, viewsGetViewSnapshot } from "@/lib/client";
 import {
-  viewsGetViewSnapshotOptions,
   viewsListViewsForEntryQueryKey,
-  viewsUpdateViewMutation,
+  viewsUpdateViewMutation
 } from "@/lib/client/@tanstack/react-query.gen";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ViewCardActions } from "./ViewCardActions";
@@ -50,7 +49,6 @@ export function ViewCard({ view, isEditable, order }: ViewCardProps) {
   async function loadView() {
     const { data } = await viewsGetViewSnapshot({
       path: {
-        entry_id: view.entry_id,
         view_id: view.id,
       },
     });

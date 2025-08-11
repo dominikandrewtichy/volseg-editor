@@ -14,11 +14,6 @@ import { Volume } from "molstar/lib/commonjs/mol-model/volume";
 import { OpenFiles } from "molstar/lib/commonjs/mol-plugin-state/actions/file";
 import { PluginStateSnapshotManager } from "molstar/lib/commonjs/mol-plugin-state/manager/snapshots";
 import { PluginStateObject } from "molstar/lib/commonjs/mol-plugin-state/objects";
-import {
-  Download,
-  ParseCif,
-} from "molstar/lib/commonjs/mol-plugin-state/transforms/data";
-import { TrajectoryFromMmCif } from "molstar/lib/commonjs/mol-plugin-state/transforms/model";
 import { PluginUIContext } from "molstar/lib/commonjs/mol-plugin-ui/context";
 import {
   DefaultPluginUISpec,
