@@ -12,6 +12,71 @@ import { Root as ScrollAreaRoot } from "@radix-ui/react-scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, RotateCcw } from "lucide-react";
 import { lazy, Suspense, useEffect } from "react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+export type Annotation =
+  | { type: "pdb"; id: string; description: string }
+  | { type: "afdb"; id: string; description: string }
+  | { type: "mvs"; url: string; description: string };
+
+export type SegmentWithAnnotations = Segment & {
+  annotations: Annotation[];
+};
+
+const mockedSegments: SegmentWithAnnotations[] = [
+  {
+    segment_id: 2301283091,
+    name: "Segment A",
+    segmentation_id: "seg-001",
+    kind: "mesh",
+    time: [0, 10],
+    annotations: [
+      {
+        type: "pdb",
+        id: "1ABC",
+        description: "Protein structure from PDB 1ABC.",
+      },
+      {
+        type: "afdb",
+        id: "P12345",
+        description: "AlphaFold predicted structure for P12345.",
+      },
+      {
+        type: "mvs",
+        url: "http://example.com/mvs",
+        description: "MVS volumetric segmentation data.",
+      },
+    ],
+  },
+  {
+    segment_id: 2301283092,
+    name: "Segment B",
+    segmentation_id: "seg-002",
+    kind: "lattice",
+    time: [10, 20],
+    annotations: [
+      {
+        type: "pdb",
+        id: "2DEF",
+        description: "Protein structure from PDB 2DEF.",
+      },
+      {
+        type: "afdb",
+        id: "Q67890",
+        description: "AlphaFold predicted structure for Q67890.",
+      },
+    ],
+  },
+];
 
 const MolstarViewer = lazy(
   () => import("../../molstar/components/MolstarViewer"),
@@ -93,7 +158,7 @@ export function VolsegEntryPreviewPage() {
               <SegmentsList
                 className="h-full overflow-auto"
                 selectedSegment={currentSegment}
-                segments={volsegEntryQuery.data.annotations.segments}
+                segments={mockedSegments}
                 handleSegmentView={handleSegmentView}
               />
             </div>
@@ -110,13 +175,15 @@ export function SegmentsList({
   className,
   ...props
 }: React.ComponentProps<typeof ScrollAreaRoot> & {
-  segments: Array<Segment>;
+  segments: Array<
+    SegmentWithAnnotations & {
+      annotations: (Annotation & { description?: string })[];
+    }
+  >;
   selectedSegment: Segment | undefined;
   handleSegmentView: (segment: Segment) => Promise<void> | void;
 }) {
-  if (segments.length < 1) {
-    return null;
-  }
+  if (segments.length < 1) return null;
 
   return (
     <ScrollArea
@@ -128,46 +195,73 @@ export function SegmentsList({
           <div
             key={segment.segment_id}
             className={cn(
-              "flex items-center justify-between p-4 rounded-xl bg-muted/50 border-2",
+              "flex flex-col p-4 rounded-xl bg-muted/50 border-2",
               selectedSegment === segment && "bg-primary/10 border-primary",
             )}
           >
-            <div className="flex-1">
-              <div className="font-medium mb-2 text-sm">{segment.name}</div>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                <div>
-                  <span className="text-muted-foreground">Segment ID</span>
-                  <div>{segment.segment_id}</div>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Segmentation</span>
-                  <div>{segment.segmentation_id}</div>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Kind</span>
-                  <div className="capitalize">{segment.kind}</div>
-                </div>
-                {segment.time !== undefined && (
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="font-medium mb-2 text-sm">{segment.name}</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Time</span>
-                    <div>
-                      {Array.isArray(segment.time)
-                        ? segment.time.join(", ")
-                        : segment.time}
-                    </div>
+                    <span className="text-muted-foreground">Segment ID</span>
+                    <div>{segment.segment_id}</div>
                   </div>
-                )}
+                  <div>
+                    <span className="text-muted-foreground">Segmentation</span>
+                    <div>{segment.segmentation_id}</div>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Kind</span>
+                    <div className="capitalize">{segment.kind}</div>
+                  </div>
+                  {segment.time !== undefined && (
+                    <div>
+                      <span className="text-muted-foreground">Time</span>
+                      <div>
+                        {Array.isArray(segment.time)
+                          ? segment.time.join(", ")
+                          : segment.time}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="ml-4 shrink-0">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleSegmentView(segment)}
+                >
+                  View
+                </Button>
               </div>
             </div>
-            <div className="ml-4 shrink-0">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleSegmentView(segment)}
-              >
-                View
-              </Button>
-            </div>
+
+            {segment.annotations && segment.annotations.length > 0 && (
+              <Collapsible className="mt-3">
+                <CollapsibleTrigger className="text-sm font-medium text-muted-foreground">
+                  Annotations ({segment.annotations.length})
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-1 space-y-1 pl-2 flex flex-col">
+                  {segment.annotations.map((annotation, idx) => (
+                    <Popover key={idx}>
+                      <PopoverTrigger asChild>
+                        <button className="text-sm text-left capitalize underline text-primary">
+                          {annotation.type}
+                        </button>
+                      </PopoverTrigger>
+                      {annotation.description && (
+                        <PopoverContent className="max-w-sm">
+                          <p className="text-sm">{annotation.description}</p>
+                        </PopoverContent>
+                      )}
+                    </Popover>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+            )}
           </div>
         ))}
       </div>

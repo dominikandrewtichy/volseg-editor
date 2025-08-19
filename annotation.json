@@ -1,0 +1,22 @@
+{
+    "entry_id": "emd-1832",
+    "segment_annotations": [
+        {
+            "segment_id": "2301283091",
+            "annotations": [
+                {
+                    "type": "pdb",
+                    "id": "pdbId"
+                },
+                {
+                    "type": "afdb",
+                    "id": "uniprotID"
+                },
+                {
+                    "type": "mvs",
+                    "url": "URL"
+                }
+            ]
+        }
+    ]
+}
