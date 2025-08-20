@@ -9,11 +9,13 @@ import UploadVolseg from "./features/volseg-entries/components/UploadVolsegPage"
 import { VolsegEntryPreviewPage } from "./features/volseg-entries/components/VolsegEntryPreviewPage";
 import { MolstarProvider } from "./features/molstar/MolstarProvider";
 import { EntryDetailsPage } from "./features/entries/pages/EntryDetailsPage";
+import { Tiptap } from "./features/content/components/Tiptap";
 
 export function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
+        {/* Public routes */}
         <Route index element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route
@@ -32,7 +34,9 @@ export function App() {
             </MolstarProvider>
           }
         />
+        <Route path="/test" element={<Tiptap />} />
 
+        {/* Private routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/entries/new" element={<EntryCreatePage />} />
           <Route

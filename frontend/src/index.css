@@ -46,6 +46,7 @@
     from {
       height: 0;
     }
+
     to {
       height: var(--radix-accordion-content-height);
     }
@@ -55,6 +56,7 @@
     from {
       height: var(--radix-accordion-content-height);
     }
+
     to {
       height: 0;
     }
@@ -134,7 +136,18 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  .tiptap {
+    p {
+      @apply my-4 first:mt-0 last:mb-0 text-base leading-relaxed;
+    }
+
+    h1 {
+      @apply text-3xl font-bold mt-8 mb-4 first:mt-0 last:mb-0;
+    }
   }
 }
