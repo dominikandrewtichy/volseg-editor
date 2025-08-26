@@ -1,7 +1,10 @@
-import { TextStyleKit } from "@tiptap/extension-text-style";
 import type { Editor } from "@tiptap/react";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { ReactComponent } from "./extension";
+import BulletList from "@tiptap/extension-bullet-list";
+import { InlineButton } from "./InlineButton";
+import { Button } from "@/components/ui/button";
 
 function MenuBar({ editor }: { editor: Editor }) {
   const editorState = useEditorState({
@@ -41,19 +44,46 @@ function MenuBar({ editor }: { editor: Editor }) {
       >
         Redo
       </button>
+      <Button
+        onClick={() =>
+          editor
+            .chain()
+            .insertContent({
+              type: "reactComponent",
+              attrs: { count: 42 },
+            })
+            .run()
+        }
+      >
+        Add Inline Button
+      </Button>
     </div>
   );
 }
 
+const CustomBulletList = BulletList.extend({
+  addKeyboardShortcuts() {
+    return {
+      // ↓ your new keyboard shortcut
+      "Mod-l": () => this.editor.commands.toggleBulletList(),
+    };
+  },
+});
+
 export function Tiptap() {
   const editor = useEditor({
-    extensions: [TextStyleKit, StarterKit],
+    extensions: [StarterKit, ReactComponent, CustomBulletList, InlineButton],
     content: `
       <h1>Hi there,</h1>
       <p>
         this is a basic example of Tiptap
       </p>
+      <strong>something</strong>
+      <react-component count="0"></react-component>
     `,
+    onUpdate: ({ editor }) => {
+      console.log(JSON.stringify(editor.getJSON(), undefined, 2));
+    },
   });
 
   return (
