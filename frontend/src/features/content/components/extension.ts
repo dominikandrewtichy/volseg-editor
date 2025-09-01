@@ -13,9 +13,9 @@ export const ReactComponent = Node.create({
 
   addAttributes() {
     return {
-      count: {
-        default: 0,
-      },
+      actionId: { default: null },
+      params: { default: {} },
+      label: { default: "" }, // <-- add label
     };
   },
 

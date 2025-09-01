@@ -17,6 +17,10 @@ export type ActionFunctionEntry = {
   description?: string;
   schema: ZodSchema<any>;
   handler: ActionFunction;
+  form?: React.FC<{
+    params: any;
+    setParams: (updater: (prev: any) => any) => void;
+  }>;
 };
 
 const functionRegistry = new Map<string, ActionFunctionEntry>();
@@ -39,8 +43,21 @@ registerActionFunction({
   id: "log",
   label: "Log",
   description: "Logs a message",
-  schema: z.array(z.string()),
-  handler: (param) => console.log("Logging:", param),
+  schema: z.object({ message: z.string() }),
+  handler: ({ message }) => console.log("Logging:", message),
+  form: ({ params, setParams }) => (
+    <div className="flex flex-col gap-2">
+      <label className="block text-sm font-medium">Message</label>
+      <input
+        type="text"
+        className="border p-1 rounded"
+        value={params.message || ""}
+        onChange={(e) =>
+          setParams((prev) => ({ ...prev, message: e.target.value }))
+        }
+      />
+    </div>
+  ),
 });
 
 // registerActionFunction({
@@ -91,22 +108,22 @@ registerActionFunction({
 //   },
 // });
 
-registerActionFunction({
-  id: "loadView",
-  label: "Load View",
-  description: "Loads a View by ID",
-  schema: z.tuple([z.string()]).refine((params) => params.length === 1, {
-    message: "loadView must receive exactly 1 parameter",
-  }),
-  handler: async ([viewId], { viewer }) => {
-    const { data } = await viewsGetViewSnapshot({
-      path: {
-        view_id: viewId,
-      },
-    });
-    await viewer.loadSnapshot(data);
-  },
-});
+// registerActionFunction({
+//   id: "loadView",
+//   label: "Load View",
+//   description: "Loads a View by ID",
+//   schema: z.tuple([z.string()]).refine((params) => params.length === 1, {
+//     message: "loadView must receive exactly 1 parameter",
+//   }),
+//   handler: async ([viewId], { viewer }) => {
+//     const { data } = await viewsGetViewSnapshot({
+//       path: {
+//         view_id: viewId,
+//       },
+//     });
+//     await viewer.loadSnapshot(data);
+//   },
+// });
 
 // registerActionFunction({
 //   id: "loadCvsx",
