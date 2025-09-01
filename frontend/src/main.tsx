@@ -8,6 +8,7 @@ import { BrowserRouter } from "react-router";
 
 import "./index.css";
 import { AuthProvider } from "./features/auth/AuthProvider.tsx";
+import { TooltipProvider } from "./components/ui/tooltip.tsx";
 
 client.setConfig({
   baseUrl: import.meta.env.VITE_API_URL,
@@ -37,7 +38,9 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <AuthProvider>
         <ThemeProvider defaultTheme="dark">
-          <App />
+          <TooltipProvider delayDuration={1500}>
+            <App />
+          </TooltipProvider>
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
