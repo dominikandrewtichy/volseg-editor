@@ -23,6 +23,9 @@ import {
   UnderlineIcon,
   UndoIcon,
 } from "lucide-react";
+import { ActionDialog } from "./ActionDialog";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface EditorMenuBarProps {
   editor: Editor;
@@ -59,9 +62,12 @@ export function EditorMenuBar({ editor }: EditorMenuBarProps) {
       canRedo: editor.can().chain().redo().run() ?? false,
     }),
   });
+  const [open, setOpen] = useState<boolean>(false);
 
   function onSave() {
     console.log(JSON.stringify(editor.getJSON(), undefined, 2));
+    localStorage.setItem("editorContent", JSON.stringify(editor.getJSON()));
+    toast.success("Saved.");
   }
 
   return (
@@ -101,7 +107,7 @@ export function EditorMenuBar({ editor }: EditorMenuBarProps) {
           value="strikethrough"
           title="Toggle strikethrough"
           aria-label="Toggle strikethrough"
-          data-state={editorState.isStrikethrough ? "on" : "off"}
+          data-state={editorState.isStrikethrough ? "oHi there this has changed,n" : "off"}
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={!editorState.canStrikethrough}
         >
@@ -114,15 +120,16 @@ export function EditorMenuBar({ editor }: EditorMenuBarProps) {
         size="icon"
         title="Add action"
         className="border border-border"
-        onClick={() =>
-          editor
-            .chain()
-            .insertContent({
-              type: "reactComponent",
-              attrs: { count: 42 },
-            })
-            .run()
-        }
+        onClick={() => setOpen(true)}
+        // onClick={() =>
+        //   editor
+        //     .chain()
+        //     .insertContent({
+        //       type: "reactComponent",
+        //       attrs: { count: 42 },
+        //     })
+        //     .run()
+        // }
       >
         <RocketIcon className="h-4 w-4" />
       </Button>
@@ -194,6 +201,8 @@ export function EditorMenuBar({ editor }: EditorMenuBarProps) {
       >
         <SaveIcon className="h-4 w-4" />
       </Button>
+
+      <ActionDialog editor={editor} open={open} onOpenChange={setOpen} />
     </div>
   );
 }

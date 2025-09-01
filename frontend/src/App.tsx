@@ -34,7 +34,14 @@ export function App() {
             </MolstarProvider>
           }
         />
-        <Route path="/test" element={<Tiptap />} />
+        <Route
+          path="/test"
+          element={
+            <MolstarProvider>
+              <Tiptap />
+            </MolstarProvider>
+          }
+        />
 
         {/* Private routes */}
         <Route element={<ProtectedRoute />}>

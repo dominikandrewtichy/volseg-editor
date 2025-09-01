@@ -47,6 +47,7 @@
     "@tiptap/pm": "^3.2.0",
     "@tiptap/react": "^3.2.0",
     "@tiptap/starter-kit": "^3.2.0",
+    "@tiptap/suggestion": "^3.3.0",
     "@uppy/dashboard": "^4.3.3",
     "@uppy/drag-drop": "^4.1.2",
     "@uppy/file-input": "^4.1.2",

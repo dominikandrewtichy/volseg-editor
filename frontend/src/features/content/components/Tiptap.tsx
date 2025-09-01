@@ -4,18 +4,17 @@ import { ReactComponent } from "./extension";
 import { InlineButton } from "./InlineButton";
 import { CustomBulletList } from "./CustomBulletList";
 import { EditorMenuBar } from "./EditorMenuBar";
+import { useMemo } from "react";
 
 export function Tiptap() {
+  const content = useMemo(() => {
+    const savedContent = localStorage.getItem("editorContent");
+    return savedContent ? JSON.parse(savedContent) : "";
+  }, []);
+
   const editor = useEditor({
     extensions: [StarterKit, ReactComponent, CustomBulletList, InlineButton],
-    content: `
-      <h1>Hi there,</h1>
-      <p>
-        this is a basic example of Tiptap
-      </p>
-      <strong>something</strong>
-      <react-component count="0"></react-component>
-    `,
+    content,
     // onUpdate: ({ editor }) => {
     //   console.log(JSON.stringify(editor.getJSON(), undefined, 2));
     // },
