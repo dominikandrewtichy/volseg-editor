@@ -305,6 +305,7 @@ export class MolstarViewerModel extends BaseReactiveModel {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async loadSnapshot(snapshot: any) {
+    console.log(snapshot);
     if (this.state.isLoading.value) return;
 
     this.state.isLoading.next(true);

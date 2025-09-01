@@ -142,6 +142,10 @@
   }
 
   .tiptap {
+    :first-child {
+      margin-top: 0;
+    }
+
     p {
       @apply my-4 first:mt-0 last:mb-0 text-base leading-relaxed;
     }
@@ -149,6 +153,7 @@
     h1 {
       @apply text-3xl font-bold mt-8 mb-4 first:mt-0 last:mb-0;
     }
+
     h2 {
       @apply text-2xl font-bold mt-8 mb-4 first:mt-0 last:mb-0;
     }

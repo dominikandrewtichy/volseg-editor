@@ -107,7 +107,7 @@ export function EditorMenuBar({ editor }: EditorMenuBarProps) {
           value="strikethrough"
           title="Toggle strikethrough"
           aria-label="Toggle strikethrough"
-          data-state={editorState.isStrikethrough ? "oHi there this has changed,n" : "off"}
+          data-state={editorState.isStrikethrough ? "on" : "off"}
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={!editorState.canStrikethrough}
         >

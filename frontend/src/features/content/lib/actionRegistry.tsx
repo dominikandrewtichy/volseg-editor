@@ -1,3 +1,4 @@
+import { Input } from "@/components/ui/input";
 import { MolstarViewerModel } from "@/features/molstar/models/molstar-viewer";
 import { viewsGetViewSnapshot } from "@/lib/client";
 import { ZodSchema, z } from "zod";
@@ -135,3 +136,41 @@ registerActionFunction({
 //     await viewer.loadVolseg(entryId);
 //   },
 // });
+
+const LoadViewForm = ({
+  params,
+  setParams,
+}: {
+  params: any;
+  setParams: (fn: (prev: any) => any) => void;
+}) => {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="block text-sm font-medium">View ID</label>
+      <Input
+        type="text"
+        value={params.viewId || ""}
+        onChange={(e) =>
+          setParams({
+            viewId: e.target.value,
+          })
+        }
+        placeholder="Enter view ID"
+      />
+    </div>
+  );
+};
+
+registerActionFunction({
+  id: "loadView",
+  label: "Load View",
+  description: "Loads a View by ID",
+  schema: z.object({ viewId: z.string() }),
+  handler: async ({ viewId }, { viewer }: { viewer: MolstarViewerModel }) => {
+    const { data } = await viewsGetViewSnapshot({
+      path: { view_id: viewId },
+    });
+    await viewer.loadSnapshot(data);
+  },
+  form: LoadViewForm,
+});
