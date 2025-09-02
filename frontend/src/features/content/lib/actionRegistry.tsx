@@ -174,3 +174,98 @@ registerActionFunction({
   },
   form: LoadViewForm,
 });
+
+const LoadPdbForm = ({
+  params,
+  setParams,
+}: {
+  params: any;
+  setParams: (fn: (prev: any) => any) => void;
+}) => {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="block text-sm font-medium">PDB ID</label>
+      <Input
+        type="text"
+        value={params.pdbId || ""}
+        onChange={(e) => setParams({ ...params, pdbId: e.target.value })}
+        placeholder="Enter PDB ID"
+      />
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={params.clearViewer || false}
+          onChange={(e) =>
+            setParams({ ...params, clearViewer: e.target.checked })
+          }
+        />
+        Clear Viewer Before Loading
+      </label>
+    </div>
+  );
+};
+
+registerActionFunction({
+  id: "loadPdb",
+  label: "Load PDB",
+  description: "Loads a PDB structure",
+  schema: z.object({
+    pdbId: z.string(),
+    clearViewer: z.boolean().default(false),
+  }),
+  handler: async (
+    { pdbId, clearViewer },
+    { viewer }: { viewer: MolstarViewerModel },
+  ) => {
+    await viewer.loadPdb(pdbId, clearViewer);
+  },
+  form: LoadPdbForm,
+});
+
+const LoadAlphaFoldForm = ({
+  params,
+  setParams,
+}: {
+  params: any;
+  setParams: (fn: (prev: any) => any) => void;
+}) => {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="block text-sm font-medium">AlphaFold ID</label>
+      <Input
+        type="text"
+        value={params.id || ""}
+        onChange={(e) => setParams({ ...params, id: e.target.value })}
+        placeholder="Enter AlphaFold ID"
+      />
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={params.clearViewer || false}
+          onChange={(e) =>
+            setParams({ ...params, clearViewer: e.target.checked })
+          }
+        />
+        Clear Viewer Before Loading
+      </label>
+    </div>
+  );
+};
+
+registerActionFunction({
+  id: "loadAlphaFoldDB",
+  label: "Load AlphaFoldDB",
+  description: "Loads an AlphaFoldDB structure",
+  schema: z.object({
+    id: z.string(),
+    clearViewer: z.boolean().default(false),
+  }),
+  handler: async (
+    { id, clearViewer },
+    { viewer }: { viewer: MolstarViewerModel },
+  ) => {
+    console.log(id, clearViewer);
+    await viewer.loadAlphaFoldDB(id, clearViewer);
+  },
+  form: LoadAlphaFoldForm,
+});

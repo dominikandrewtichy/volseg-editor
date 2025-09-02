@@ -3,16 +3,20 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { ScrollArea } from "../../../components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { MarkdownViewer } from "../../content/components/MarkdownViewer";
+import { Editor } from "@/features/content/components/Tiptap";
 
 interface EntryDescriptionProps {
+  isEditing: boolean;
   description?: string | null | undefined;
 }
 
 const COLLAPSED_HEIGHT = 200;
 const EXPANDED_HEIGHT = 400;
 
-export function EntryDescription({ description }: EntryDescriptionProps) {
+export function EntryDescription({
+  description,
+  isEditing,
+}: EntryDescriptionProps) {
   const [expanded, setExpanded] = useState(false);
 
   if (!description) return null;
@@ -39,7 +43,7 @@ export function EntryDescription({ description }: EntryDescriptionProps) {
           height: expanded ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT,
         }}
       >
-        <MarkdownViewer markdown={description} />
+        <Editor isEditing={isEditing} />
       </ScrollArea>
     </div>
   );

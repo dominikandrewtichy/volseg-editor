@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { EntryDescription } from "@/features/entries/components/EntryDescription";
 import { useBehavior } from "@/features/molstar/hooks/useBehavior";
 import { useMolstar } from "@/features/molstar/hooks/useMolstar";
 import { ViewCreateDialog } from "@/features/views/components/ViewCreateDialog";
@@ -26,6 +25,9 @@ import { useParams } from "react-router";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { useRef } from "react";
+import { Editor } from "@/features/content/components/Tiptap";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { EntryDescription } from "../components/EntryDescription";
 
 const MolstarViewer = lazy(
   () => import("@/features/molstar/components/MolstarViewer"),
@@ -216,16 +218,7 @@ export function EntryDetailsPage({
         </div>
       </div>
 
-      {isEditing ? (
-        <TabTextArea
-          className="w-full p-2 border rounded-md text-sm font-mono mb-8"
-          rows={20}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      ) : (
-        <EntryDescription description={entry.description} />
-      )}
+      <EntryDescription description={entry.description} isEditing={isEditing} />
 
       <div className="flex flex-row gap-x-3 h-[600px]">
         <Tabs

@@ -504,10 +504,12 @@ export class MolstarViewerModel extends BaseReactiveModel {
     }
   }
 
-  async loadAlphaFoldDB(uniprotId: string) {
+  async loadAlphaFoldDB(uniprotId: string, clearViewer: boolean) {
     try {
       if (this.state.isLoading.value) return;
       this.state.isLoading.next(true);
+
+      if (clearViewer) await this.clear();
 
       const url = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
 

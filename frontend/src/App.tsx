@@ -9,7 +9,7 @@ import UploadVolseg from "./features/volseg-entries/components/UploadVolsegPage"
 import { VolsegEntryPreviewPage } from "./features/volseg-entries/components/VolsegEntryPreviewPage";
 import { MolstarProvider } from "./features/molstar/MolstarProvider";
 import { EntryDetailsPage } from "./features/entries/pages/EntryDetailsPage";
-import { Tiptap } from "./features/content/components/Tiptap";
+import { Editor } from "./features/content/components/Tiptap";
 
 export function App() {
   return (
@@ -38,7 +38,7 @@ export function App() {
           path="/test"
           element={
             <MolstarProvider>
-              <Tiptap />
+              <Editor isEditing={true} />
             </MolstarProvider>
           }
         />
