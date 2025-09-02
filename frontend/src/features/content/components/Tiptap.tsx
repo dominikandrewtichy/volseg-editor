@@ -14,7 +14,7 @@ export function Editor({ isEditing }: EditorProps) {
   const content = useMemo(() => {
     const savedContent = localStorage.getItem("editorContent");
     return savedContent ? JSON.parse(savedContent) : "";
-  }, []);
+  }, [isEditing]);
 
   const editor = useEditor(
     {
@@ -25,7 +25,7 @@ export function Editor({ isEditing }: EditorProps) {
       //   console.log(JSON.stringify(editor.getJSON(), undefined, 2));
       // },
     },
-    [isEditing],
+    [content, isEditing],
   );
 
   return (

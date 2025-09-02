@@ -142,12 +142,8 @@
   }
 
   .tiptap {
-    :first-child {
-      margin-top: 0;
-    }
-
     p {
-      @apply my-4 first:mt-0 last:mb-0 text-base leading-relaxed;
+      @apply my-2 first:mt-0 last:mb-0 text-base leading-relaxed;
     }
 
     h1 {
@@ -158,16 +154,66 @@
       @apply text-2xl font-bold mt-8 mb-4 first:mt-0 last:mb-0;
     }
 
+    h3 {
+      @apply text-xl font-semibold mt-6 mb-3 first:mt-0 last:mb-0;
+    }
+
     ul,
     ol {
-      padding: 0 1rem;
-      margin: 1.25rem 1rem 1.25rem 0.4rem;
-
+      padding-left: 1rem;
+      margin: 1.25rem 0;
       li p {
         margin-top: 0.25em;
         margin-bottom: 0.25em;
       }
     }
 
+    blockquote {
+      @apply border-l-4 border-muted pl-4 italic text-muted-foreground;
+    }
+
+    code {
+      @apply font-mono bg-muted px-1 rounded text-sm;
+    }
+
+    pre {
+      @apply bg-muted p-4 rounded overflow-x-auto font-mono text-sm;
+    }
+
+    a {
+      @apply text-primary underline;
+    }
+
+    strong {
+      @apply font-bold;
+    }
+
+    em {
+      @apply italic;
+    }
+
+    del {
+      @apply line-through;
+    }
+
+    /* Inline button / React component node */
+    react-component {
+      @apply inline-flex items-center gap-x-1 bg-accent rounded-md text-sm px-1 py-0.5 font-mono cursor-pointer select-none;
+      transition: background-color 0.2s;
+    }
+
+    react-component:hover {
+      @apply bg-accent-foreground text-accent;
+    }
+
+    /* Make inline buttons non-selectable */
+    react-component::selection {
+      @apply bg-transparent;
+    }
+
+    /* Code inline button */
+    .inline-code {
+      @apply font-mono bg-muted rounded px-1;
+    }
   }
 }
