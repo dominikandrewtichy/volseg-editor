@@ -1,0 +1,68 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-migrations
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: wait-for-db
+          image: postgres:alpine
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for database at $POSTGRES_HOST..."
+              until pg_isready -h "$POSTGRES_HOST" -U "$POSTGRES_USER"; do
+                echo "Database not ready, sleeping 2s..."
+                sleep 2
+              done
+              echo "Database is ready!"
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-postgres-config
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-{{ .Values.postgres.name }}-app
+                  key: username
+          securityContext:
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      containers:
+        - name: {{ .Release.Name }}-migrations
+          image: {{ .Values.migrations.image.repository }}:{{ .Values.global.image.tag }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-postgres-config
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-{{ .Values.postgres.name }}-app
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-{{ .Values.postgres.name }}-app
+                  key: password
+          securityContext:
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL

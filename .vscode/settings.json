@@ -1,0 +1,60 @@
+{
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.ruff_cache": true,
+    },
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "explicit",
+            "source.removeUnusedImports": "always",
+            "source.unusedImports": "always",
+        },
+    },
+    "[typescript]": {
+        "editor.codeActionsOnSave": {
+            "source.removeUnusedImports": "always",
+            "source.sortImports": "always",
+        }
+    },
+    "[typescriptreact]": {
+        "editor.codeActionsOnSave": {
+            "source.removeUnusedImports": "always",
+            "source.sortImports": "always",
+        }
+    },
+    "python.analysis.extraPaths": [
+        "backend"
+    ],
+    "python.autoComplete.extraPaths": [
+        "backend"
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#471391",
+        "activityBar.background": "#471391",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#a95316",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#471391",
+        "statusBar.background": "#310d64",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#471391",
+        "statusBarItem.remoteBackground": "#310d64",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#310d64",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#310d6499",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#310d64",
+    "workbench.preferredDarkColorTheme": "Shades of Purple",
+    "workbench.preferredLightColorTheme": "Solarized Light",
+    "files.associations": {
+        "**/helm/templates/**/*.yaml": "yaml",
+        "*.mvsj": "json",
+    },
+}

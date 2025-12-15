@@ -1,0 +1,43 @@
+[project]
+name = "volseg-editor-api"
+version = "1.0.0"
+description = "Server for VolSeg Editor."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "alembic>=1.16.2",
+    "asyncpg>=0.30.0",
+    "fastapi[standard]>=0.115.11",
+    "httpx>=0.28.1",
+    "itsdangerous>=2.2.0",
+    "minio>=7.2.15",
+    "pydantic[email]>=2.10.6",
+    "pydantic-settings>=2.8.1",
+    "pyjwt>=2.10.1",
+    "sqlalchemy>=2.0.40",
+    "cvsx2mvsx>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.8.0",
+    "faker>=37.1.0",
+    "httpx>=0.28.1",
+    "mypy>=1.15.0",
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=1.3.0",
+    "ruff>=0.11.5",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    # isort
+    "I",
+]
+
+[tool.isort]
+remove_unused = false

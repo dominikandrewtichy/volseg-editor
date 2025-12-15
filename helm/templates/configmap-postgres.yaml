@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-postgres-config
+  namespace: {{ .Values.namespace }}
+data:
+  POSTGRES_DB: {{ .Values.postgres.env.db }}
+  POSTGRES_HOST: {{ .Release.Name }}-{{ .Values.postgres.name }}-rw.{{ .Values.namespace }}.svc.cluster.local

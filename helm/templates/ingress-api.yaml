@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-api-ingress
+  namespace: {{ .Values.namespace }}
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ .Values.api.uploadSize }}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.{{ .Release.Name }}.dyn.cloud.e-infra.cz
+      secretName: api.{{ .Release.Name }}.dyn.cloud.e-infra.cz-tls
+  rules:
+    - host: "api.{{ .Release.Name }}.dyn.cloud.e-infra.cz"
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ .Release.Name }}-api-service
+                port:
+                  number: 8000
+            pathType: ImplementationSpecific

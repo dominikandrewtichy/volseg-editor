@@ -1,0 +1,51 @@
+namespace: cellim-viewer-tichy3-ns
+
+global:
+  image:
+    tag: latest
+
+api:
+  image:
+    repository: cerit.io/frimen/volseg-editor-api
+  env:
+    apiServerUrl: https://api.volseg-editor.dyn.cloud.e-infra.cz
+    webServerUrl: https://web.volseg-editor.dyn.cloud.e-infra.cz
+    oidcIssuerUrl: https://login.e-infra.cz/oidc
+    oidcRedirectUri: https://api.volseg-editor.dyn.cloud.e-infra.cz/api/v1/auth/callback
+  secrets:
+    oidcClientId: ""
+    oidcClientSecret: ""
+    jwtSecretKey: ""
+    cookiesSessionSecret: ""
+  uploadSize: "2048m"
+
+minio:
+  storageClass: nfs-csi
+  env:
+    endpoint: volseg-editor-minio-service.cellim-viewer-tichy3-ns.svc.cluster.local:9000
+  secrets:
+    rootUser: ""
+    rootPassword: ""
+    accessKey: ""
+    secretKey: ""
+
+postgres:
+  name: postgres-cluster
+  storageClass: nfs-csi
+  image: 
+    repository: ghcr.io/cloudnative-pg/postgresql
+    tag: "17"
+  env:
+    db: volseg_editor
+
+migrations:
+  image:
+    repository: cerit.io/frimen/volseg-editor-migrations
+
+seed:
+  image:
+    repository: cerit.io/frimen/volseg-editor-seed
+
+web:
+  image:
+    repository: cerit.io/frimen/volseg-editor-web

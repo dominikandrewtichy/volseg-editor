@@ -1,0 +1,179 @@
+services:
+  db:
+    container_name: volseg-editor-db
+    image: postgres:17.4-alpine
+    environment:
+      # POSTGRES
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=volseg_editor
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - volseg-network
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    container_name: volseg-editor-api
+    build:
+      context: ./backend
+      dockerfile: docker/dockerfile.dev
+    environment:
+      # MINIO
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+      # POSTGRES
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=volseg_editor
+      # OIDC
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET}
+      - OIDC_ISSUER_URL=https://login.e-infra.cz/oidc
+      - OIDC_REDIRECT_URI=http://localhost:8000/api/v1/auth/callback
+      # JWT
+      - JWT_SECRET_KEY=some-secret-key
+      - COOKIE_SESSION_SECRET=some-secret-key
+      # URLS
+      - API_SERVER_URL=http://localhost:8000
+      - WEB_SERVER_URL=http://localhost:5173
+    ports:
+      - "8000:8000"
+    develop:
+      watch:
+        - action: sync
+          path: ./backend/
+          target: /app/
+        - action: rebuild
+          path: ./backend/pyproject.toml
+    restart: always
+    networks:
+      - volseg-network
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health_check && test $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8000/health_check) -eq 200"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+  web:
+    container_name: volseg-editor-web
+    build:
+      context: ./frontend
+      dockerfile: docker/dockerfile.dev
+    ports:
+      - "5173:5173"
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend/
+          target: /app/
+        - action: rebuild
+          path: ./frontend/package.json
+    restart: always
+    networks:
+      - volseg-network
+    depends_on:
+      - api
+
+  minio:
+    container_name: volseg-editor-minio
+    image: minio/minio:latest
+    environment:
+      # MINIO
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    restart: always
+    networks:
+      - volseg-network
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    container_name: volseg-editor-adminer
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - volseg-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  migrations:
+    container_name: volseg-editor-migrations
+    build:
+      context: ./backend
+      dockerfile: docker/dockerfile.migrations.prod
+    environment:
+      # POSTGRES
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=volseg_editor
+    restart: on-failure
+    networks:
+      - volseg-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  seed:
+    container_name: volseg-editor-seed
+    build:
+      context: ./backend
+      dockerfile: docker/dockerfile.seed.prod
+    environment:
+      # MINIO
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+      # POSTGRES
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=volseg_editor
+    restart: on-failure
+    networks:
+      - volseg-network
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+networks:
+  volseg-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  minio_data:

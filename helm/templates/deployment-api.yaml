@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-api
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-api
+    spec:
+      securityContext:
+        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: {{ .Release.Name }}-api
+          image: {{ .Values.api.image.repository }}:{{ .Values.global.image.tag }}
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: "0.5"
+            limits:
+              memory: 2Gi
+              cpu: "1"
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health_check
+              port: 8000
+            initialDelaySeconds: 40
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /health_check
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 10
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-api-config
+            - configMapRef:
+                name: {{ .Release.Name }}-minio-config
+            - configMapRef:
+                name: {{ .Release.Name }}-postgres-config
+            - secretRef:
+                name: {{ .Release.Name }}-api-secrets
+            - secretRef:
+                name: {{ .Release.Name }}-minio-secrets
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-{{ .Values.postgres.name }}-app
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-{{ .Values.postgres.name }}-app
+                  key: password
+          securityContext:
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL

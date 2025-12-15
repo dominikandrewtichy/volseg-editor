@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-api-config
+  namespace: {{ .Values.namespace }}
+data:
+  API_SERVER_URL: {{ .Values.api.env.apiServerUrl }}
+  WEB_SERVER_URL: {{ .Values.api.env.webServerUrl }}
+  OIDC_ISSUER_URL: {{ .Values.api.env.oidcIssuerUrl }}
+  OIDC_REDIRECT_URI: {{ .Values.api.env.oidcRedirectUri }}
